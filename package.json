@@ -12,9 +12,9 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "test": "jest --passWithNoTests",
-    "test:dbg": "jest --runInBand --detectOpenHandles --watch",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "test:dbg": "jest --runInBand --detectOpenHandles --watch --passWithNoTests",
+    "test:watch": "jest --watch --passWithNoTests",
+    "test:cov": "jest --coverage --passWithNoTests",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
