@@ -1,0 +1,105 @@
+version: "3"
+
+services:
+  prometheus:
+    container_name: portals-prometheus
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    ports:
+      - 9990:9090
+    networks:
+      - portal-net
+    volumes:
+      - "../prometheus/config.yml:/etc/prometheus/prometheus.yml:ro"
+      - "prometheus-data:/etc/prometheus"
+
+  grafana:
+    container_name: portals-grafana
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    ports:
+      - 9991:3000
+    networks:
+      - portal-net
+    volumes:
+      - "../grafana:/etc/grafana/provisioning:ro"
+      - "grafana-data:/var/lib/grafana"
+    environment:
+      GF_SECURITY_ADMIN_USER: gf-dev-user
+      GF_SECURITY_ADMIN_PASSWORD: gf-dev-pass
+      GF_USERS_DEFAULT_THEME: dark
+
+  elasticsearch:
+    container_name: portals-elasticsearch
+    image: elasticsearch:7.16.3
+    restart: unless-stopped
+    ports:
+      - 9992:9200
+    networks:
+      - portal-net
+    volumes:
+      - "elasticsearch-data:/usr/share/elasticsearch/data"
+    environment:
+      - node.name=es01
+      - cluster.name=portals-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=es-dev-pass
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  kibana:
+    container_name: portals-kibana
+    image: kibana:7.16.3
+    restart: unless-stopped
+    ports:
+      - 9993:5601
+    networks:
+      - portal-net
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: es-dev-pass
+      XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
+    depends_on:
+      - elasticsearch
+
+  redis:
+    container_name: portals-redis
+    image: redis:latest
+    restart: unless-stopped
+    command: redis-server --save 10 1 --loglevel warning --requirepass rd-dev-pass
+    ports:
+      - 9994:6379
+    networks:
+      - portal-net
+    volumes:
+      - "redis-data:/data"
+
+  redis-exporter:
+    container_name: portals-redis-exporter
+    image: oliver006/redis_exporter:latest
+    restart: unless-stopped
+    command: -redis.addr redis://redis:6379 -redis.password rd-dev-pass
+    ports:
+      - 9995:9121
+    networks:
+      - portal-net
+    depends_on:
+      - redis
+
+networks:
+  portal-net:
+    external: false
+    driver: bridge
+
+volumes:
+  prometheus-data: {}
+  grafana-data: {}
+  elasticsearch-data: {}
+  redis-data: {}

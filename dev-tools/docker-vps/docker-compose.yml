@@ -1,0 +1,91 @@
+version: "3"
+
+services:
+  prometheus:
+    container_name: portals-prometheus
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    networks:
+      - portals-net
+    volumes:
+      - "../prometheus/config.yml:/etc/prometheus/prometheus.yml:ro"
+      - "./_data/prometheus:/etc/prometheus"
+
+  grafana:
+    container_name: portals-grafana
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    ports:
+      - 9030:3000
+    networks:
+      - portals-net
+    volumes:
+      - "../grafana:/etc/grafana/provisioning:ro"
+      - "./_data/grafana:/var/lib/grafana"
+    environment:
+      GF_SECURITY_ADMIN_USER: ecards-gf-user-EFDD
+      GF_SECURITY_ADMIN_PASSWORD: SD_kU_Sx9a_V3E
+      GF_USERS_DEFAULT_THEME: dark
+
+  elasticsearch:
+    container_name: portals-elasticsearch
+    image: elasticsearch:7.16.3
+    restart: unless-stopped
+    networks:
+      - portals-net
+    volumes:
+      - "./_data/elasticsearch:/usr/share/elasticsearch/data"
+    environment:
+      - node.name=es01
+      - cluster.name=portals-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=B_6EC3G2A7_opE
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  kibana:
+    container_name: portals-kibana
+    image: kibana:7.16.3
+    restart: unless-stopped
+    ports:
+      - 9031:5601
+    networks:
+      - portals-net
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: B_6EC3G2A7_opE
+      XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
+    depends_on:
+      - elasticsearch
+
+  redis:
+    container_name: portals-redis
+    image: redis:latest
+    restart: unless-stopped
+    command: redis-server --save 60 5 --loglevel warning --requirepass b4as55_efq267g
+    networks:
+      - portals-net
+    volumes:
+      - "./_data/redis:/data"
+
+  redis-exporter:
+    container_name: portals-redis-exporter
+    image: oliver006/redis_exporter:latest
+    restart: unless-stopped
+    command: -redis.addr redis://redis:6379 -redis.password b4as55_efq267g
+    networks:
+      - portals-net
+    depends_on:
+      - redis
+
+networks:
+  portals-net:
+    external: false
+    driver: bridge
