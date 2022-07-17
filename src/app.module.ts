@@ -6,7 +6,6 @@ import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { LoggerModule } from "nestjs-pino";
 import { default as pinoPretty } from "pino-pretty";
-import { multistream as pinoMultiStream } from "pino-multi-stream";
 import * as pinoElasticSearch from "pino-elasticsearch";
 import { CommonConstants, ElasticConstants, PinoMode } from "@modules/common";
 import { PortalsModule } from "@portals/portals.module";
@@ -31,8 +30,6 @@ const setupLoggerStream = (): any => {
     return local;
   } else if (process.env.PINO_MODE === PinoMode.ELASTIC) {
     return elastic;
-  } else if (process.env.PINO_MODE === PinoMode.MULTI) {
-    return pinoMultiStream([{ stream: local }, { stream: elastic }]);
   }
 };
 

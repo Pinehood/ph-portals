@@ -28,7 +28,6 @@ export enum CloudWatchConstants {
 export enum PinoMode {
   LOCAL = "local",
   ELASTIC = "elastic",
-  MULTI = "multi",
 }
 
 export enum ControllerTags {

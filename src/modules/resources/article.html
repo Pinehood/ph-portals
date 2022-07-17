@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.min.css"/>
+		<title>Portali - {{title}}</title>
+	</head>
+
+	<body>
+		<div class="ui page equal height grid">
+			<div class="row">
+				<div class="ui segment">
+					<div class="row">
+						<div class="ui pointing menu">
+						  {{links}}
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="ui segment">
+							<table class="ui celled table">
+								<thead>
+									<tr>
+										<th>Autor</th>
+										<th>Vrijeme objave</th>
+										<th>Portal</th>
+										<th>Originalni članak</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{{author}}</td>
+										<td>{{time}}</td>
+										<td><a target="_blank" href="{{portalLink}}">{{portalName}}</a></td>
+										<td><a target="_blank" href="{{articleLink}}">Otvori</a></td>
+									</tr>
+								</tbody>
+							</table>
+							<h1>{{title}}</h1>
+							<h3>{{lead}}</h3>
+							<p>{{content}}</p>
+							<a href="{{backLink}}"><button class="ui right floated secondary button">Povratak</button></a>
+							<br>
+							<br>
+						</div>
+					</div>
+					<br>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
