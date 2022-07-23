@@ -1,6 +1,8 @@
-import { Article } from "@root/modules/common";
+import { Injectable } from "@nestjs/common";
+import { Article } from "@modules/common";
 import { ScraperService } from "@scrapers/services/scraper.service";
 
+@Injectable()
 export class Scrape24SataService implements ScraperService {
   rootLinks: string[];
   name: string;

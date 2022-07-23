@@ -6,17 +6,14 @@ import { AppModule } from "@root/app.module";
 import {
   CommonConstants,
   ControllerTags,
-  NumberConstants,
   SwaggerConstants,
 } from "@modules/common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
-  const split: string[] = process.env.CORS_ORIGINS.split(",");
-  process.env.FRONTEND_HOST = split[0];
   app.enableCors({
     credentials: true,
-    origin: split,
+    origin: "*",
   });
   app.useGlobalPipes(new ValidationPipe());
   app.useLogger(app.get(Logger));
@@ -30,6 +27,6 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(SwaggerConstants.URL, app, document);
   }
-  await app.listen(NumberConstants.LISTEN_PORT);
+  await app.listen(CommonConstants.LISTEN_PORT);
 }
 bootstrap();

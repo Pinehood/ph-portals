@@ -1,3 +1,4 @@
 export enum PortalsRoutes {
-  BASE = "/api/portals",
+  BASE = "/portals",
+  PORTAL = "/:portal",
 }

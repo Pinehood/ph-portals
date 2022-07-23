@@ -46,8 +46,7 @@ const setupLoggerStream = (): any => {
         stream: setupLoggerStream(),
         quietReqLogger:
           process.env.HTTP_REQUEST_LOGGING !== CommonConstants.TRUE_STRING,
-        autoLogging:
-          process.env.HTTP_AUTO_LOGGING === CommonConstants.TRUE_STRING,
+        autoLogging: false,
       },
     }),
     PrometheusModule.register(),

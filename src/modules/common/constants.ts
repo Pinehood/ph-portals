@@ -1,10 +1,9 @@
 export enum CommonConstants {
+  LISTEN_PORT = 3000,
   TRUE_STRING = "true",
   PRODUCTION_MODE = "production",
-}
-
-export enum NumberConstants {
-  LISTEN_PORT = 3000,
+  UTF_8 = "utf-8",
+  TEXT_HTML = "text/html",
 }
 
 export enum SwaggerConstants {
@@ -20,11 +19,6 @@ export enum ElasticConstants {
   FLUSH_BYTES = 1024,
 }
 
-export enum CloudWatchConstants {
-  GROUP = "on-oman",
-  INTERVAL_MS = 10000,
-}
-
 export enum PinoMode {
   LOCAL = "local",
   ELASTIC = "elastic",
@@ -32,4 +26,31 @@ export enum PinoMode {
 
 export enum ControllerTags {
   PORTALS = "portals",
+}
+
+export enum UrlParams {
+  PORTAL = "portal",
+}
+
+export enum QueryParams {}
+
+export enum TemplateNames {
+  HOME = "home.html",
+  ARTICLE = "article.html",
+  PORTAL = "portal.html",
+  ITEM = "item.html",
+}
+
+export enum Portals {
+  HOME = "home",
+  SATA24 = "24sata",
+  INDEX = "index",
+  VECERNJI = "vecernji",
+  JUTARNJI = "jutarnji",
+  NET = "net",
+  DNEVNIK = "dnevnik",
+  DNEVNO = "dnevno",
+  TPORTAL = "tportal",
+  SLOBODNA_DALMACIJA = "sd",
+  SPORTSKE_NOVOSTI = "sn",
 }
