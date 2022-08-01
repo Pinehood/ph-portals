@@ -1,4 +1,5 @@
 {
+  "collection": "@nestjs/schematics",
   "compilerOptions": {
     "plugins": [
       {
@@ -8,6 +9,7 @@
         }
       }
     ],
-    "assets": ["**/*.html", "**/*.css", "**/*.json", "**/*.pem"]
+    "assets": ["**/{templates,resources}/*.{html,css,json}"],
+    "watchAssets": true
   }
 }
