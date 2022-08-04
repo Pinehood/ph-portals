@@ -4,4 +4,5 @@ export interface ScraperService {
   name: string;
   link: string;
   scrape: () => Promise<Article[]>;
+  defaultArticle: () => Article;
 }

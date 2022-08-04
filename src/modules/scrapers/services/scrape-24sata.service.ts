@@ -3,7 +3,7 @@ import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import axios from "axios";
 import { Article, Portals, PortalsRoutes } from "@modules/common";
 import { ScraperService } from "@scrapers/services/scraper.service";
-//import * as cheerio from "cheerio";
+import * as cheerio from "cheerio";
 
 @Injectable()
 export class Scrape24SataService implements ScraperService {
@@ -27,19 +27,7 @@ export class Scrape24SataService implements ScraperService {
   }
 
   async scrape(): Promise<Article[]> {
-    const articles: Article[] = [];
-    const defaultArticle: Article = {
-      articleId: "",
-      articleLink: "",
-      author: "",
-      backLink: `${PortalsRoutes.BASE}/${Portals.SATA24}`,
-      content: "",
-      lead: "",
-      portalLink: this.link,
-      portalName: this.name,
-      time: "",
-      title: "",
-    };
+    let articles: Article[] = [];
     try {
       for (let i = 0; i < this.rootLinks.length; i++) {
         const rootLink = this.rootLinks[i];
@@ -54,31 +42,86 @@ export class Scrape24SataService implements ScraperService {
           if (articleLinks) {
             for (let j = 0; j < articleLinks.length; j++) {
               const articleLink = articleLinks[j];
+              if (
+                articles.findIndex((a) => a.articleLink == articleLink) > -1
+              ) {
+                continue;
+              }
               const article = await axios.get(articleLink);
               if (article && article.data) {
-                //const articleText = article.data as string;
-                //TODO: scrape data of each article with $/cheerio
-                //const $ = cheerio.load(articleText);
+                const articleHtml = article.data as string;
+                const $ = cheerio.load(articleHtml);
+                let title = $("h1.article__title")
+                  .text()
+                  .replace(/\n/g, "")
+                  .trim();
+                let lead = $("p.article__lead_text")
+                  .text()
+                  .replace(/\n/g, "")
+                  .trim();
+                let time = $("time.article__time")
+                  .text()
+                  .replace(/\n/g, "")
+                  .trim();
+                let author = $("span.article__authors_item")
+                  .text()
+                  .replace(/\n/g, "")
+                  .replace(/Piše/g, "")
+                  .replace(/  /g, "")
+                  .trim();
+                author = author.substring(0, author.length - 1);
+                let content = $("div.article__content")
+                  .html()
+                  .replace(/<h3>Najčitaniji članci<\/h3>/g, "")
+                  .replace(/\n/g, "")
+                  .trim();
+                if (content.includes("<img")) {
+                  console.log(content);
+                }
                 articles.push({
-                  ...defaultArticle,
+                  ...this.defaultArticle(),
                   articleId: articleLink.substring(
                     articleLink.lastIndexOf("/") + 1
                   ),
-                  articleLink: articleLink,
-                  author: "",
-                  content: "",
-                  lead: "",
-                  time: "",
-                  title: "",
+                  articleLink,
+                  author,
+                  content,
+                  lead,
+                  time,
+                  title,
                 });
               }
             }
           }
         }
       }
+      articles = articles.filter(
+        (a) => Article.isValid(a) && Article.shouldBeDisplayed(a)
+      );
+      this.logger.info(
+        "Scraped '%d' articles from '%s'",
+        articles.length,
+        this.name
+      );
     } catch (error: any) {
       this.logger.error(error);
     }
     return articles;
+  }
+
+  defaultArticle(): Article {
+    return {
+      articleId: "",
+      articleLink: "",
+      author: "",
+      backLink: `${PortalsRoutes.BASE}/${Portals.SATA24}`,
+      content: "",
+      lead: "",
+      portalLink: this.link,
+      portalName: this.name,
+      portalType: Portals.SATA24,
+      time: "",
+      title: "",
+    };
   }
 }

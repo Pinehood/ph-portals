@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Cron, CronExpression, Timeout } from "@nestjs/schedule";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
-import { TemplateNames } from "@common/constants";
+import { Portals, TemplateNames } from "@common/constants";
 import { TemplateContentService } from "@portals/services/template-content.service";
 import { RedisService } from "@utils/services/redis.service";
 import { Scrape24SataService } from "@root/modules/scrapers/services";
@@ -24,8 +24,8 @@ export class CronService {
   @Cron(CronExpression.EVERY_HOUR)
   private async scrapeData(): Promise<void> {
     try {
-      this.scrape24SataService.scrape();
-      this.logger.info("Scrape data");
+      const articles24h = await this.scrape24SataService.scrape();
+      await this.redisService.set(Portals.SATA24, JSON.stringify(articles24h));
     } catch (error: any) {
       this.logger.error(error);
     }

@@ -1,7 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { RedisService } from "@utils/services/redis.service";
-import { CommonConstants, Portals, TemplateNames } from "@modules/common";
+import {
+  Article,
+  CommonConstants,
+  Portals,
+  TemplateNames,
+} from "@modules/common";
 import dirname from "@modules/resources";
 import { join } from "path";
 import * as fs from "fs";
@@ -24,8 +29,26 @@ export class TemplateContentService {
           {}
         );
       } else {
+        const articles = JSON.parse(
+          await this.redisService.get(portal)
+        ) as Article[];
+        const templateContent = await this.getTemplateContent(
+          TemplateNames.ITEM,
+          true
+        );
+        if (!articles || !templateContent) {
+          return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
+            articles: "<p>Nema članaka za prikaz.</p>",
+          });
+        }
+        let finalContent = "";
+        for (let i = 0; i < articles.length; i++) {
+          const article = articles[i];
+          const content = await this.fillPageContent(templateContent, article);
+          finalContent += content;
+        }
         return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
-          articles: "<p>Nema članaka za prikaz</p>",
+          articles: finalContent,
         });
       }
     } catch (error: any) {
@@ -48,6 +71,20 @@ export class TemplateContentService {
         });
         return content;
       }
+    } catch (error: any) {
+      this.logger.error(error);
+      return "";
+    }
+  }
+
+  private async fillPageContent(content: string, data: any): Promise<string> {
+    try {
+      const template = Handlebars.compile(content, {
+        noEscape: true,
+        strict: false,
+      });
+      const result = template(data);
+      return result;
     } catch (error: any) {
       this.logger.error(error);
       return "";
