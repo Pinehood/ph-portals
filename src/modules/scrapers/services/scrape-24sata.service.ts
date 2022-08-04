@@ -51,15 +51,15 @@ export class Scrape24SataService implements ScraperService {
               if (article && article.data) {
                 const articleHtml = article.data as string;
                 const $ = cheerio.load(articleHtml);
-                let title = $("h1.article__title")
+                const title = $("h1.article__title")
                   .text()
                   .replace(/\n/g, "")
                   .trim();
-                let lead = $("p.article__lead_text")
+                const lead = $("p.article__lead_text")
                   .text()
                   .replace(/\n/g, "")
                   .trim();
-                let time = $("time.article__time")
+                const time = $("time.article__time")
                   .text()
                   .replace(/\n/g, "")
                   .trim();
@@ -70,14 +70,11 @@ export class Scrape24SataService implements ScraperService {
                   .replace(/  /g, "")
                   .trim();
                 author = author.substring(0, author.length - 1);
-                let content = $("div.article__content")
+                const content = $("div.article__content")
                   .html()
                   .replace(/<h3>Najčitaniji članci<\/h3>/g, "")
                   .replace(/\n/g, "")
                   .trim();
-                if (content.includes("<img")) {
-                  console.log(content);
-                }
                 articles.push({
                   ...this.defaultArticle(),
                   articleId: articleLink.substring(
