@@ -1,10 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
-import { RedisService } from "@utils/services";
+import { Article, Portal } from "@resources/dtos";
 import { getPortalName } from "@resources/common/functions";
 import { Portals } from "@resources/common/constants";
-import { Article } from "@resources/dtos/article.dto";
-import { Portal } from "@resources/dtos/portal.dto";
+import { RedisService } from "@utils/services";
 
 @Injectable()
 export class ApiService {
@@ -31,11 +30,11 @@ export class ApiService {
         await this.redisService.get(portal)
       ) as Article[];
       if (!articles) return null;
-      if (withContent) {
+      if (withContent == true) {
         return articles;
       } else {
         return articles.map((a) => {
-          a.content = "...";
+          a.content = "";
           return a;
         });
       }

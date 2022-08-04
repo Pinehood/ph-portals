@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import axios from "axios";
-import { ScraperService } from "@scrapers/services/scraper.service";
-import { Article } from "@resources/dtos";
+import * as cheerio from "cheerio";
 import { Portals } from "@resources/common/constants";
+import { Article } from "@resources/dtos";
 import { PortalsRoutes } from "@resources/common/routes";
 import {
   isValidArticle,
   shouldArticleBeDisplayed,
 } from "@resources/common/functions";
-import * as cheerio from "cheerio";
+import { ScraperService } from "@scrapers/services/scraper.service";
 
 @Injectable()
 export class Scrape24SataService implements ScraperService {
@@ -29,6 +29,8 @@ export class Scrape24SataService implements ScraperService {
       "https://www.24sata.hr/feeds/news.xml",
       "https://www.24sata.hr/feeds/sport.xml",
       "https://www.24sata.hr/feeds/show.xml",
+      "https://www.24sata.hr/feeds/tech.xml",
+      "https://www.24sata.hr/feeds/fun.xml",
     ];
   }
 
@@ -57,30 +59,34 @@ export class Scrape24SataService implements ScraperService {
               if (article && article.data) {
                 const articleHtml = article.data as string;
                 const $ = cheerio.load(articleHtml);
-                const title = $("h1.article__title")
-                  .text()
-                  .replace(/\n/g, "")
-                  .trim();
-                const lead = $("p.article__lead_text")
-                  .text()
-                  .replace(/\n/g, "")
-                  .trim();
-                const time = $("time.article__time")
-                  .text()
-                  .replace(/\n/g, "")
-                  .trim();
-                let author = $("span.article__authors_item")
-                  .text()
-                  .replace(/\n/g, "")
-                  .replace(/Piše/g, "")
-                  .replace(/  /g, "")
-                  .trim();
-                author = author.substring(0, author.length - 1);
-                const content = $("div.article__content")
-                  .html()
-                  .replace(/<h3>Najčitaniji članci<\/h3>/g, "")
-                  .replace(/\n/g, "")
-                  .trim();
+                let title = $("h1.article__title").text();
+                if (title) {
+                  title = title.replace(/\n/g, "").trim();
+                }
+                let lead = $("p.article__lead_text").text();
+                if (lead) {
+                  lead = lead.replace(/\n/g, "").trim();
+                }
+                let time = $("time.article__time").text();
+                if (time) {
+                  time = time.replace(/\n/g, "").trim();
+                }
+                let author = $("span.article__authors_item").text();
+                if (author) {
+                  author = author
+                    .replace(/\n/g, "")
+                    .replace(/Piše/g, "")
+                    .replace(/  /g, "")
+                    .trim();
+                  author = author.substring(0, author.length - 1);
+                }
+                let content = $("div.article__content").html();
+                if (content) {
+                  content = content
+                    .replace(/<h3>Najčitaniji članci<\/h3>/g, "")
+                    .replace(/\n/g, "")
+                    .trim();
+                }
                 articles.push({
                   ...this.defaultArticle(),
                   articleId: articleLink.substring(

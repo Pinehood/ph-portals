@@ -13,13 +13,13 @@
     "incremental": true,
     "skipLibCheck": true,
     "paths": {
-      "@root/*": ["src/*"],
       "@modules/*": ["src/modules/*"],
-      "@resources/*": ["src/modules/resources/*"],
       "@portals/*": ["src/modules/portals/*"],
+      "@resources/*": ["src/modules/resources/*"],
+      "@root/*": ["src/*"],
       "@scrapers/*": ["src/modules/scrapers/*"],
-      "@utils/*": ["src/modules/utils/*"],
-      "@tests/*": ["src/tests/*"]
+      "@tests/*": ["src/tests/*"],
+      "@utils/*": ["src/modules/utils/*"]
     }
   },
   "include": ["src/**/*"]

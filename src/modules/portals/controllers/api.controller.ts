@@ -1,6 +1,5 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { ApiService } from "@portals/services";
 import {
   ControllerTags,
   Portals,
@@ -8,8 +7,8 @@ import {
   UrlParams,
 } from "@resources/common/constants";
 import { ApiRoutes } from "@resources/common/routes";
-import { Article } from "@resources/dtos/article.dto";
-//import { Portal } from "@resources/dtos/portal.dto";
+import { Article, Portal } from "@resources/dtos";
+import { ApiService } from "@portals/services";
 
 @ApiTags(ControllerTags.API)
 @Controller(ApiRoutes.BASE)
@@ -21,7 +20,8 @@ export class ApiController {
   @ApiResponse({
     status: 200,
     description: "List of portals",
-    //type: [Portal],
+    type: Portal,
+    isArray: true,
   })
   getPortals(): any[] {
     return this.apiService.getPortals();
@@ -34,12 +34,13 @@ export class ApiController {
   @ApiResponse({
     status: 200,
     description: "List of articles",
-    type: [Article],
+    type: Article,
+    isArray: true,
   })
   getArticles(
     @Param(UrlParams.PORTAL) portal: Portals,
     @Query(QueryParams.WITH_CONTENT) withContent: boolean
-  ): Promise<Article[]> {
+  ): Promise<any[]> {
     return this.apiService.getArticles(portal, withContent);
   }
 }

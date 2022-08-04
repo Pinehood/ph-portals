@@ -1,5 +1,5 @@
-import { Portals } from "@resources/common/constants";
 import { Article } from "@resources/dtos";
+import { Portals } from "@resources/common/constants";
 
 export function getPortalsLinks(portal: Portals): string {
   try {

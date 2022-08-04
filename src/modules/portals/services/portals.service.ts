@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
+import { Article } from "@resources/dtos";
 import { RedisService } from "@utils/services/redis.service";
 import { getPortalsLinks } from "@resources/common/functions";
 import {
@@ -7,7 +8,6 @@ import {
   Portals,
   TemplateNames,
 } from "@resources/common/constants";
-import { Article } from "@resources/dtos";
 import dirname from "@resources/templates";
 import { join } from "path";
 import * as fs from "fs";
