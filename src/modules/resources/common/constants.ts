@@ -4,13 +4,14 @@ export enum CommonConstants {
   PRODUCTION_MODE = "production",
   UTF_8 = "utf-8",
   TEXT_HTML = "text/html",
+  APPLICATION_JSON = "application/json",
 }
 
 export enum SwaggerConstants {
   TITLE = "API Docs",
   DESCRIPTION = "The appropriate API documentation",
   VERSION = "1.0.0",
-  URL = "api",
+  URL = "docs",
 }
 
 export enum ElasticConstants {
@@ -26,13 +27,17 @@ export enum PinoMode {
 
 export enum ControllerTags {
   PORTALS = "portals",
+  API = "api",
 }
 
 export enum UrlParams {
   PORTAL = "portal",
+  ARTICLE_ID = "articleId",
 }
 
-export enum QueryParams {}
+export enum QueryParams {
+  WITH_CONTENT = "withContent",
+}
 
 export enum TemplateNames {
   HOME = "home.html",

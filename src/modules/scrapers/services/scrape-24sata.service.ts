@@ -1,8 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import axios from "axios";
-import { Article, Portals, PortalsRoutes } from "@modules/common";
 import { ScraperService } from "@scrapers/services/scraper.service";
+import { Article } from "@resources/dtos";
+import { Portals } from "@resources/common/constants";
+import { PortalsRoutes } from "@resources/common/routes";
+import {
+  isValidArticle,
+  shouldArticleBeDisplayed,
+} from "@resources/common/functions";
 import * as cheerio from "cheerio";
 
 @Injectable()
@@ -93,7 +99,7 @@ export class Scrape24SataService implements ScraperService {
         }
       }
       articles = articles.filter(
-        (a) => Article.isValid(a) && Article.shouldBeDisplayed(a)
+        (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
       );
       this.logger.info(
         "Scraped '%d' articles from '%s'",

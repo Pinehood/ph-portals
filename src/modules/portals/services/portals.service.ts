@@ -1,21 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { RedisService } from "@utils/services/redis.service";
+import { getPortalsLinks } from "@resources/common/functions";
 import {
-  Article,
   CommonConstants,
   Portals,
   TemplateNames,
-} from "@modules/common";
-import dirname from "@modules/resources";
+} from "@resources/common/constants";
+import { Article } from "@resources/dtos";
+import dirname from "@resources/templates";
 import { join } from "path";
 import * as fs from "fs";
 import * as Handlebars from "handlebars";
 
 @Injectable()
-export class TemplateContentService {
+export class PortalsService {
   constructor(
-    @InjectPinoLogger(TemplateContentService.name)
+    @InjectPinoLogger(PortalsService.name)
     private readonly logger: PinoLogger,
     private readonly redisService: RedisService
   ) {}
@@ -51,6 +52,26 @@ export class TemplateContentService {
           articles: finalContent,
         });
       }
+    } catch (error: any) {
+      this.logger.error(error);
+      return "";
+    }
+  }
+
+  async getArticle(portal: Portals, articleId: string): Promise<string> {
+    try {
+      const articles = JSON.parse(
+        await this.redisService.get(portal)
+      ) as Article[];
+      if (!articles) return "";
+      const article = articles.find((a) => a.articleId == articleId);
+      if (!article) return "";
+      const content = await this.getFilledPageContent(
+        portal,
+        TemplateNames.ARTICLE,
+        article
+      );
+      return content;
     } catch (error: any) {
       this.logger.error(error);
       return "";
@@ -97,7 +118,7 @@ export class TemplateContentService {
     data: any
   ): Promise<string> {
     try {
-      const links = this.getPortalsLinks(portal);
+      const links = getPortalsLinks(portal);
       const content = await this.getTemplateContent(templateName, true);
       const template = Handlebars.compile(content, {
         noEscape: true,
@@ -109,42 +130,5 @@ export class TemplateContentService {
       this.logger.error(error);
       return "";
     }
-  }
-
-  private getPortalsLinks(portal: Portals): string {
-    try {
-      const linkTemplateHtml = `<a href="/portals/@portal@" class="@active@item">@name@</a>`;
-      let linksHtml = "";
-      Object.keys(Portals).forEach((value) => {
-        let linkHtml = linkTemplateHtml
-          .replace("@portal@", Portals[value])
-          .replace("@name@", this.getPortalName(Portals[value]));
-        if (Portals[value] == portal) {
-          linkHtml = linkHtml.replace("@active@", "active ");
-        } else {
-          linkHtml = linkHtml.replace("@active@", "");
-        }
-        linksHtml += linkHtml;
-      });
-      return linksHtml;
-    } catch (error: any) {
-      this.logger.error(error);
-      return "";
-    }
-  }
-
-  private getPortalName(portal: Portals): string {
-    if (portal == Portals.HOME) return "Početna";
-    else if (portal == Portals.SATA24) return "24sata";
-    else if (portal == Portals.INDEX) return "Index";
-    else if (portal == Portals.VECERNJI) return "Večernji";
-    else if (portal == Portals.JUTARNJI) return "Jutarnji";
-    else if (portal == Portals.NET) return "Net";
-    else if (portal == Portals.DNEVNIK) return "Dnevnik";
-    else if (portal == Portals.DNEVNO) return "Dnevno";
-    else if (portal == Portals.TPORTAL) return "Tportal";
-    else if (portal == Portals.SLOBODNA_DALMACIJA) return "Slobodna Dalmacija";
-    else if (portal == Portals.SPORTSKE_NOVOSTI) return "Sportske Novosti";
-    else return "";
   }
 }

@@ -7,7 +7,7 @@ import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { LoggerModule } from "nestjs-pino";
 import { default as pinoPretty } from "pino-pretty";
 import * as pinoElasticSearch from "pino-elasticsearch";
-import { CommonConstants, ElasticConstants, PinoMode } from "@modules/common";
+import { CommonConstants, ElasticConstants, PinoMode } from "@resources/common";
 import { PortalsModule } from "@portals/portals.module";
 import { ScrapersModule } from "@scrapers/scrapers.module";
 import { UtilsModule } from "@utils/utils.module";

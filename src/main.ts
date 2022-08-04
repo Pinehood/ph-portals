@@ -7,7 +7,7 @@ import {
   CommonConstants,
   ControllerTags,
   SwaggerConstants,
-} from "@modules/common";
+} from "@resources/common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -23,6 +23,7 @@ async function bootstrap() {
       .setDescription(SwaggerConstants.DESCRIPTION)
       .setVersion(SwaggerConstants.VERSION)
       .addTag(ControllerTags.PORTALS)
+      .addTag(ControllerTags.API)
       .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(SwaggerConstants.URL, app, document);

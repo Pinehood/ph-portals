@@ -1,3 +1,3 @@
-export default function dirname(): string {
-  return __dirname;
-}
+export * from "./common";
+export * from "./dtos";
+export * from "./templates";

@@ -1,1 +1,2 @@
-export * from "./template-content.service";
+export * from "./api.service";
+export * from "./portals.service";

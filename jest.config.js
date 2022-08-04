@@ -10,7 +10,7 @@ module.exports = {
   moduleNameMapper: {
     "@root/(.*)": "<rootDir>/$1",
     "@modules/(.*)": "<rootDir>/modules/$1",
-    "@common/(.*)": "<rootDir>/modules/common/$1",
+    "@resources/(.*)": "<rootDir>/modules/resources/$1",
     "@portals/(.*)": "<rootDir>/modules/portals/$1",
     "@scrapers/(.*)": "<rootDir>/modules/scrapers/$1",
     "@utils/(.*)": "<rootDir>/modules/utils/$1",

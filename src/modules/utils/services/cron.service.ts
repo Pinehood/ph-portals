@@ -1,17 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { Cron, CronExpression, Timeout } from "@nestjs/schedule";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
-import { Portals, TemplateNames } from "@common/constants";
-import { TemplateContentService } from "@portals/services/template-content.service";
+import { Portals, TemplateNames } from "@resources/common/constants";
+import { PortalsService } from "@portals/services/portals.service";
 import { RedisService } from "@utils/services/redis.service";
-import { Scrape24SataService } from "@root/modules/scrapers/services";
+import { Scrape24SataService } from "@scrapers/services";
 
 @Injectable()
 export class CronService {
   constructor(
     @InjectPinoLogger(CronService.name) private readonly logger: PinoLogger,
     private readonly redisService: RedisService,
-    private readonly templateContentService: TemplateContentService,
+    private readonly portalsService: PortalsService,
     private readonly scrape24SataService: Scrape24SataService
   ) {}
 
@@ -34,7 +34,7 @@ export class CronService {
   private loadTemplatesContent(): void {
     try {
       Object.keys(TemplateNames).forEach(async (value) => {
-        const content = await this.templateContentService.getTemplateContent(
+        const content = await this.portalsService.getTemplateContent(
           TemplateNames[value]
         );
         await this.redisService.set(TemplateNames[value], content);

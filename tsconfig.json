@@ -15,7 +15,7 @@
     "paths": {
       "@root/*": ["src/*"],
       "@modules/*": ["src/modules/*"],
-      "@common/*": ["src/modules/common/*"],
+      "@resources/*": ["src/modules/resources/*"],
       "@portals/*": ["src/modules/portals/*"],
       "@scrapers/*": ["src/modules/scrapers/*"],
       "@utils/*": ["src/modules/utils/*"],

@@ -1,4 +1,5 @@
-import { Article } from "@modules/common";
+import { Article } from "@resources/dtos";
+
 export interface ScraperService {
   rootLinks: string[];
   name: string;
