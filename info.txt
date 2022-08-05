@@ -1,0 +1,11 @@
+With RSS:
+- Net
+- Slobodna Dalmacija
+
+Without RSS:
+- Jutarnji
+- Večernji
+- Dnevnik
+- Dnevno
+- Tportal
+- Sportske Novosti

@@ -12,26 +12,22 @@ import {
 import { ScraperService } from "@scrapers/services/scraper.service";
 
 @Injectable()
-export class Scrape24SataService implements ScraperService {
+export class ScrapeIndexService implements ScraperService {
   rootLinks: string[];
   name: string;
   link: string;
 
   constructor(
-    @InjectPinoLogger(Scrape24SataService.name)
+    @InjectPinoLogger(ScrapeIndexService.name)
     private readonly logger: PinoLogger
   ) {
-    this.name = "24sata";
-    this.link = "https://www.24sata.hr";
+    this.name = "Index";
+    this.link = "https://www.index.hr";
     this.rootLinks = [
-      "https://www.24sata.hr/feeds/aktualno.xml",
-      "https://www.24sata.hr/feeds/najnovije.xml",
-      "https://www.24sata.hr/feeds/news.xml",
-      "https://www.24sata.hr/feeds/sport.xml",
-      "https://www.24sata.hr/feeds/show.xml",
-      "https://www.24sata.hr/feeds/lifestyle.xml",
-      "https://www.24sata.hr/feeds/tech.xml",
-      "https://www.24sata.hr/feeds/fun.xml",
+      "https://www.index.hr/rss",
+      "https://www.index.hr/rss/vijesti",
+      "https://www.index.hr/rss/najcitanije",
+      "https://www.index.hr/rss/sport",
     ];
   }
 
@@ -47,10 +43,19 @@ export class Scrape24SataService implements ScraperService {
             .map((articleLink) =>
               articleLink.replace("<link>", "").replace("</link>", "")
             )
-            .filter((articleLink) => articleLink.includes("-"));
-          if (articleLinks) {
+            .filter((articleLink) => !this.rootLinks.includes(articleLink));
+          const articleLeads = (rss.data as string)
+            .match(/<description>(.*?)<\/description>/g)
+            .map((articleLead) =>
+              articleLead
+                .replace("<description>", "")
+                .replace("</description>", "")
+            )
+            .filter((articleLead) => articleLead != "Index.hr RSS Feed");
+          if (articleLinks && articleLeads) {
             for (let j = 0; j < articleLinks.length; j++) {
               const articleLink = articleLinks[j];
+              const articleLead = articleLeads[j];
               if (
                 articles.findIndex((a) => a.articleLink == articleLink) > -1
               ) {
@@ -60,42 +65,43 @@ export class Scrape24SataService implements ScraperService {
               if (article && article.data) {
                 const articleHtml = article.data as string;
                 const $ = cheerio.load(articleHtml);
+                $("div.js-slot-container").remove();
+                $("div.brid").remove();
                 $("img").remove();
                 $("iframe").remove();
-                let title = $("h1.article__title").text();
+                let title = $("h1.title").text();
                 if (title) {
                   title = title.replace(/\n/g, "").trim();
                 }
-                let lead = $("p.article__lead_text").text();
+                let lead = articleLead;
                 if (lead) {
                   lead = lead.replace(/\n/g, "").trim();
                 }
-                let time = $("time.article__time").text();
+                let time = $("span.time.sport-text").text();
                 if (time) {
                   time = time.replace(/\n/g, "").trim();
                 } else {
                   time = "nedostupno";
                 }
-                let author = $("span.article__authors_item").text();
+                let author = $("span.author").text();
                 if (author) {
-                  author = author
-                    .replace(/\n/g, "")
-                    .replace(/Piše/g, "")
-                    .replace(/  /g, "")
-                    .trim();
-                  author = author.substring(0, author.length - 1);
+                  author = author.replace(/\n/g, "").replace(/  /g, "").trim();
                 }
-                let content = $("div.article__content").html();
+                let content = $("div.text").html();
                 if (content) {
                   content = content
-                    .replace(/<h3>Najčitaniji članci<\/h3>/g, "")
+                    .replace(
+                      /Znate li nešto više o temi ili želite prijaviti grešku u tekstu\?/g,
+                      ""
+                    )
+                    .replace(/USKORO OPŠIRNIJE/g, "")
                     .replace(/\n/g, "")
                     .trim();
                 }
                 articles.push({
                   ...this.defaultArticle(),
                   articleId: articleLink.substring(
-                    articleLink.lastIndexOf("-") + 1
+                    articleLink.lastIndexOf("/") + 1
                   ),
                   articleLink,
                   author,
@@ -128,12 +134,12 @@ export class Scrape24SataService implements ScraperService {
       articleId: "",
       articleLink: "",
       author: "",
-      backLink: `${PortalsRoutes.BASE}/${Portals.SATA24}`,
+      backLink: `${PortalsRoutes.BASE}/${Portals.INDEX}`,
       content: "",
       lead: "",
       portalLink: this.link,
       portalName: this.name,
-      portalType: Portals.SATA24,
+      portalType: Portals.INDEX,
       time: "",
       title: "",
     };

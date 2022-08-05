@@ -42,10 +42,8 @@ export function isValidArticle(article: Article): boolean {
   try {
     return (
       article.title.length > 0 &&
-      article.lead.length > 0 &&
       article.content.length > 0 &&
-      article.author.length > 0 &&
-      article.time.length > 0
+      article.author.length > 0
     );
   } catch {
     return false;
@@ -66,20 +64,22 @@ export function shouldArticleBeDisplayed(article: Article): boolean {
         }
 
         if (
-          article.author.toLowerCase().includes("promo") ||
-          article.author.toLowerCase().includes("sponzor") ||
-          article.author.toLowerCase().includes("plaćeni") ||
-          article.author.toLowerCase().includes("oglas")
+          article.author &&
+          (article.author.toLowerCase().includes("promo") ||
+            article.author.toLowerCase().includes("sponzor") ||
+            article.author.toLowerCase().includes("plaćeni") ||
+            article.author.toLowerCase().includes("oglas"))
         ) {
           return false;
         }
 
         if (
-          article.content
+          article.content &&
+          (article.content
             .toLowerCase()
             .includes("pravila korištenja osobnih podataka") ||
-          article.content.toLowerCase().includes("pravila privatnosti") ||
-          article.content.toLowerCase().includes("prijavi se")
+            article.content.toLowerCase().includes("pravila privatnosti") ||
+            article.content.toLowerCase().includes("prijavi se"))
         ) {
           return false;
         }
@@ -88,8 +88,9 @@ export function shouldArticleBeDisplayed(article: Article): boolean {
 
       case Portals.JUTARNJI: {
         if (
-          article.articleId.toLowerCase().includes("https:--") ||
-          article.articleId.toLowerCase().includes("-vijesti-zagreb")
+          article.articleId &&
+          (article.articleId.toLowerCase().includes("https:--") ||
+            article.articleId.toLowerCase().includes("-vijesti-zagreb"))
         ) {
           return false;
         }
@@ -97,14 +98,20 @@ export function shouldArticleBeDisplayed(article: Article): boolean {
       }
 
       case Portals.VECERNJI: {
-        if (article.author.toLowerCase().includes("pr članak")) {
+        if (
+          article.author &&
+          article.author.toLowerCase().includes("pr članak")
+        ) {
           return false;
         }
         break;
       }
 
       case Portals.NET: {
-        if (article.articleId.toLowerCase().includes("https:")) {
+        if (
+          article.articleId &&
+          article.articleId.toLowerCase().includes("https:")
+        ) {
           return false;
         }
         break;
