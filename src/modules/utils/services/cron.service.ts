@@ -1,10 +1,26 @@
 import { Injectable } from "@nestjs/common";
 import { Cron, CronExpression, Timeout } from "@nestjs/schedule";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
-import { Portals, TemplateNames } from "@resources/common/constants";
+import {
+  Portals,
+  ResponseConstants,
+  TemplateNames,
+} from "@resources/common/constants";
 import { PortalsService } from "@portals/services/portals.service";
 import { RedisService } from "@utils/services/redis.service";
-import { Scrape24SataService, ScrapeIndexService } from "@scrapers/services";
+import {
+  Scrape24SataService,
+  ScrapeDnevnikService,
+  ScrapeDnevnoService,
+  ScrapeIndexService,
+  ScrapeJutarnjiService,
+  ScrapeNetService,
+  ScraperService,
+  ScrapeSlobodnaDalmacijaService,
+  ScrapeSportskeNovostiService,
+  ScrapeTportalService,
+  ScrapeVecernjiService,
+} from "@scrapers/services";
 
 @Injectable()
 export class CronService {
@@ -13,7 +29,15 @@ export class CronService {
     private readonly redisService: RedisService,
     private readonly portalsService: PortalsService,
     private readonly scrape24SataService: Scrape24SataService,
-    private readonly scrapeIndexService: ScrapeIndexService
+    private readonly scrapeDnevnikService: ScrapeDnevnikService,
+    private readonly scrapeDnevnoService: ScrapeDnevnoService,
+    private readonly scrapeIndexService: ScrapeIndexService,
+    private readonly scrapeJutarnjiService: ScrapeJutarnjiService,
+    private readonly scrapeNetService: ScrapeNetService,
+    private readonly scrapeSlobodnaDalmacijaService: ScrapeSlobodnaDalmacijaService,
+    private readonly scrapeSportskeNovostiService: ScrapeSportskeNovostiService,
+    private readonly scrapeTportalService: ScrapeTportalService,
+    private readonly scrapeVecernjiService: ScrapeVecernjiService
   ) {}
 
   @Timeout(2000)
@@ -25,11 +49,20 @@ export class CronService {
   @Cron(CronExpression.EVERY_HOUR)
   private async scrapeData(): Promise<void> {
     try {
-      const articles24h = await this.scrape24SataService.scrape();
-      const articlesIndex = await this.scrapeIndexService.scrape();
-
-      await this.redisService.set(Portals.SATA24, JSON.stringify(articles24h));
-      await this.redisService.set(Portals.INDEX, JSON.stringify(articlesIndex));
+      const portalPage = await this.portalsService.getPage(Portals.HOME);
+      await this.redisService.set(Portals.HOME + "page", portalPage);
+      await Promise.all([
+        this.cachePortalAndArticles(this.scrape24SataService),
+        this.cachePortalAndArticles(this.scrapeDnevnikService),
+        this.cachePortalAndArticles(this.scrapeDnevnoService),
+        this.cachePortalAndArticles(this.scrapeIndexService),
+        this.cachePortalAndArticles(this.scrapeJutarnjiService),
+        this.cachePortalAndArticles(this.scrapeNetService),
+        this.cachePortalAndArticles(this.scrapeSlobodnaDalmacijaService),
+        this.cachePortalAndArticles(this.scrapeSportskeNovostiService),
+        this.cachePortalAndArticles(this.scrapeTportalService),
+        this.cachePortalAndArticles(this.scrapeVecernjiService),
+      ]);
     } catch (error: any) {
       this.logger.error(error);
     }
@@ -44,6 +77,33 @@ export class CronService {
         await this.redisService.set(TemplateNames[value], content);
       });
       this.logger.info("Preloaded all templates' HTML content");
+    } catch (error: any) {
+      this.logger.error(error);
+    }
+  }
+
+  private async cachePortalAndArticles(service: ScraperService): Promise<void> {
+    try {
+      const articles = await service.scrape();
+      for (let i = 0; i < articles.length; i++) {
+        articles[i].html = await this.portalsService.getFilledPageContent(
+          service.type,
+          TemplateNames.ARTICLE,
+          articles[i]
+        );
+      }
+      await this.redisService.set(service.type, JSON.stringify(articles));
+      const portalPage =
+        articles && articles.length > 0
+          ? await this.portalsService.getPage(service.type)
+          : await this.portalsService.getFilledPageContent(
+              service.type,
+              TemplateNames.PORTAL,
+              {
+                articles: ResponseConstants.NO_ARTICLES,
+              }
+            );
+      await this.redisService.set(service.type + "page", portalPage);
     } catch (error: any) {
       this.logger.error(error);
     }

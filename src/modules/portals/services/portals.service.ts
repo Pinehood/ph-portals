@@ -2,10 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { Article } from "@resources/dtos";
 import { RedisService } from "@utils/services/redis.service";
-import { getPortalsLinks } from "@resources/common/functions";
+import { getPortalsLinks, redirect } from "@resources/common/functions";
 import {
   CommonConstants,
   Portals,
+  ResponseConstants,
   TemplateNames,
 } from "@resources/common/constants";
 import dirname from "@resources/templates";
@@ -20,6 +21,35 @@ export class PortalsService {
     private readonly logger: PinoLogger,
     private readonly redisService: RedisService
   ) {}
+
+  async getCachedPage(portal: Portals): Promise<string> {
+    try {
+      const page = await this.redisService.get(portal + "page");
+      if (page) {
+        return page;
+      } else {
+        return redirect(portal);
+      }
+    } catch (error: any) {
+      this.logger.error(error);
+      return redirect(portal);
+    }
+  }
+
+  async getCachedArticle(portal: Portals, articleId: string): Promise<string> {
+    try {
+      const articles = JSON.parse(
+        await this.redisService.get(portal)
+      ) as Article[];
+      if (!articles) return "";
+      const article = articles.find((a) => a.articleId == articleId);
+      if (!article) return "";
+      return article.html;
+    } catch (error: any) {
+      this.logger.error(error);
+      return redirect(portal);
+    }
+  }
 
   async getPage(portal: Portals): Promise<string> {
     try {
@@ -39,7 +69,7 @@ export class PortalsService {
         );
         if (!articles || !templateContent) {
           return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
-            articles: "<p>Nema članaka za prikaz.</p>",
+            articles: ResponseConstants.NO_ARTICLES,
           });
         }
         let finalContent = "";
@@ -54,7 +84,7 @@ export class PortalsService {
       }
     } catch (error: any) {
       this.logger.error(error);
-      return "";
+      return redirect(portal);
     }
   }
 
@@ -74,7 +104,7 @@ export class PortalsService {
       return content;
     } catch (error: any) {
       this.logger.error(error);
-      return "";
+      return redirect(portal);
     }
   }
 
@@ -98,7 +128,7 @@ export class PortalsService {
     }
   }
 
-  private async fillPageContent(content: string, data: any): Promise<string> {
+  async fillPageContent(content: string, data: any): Promise<string> {
     try {
       const template = Handlebars.compile(content, {
         noEscape: true,
@@ -112,7 +142,7 @@ export class PortalsService {
     }
   }
 
-  private async getFilledPageContent(
+  async getFilledPageContent(
     portal: Portals,
     templateName: TemplateNames,
     data: any

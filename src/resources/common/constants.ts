@@ -20,6 +20,11 @@ export enum ElasticConstants {
   FLUSH_BYTES = 1024,
 }
 
+export enum ResponseConstants {
+  REDIRECT = '<!DOCTYPE html><html><head><meta http-equiv="Refresh" content="0; url=@redurl@"/></head><body></body></html>',
+  NO_ARTICLES = '<h4 style="text-align: center">Nema članaka za prikaz.</h4>',
+}
+
 export enum PinoMode {
   LOCAL = "local",
   ELASTIC = "elastic",

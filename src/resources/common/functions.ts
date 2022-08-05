@@ -1,5 +1,7 @@
 import { Article } from "@resources/dtos";
 import { Portals } from "@resources/common/constants";
+import { PortalsRoutes } from "@resources/common/routes";
+import { ResponseConstants } from ".";
 
 export function getPortalsLinks(portal: Portals): string {
   try {
@@ -129,4 +131,36 @@ export function shouldArticleBeDisplayed(article: Article): boolean {
   } catch {
     return false;
   }
+}
+
+export function redirect(portal: Portals): string {
+  try {
+    return ResponseConstants.REDIRECT.replace(
+      "@redurl@",
+      `${PortalsRoutes.BASE}/${portal}`
+    );
+  } catch {
+    return `${PortalsRoutes.BASE}/home`;
+  }
+}
+
+export function getDefaultArticle(
+  type: Portals,
+  link: string,
+  name: string
+): Article {
+  return {
+    articleId: "",
+    articleLink: "",
+    author: "",
+    backLink: `${PortalsRoutes.BASE}/${type}`,
+    content: "",
+    lead: "",
+    portalLink: link,
+    portalName: name,
+    portalType: type,
+    time: "",
+    title: "",
+    html: "",
+  };
 }

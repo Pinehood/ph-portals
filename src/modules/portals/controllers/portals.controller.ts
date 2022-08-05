@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from "@nestjs/common";
 import {
   ApiOperation,
+  ApiParam,
   ApiProduces,
   ApiResponse,
   ApiTags,
@@ -22,17 +23,27 @@ export class PortalsController {
   @Get(PortalsRoutes.PORTAL)
   @ApiProduces(CommonConstants.TEXT_HTML)
   @ApiOperation({ summary: "Fetch portal's page content with article list" })
+  @ApiParam({
+    name: UrlParams.PORTAL,
+    enum: Portals,
+    required: true,
+  })
   @ApiResponse({
     status: 200,
     description: "Portal page content",
   })
   getPage(@Param(UrlParams.PORTAL) portal: Portals): Promise<string> {
-    return this.portalsService.getPage(portal);
+    return this.portalsService.getCachedPage(portal);
   }
 
   @Get(PortalsRoutes.ARTICLE)
   @ApiProduces(CommonConstants.TEXT_HTML)
   @ApiOperation({ summary: "Fetch article's page content" })
+  @ApiParam({
+    name: UrlParams.PORTAL,
+    enum: Portals,
+    required: true,
+  })
   @ApiResponse({
     status: 200,
     description: "Article page content",
@@ -41,6 +52,6 @@ export class PortalsController {
     @Param(UrlParams.PORTAL) portal: Portals,
     @Param(UrlParams.ARTICLE_ID) articleId: string
   ): Promise<string> {
-    return this.portalsService.getArticle(portal, articleId);
+    return this.portalsService.getCachedArticle(portal, articleId);
   }
 }

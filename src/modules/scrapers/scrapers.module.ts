@@ -1,6 +1,17 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { Scrape24SataService, ScrapeIndexService } from "@scrapers/services";
+import {
+  Scrape24SataService,
+  ScrapeDnevnikService,
+  ScrapeDnevnoService,
+  ScrapeIndexService,
+  ScrapeJutarnjiService,
+  ScrapeNetService,
+  ScrapeSlobodnaDalmacijaService,
+  ScrapeSportskeNovostiService,
+  ScrapeTportalService,
+  ScrapeVecernjiService,
+} from "@scrapers/services";
 import { UtilsModule } from "@utils/utils.module";
 import { PortalsModule } from "@portals/portals.module";
 
@@ -10,7 +21,29 @@ import { PortalsModule } from "@portals/portals.module";
     forwardRef(() => UtilsModule),
     forwardRef(() => PortalsModule),
   ],
-  providers: [Scrape24SataService, ScrapeIndexService],
-  exports: [Scrape24SataService, ScrapeIndexService],
+  providers: [
+    Scrape24SataService,
+    ScrapeDnevnikService,
+    ScrapeDnevnoService,
+    ScrapeIndexService,
+    ScrapeJutarnjiService,
+    ScrapeNetService,
+    ScrapeSlobodnaDalmacijaService,
+    ScrapeSportskeNovostiService,
+    ScrapeTportalService,
+    ScrapeVecernjiService,
+  ],
+  exports: [
+    Scrape24SataService,
+    ScrapeDnevnikService,
+    ScrapeDnevnoService,
+    ScrapeIndexService,
+    ScrapeJutarnjiService,
+    ScrapeNetService,
+    ScrapeSlobodnaDalmacijaService,
+    ScrapeSportskeNovostiService,
+    ScrapeTportalService,
+    ScrapeVecernjiService,
+  ],
 })
 export class ScrapersModule {}

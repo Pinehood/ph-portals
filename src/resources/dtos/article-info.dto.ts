@@ -1,8 +1,6 @@
-export class Article {
-  portalType: string;
+export class ArticleInfo {
   portalName: string;
   portalLink: string;
-  backLink: string;
   articleId: string;
   articleLink: string;
   title: string;
