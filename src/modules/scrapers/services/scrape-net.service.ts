@@ -33,7 +33,6 @@ export class ScrapeNetService implements ScraperService {
       "https://net.hr/feed/sport",
       "https://net.hr/feed/hot",
       "https://net.hr/feed/magazin",
-      "https://net.hr/feed/webcaffe",
     ]; //RSS
   }
 
@@ -65,8 +64,38 @@ export class ScrapeNetService implements ScraperService {
                   const $ = cheerio.load(artcileString);
                   $("img").remove();
                   $("iframe").remove();
+                  $("article.article-body div").remove();
                   let title = $("h1.title").text();
-                  console.log(title);
+                  if (title) {
+                    title = title.replace(/\n/g, "").trim();
+                  }
+                  let articleLead = $("article.articleHead_lead p").text();
+                  if (articleLead) {
+                    articleLead = articleLead.replace(/\n/g, "").trim();
+                  }
+                  let date_time = $("div.metaItem_title").text();
+                  if (date_time) {
+                    date_time = date_time.split(/[a-z]/gi)[0]
+                      ? date_time.split(/[a-z]/gi)[0]
+                      : "Nedostupno";
+                  }
+                  let author = "Nedostupno";
+                  let articleBody = $("article.article-body p").text();
+                  if (articleBody) {
+                    articleBody = articleBody.replace(/\n/g, "").trim();
+                  }
+
+                  /* let articleSubtitles = $("article.article-body h2").text();
+                  if (articleSubtitles) {
+                    let test = articleSubtitles.split(/(?=[A-Z])/);
+                    console.log(test);
+                  } */
+
+                  /* TO DO Ubacit svaki u articles array , daj mi povratno sam jel mi fali koji prop
+                   artikala body je tvoj content
+                   mogu uhvatit sve podnaslove al ih nemrem razdvojit jedinstveno za svaki clanak jer svi imaju iste klase (Kod iznad zakomentiran).  
+
+                  */
                 }
               } catch (innerError: any) {
                 this.logger.error(innerError);
