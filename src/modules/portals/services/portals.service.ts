@@ -2,7 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { Article } from "@resources/dtos";
 import { RedisService } from "@utils/services/redis.service";
-import { getPortalsLinks, redirect } from "@resources/common/functions";
+import {
+  getPortalName,
+  getPortalsLinks,
+  redirect,
+} from "@resources/common/functions";
 import {
   CommonConstants,
   Portals,
@@ -32,7 +36,7 @@ export class PortalsService {
       }
     } catch (error: any) {
       this.logger.error(error);
-      return redirect(portal);
+      return redirect(Portals.HOME);
     }
   }
 
@@ -70,6 +74,7 @@ export class PortalsService {
         if (!articles || !templateContent) {
           return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
             articles: ResponseConstants.NO_ARTICLES,
+            title: `Portali - ${getPortalName(portal)}`,
           });
         }
         let finalContent = "";
@@ -80,11 +85,12 @@ export class PortalsService {
         }
         return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
           articles: finalContent,
+          title: `Portali - ${getPortalName(portal)}`,
         });
       }
     } catch (error: any) {
       this.logger.error(error);
-      return redirect(portal);
+      return redirect(Portals.HOME);
     }
   }
 

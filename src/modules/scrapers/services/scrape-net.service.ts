@@ -26,14 +26,16 @@ export class ScrapeNetService implements ScraperService {
   ) {
     this.type = Portals.NET;
     this.name = getPortalName(this.type);
-    this.link = "https://www.Net.hr";
+    this.link = "https://www.net.hr";
     this.default = getDefaultArticle(this.type, this.link, this.name);
     this.roots = [
+      "https://net.hr/feed",
       "https://net.hr/feed/danas",
       "https://net.hr/feed/sport",
       "https://net.hr/feed/hot",
       "https://net.hr/feed/magazin",
-    ]; //RSS
+      "https://net.hr/feed/webcafe",
+    ];
   }
 
   async scrape(): Promise<Article[]> {
@@ -48,54 +50,65 @@ export class ScrapeNetService implements ScraperService {
             .map((articleLink) =>
               articleLink.replace("<link>", "").replace("</link>", "")
             )
-            .filter((articleLink) => articleLink != "https://net.hr");
+            .filter(
+              (articleLink) =>
+                articleLink != "https://net.hr" &&
+                articleLink != this.link &&
+                !this.roots.includes(articleLink)
+            );
           if (articleLinks) {
             for (let j = 0; j < articleLinks.length; j++) {
               const articleLink = articleLinks[j];
               if (
-                articles.findIndex((a) => (a.articleLink = articleLink)) > -1
+                articles.findIndex((a) => a.articleLink == articleLink) > -1
               ) {
                 continue;
               }
               try {
                 const article = await axios.get(articleLink);
                 if (article && article.data) {
-                  const artcileString = article.data as string;
-                  const $ = cheerio.load(artcileString);
+                  const articleHtml = article.data as string;
+                  const $ = cheerio.load(articleHtml);
                   $("img").remove();
                   $("iframe").remove();
-                  $("article.article-body div").remove();
-                  let title = $("h1.title").text();
+                  $("div.Image-noPlaceholder").remove();
+                  $("div.css-86pgy2").remove();
+                  $('div[id="mobileScaleDown"]').remove();
+                  $('div[id="desktopScaleDown"]').remove();
+                  let title = $("span.title_title").text();
                   if (title) {
                     title = title.replace(/\n/g, "").trim();
                   }
-                  let articleLead = $("article.articleHead_lead p").text();
-                  if (articleLead) {
-                    articleLead = articleLead.replace(/\n/g, "").trim();
+                  let lead = $("span.title_subtitle").text();
+                  if (lead) {
+                    lead = lead.replace(/\n/g, "").replace(" /", "").trim();
                   }
-                  let date_time = $("div.metaItem_title").text();
-                  if (date_time) {
-                    date_time = date_time.split(/[a-z]/gi)[0]
-                      ? date_time.split(/[a-z]/gi)[0]
-                      : "Nedostupno";
+                  let time = $("div.metaItem_title").text();
+                  if (time) {
+                    time = time.split(/[a-z]/gi)[0]
+                      ? time.split(/[a-z]/gi)[0]
+                      : "nedostupno";
                   }
-                  let author = "Nedostupno";
-                  let articleBody = $("article.article-body p").text();
-                  if (articleBody) {
-                    articleBody = articleBody.replace(/\n/g, "").trim();
+                  let author = $('div[id="meta_author"]').text();
+                  if (author) {
+                    lead = lead.replace(/\n/g, "").trim();
                   }
-
-                  /* let articleSubtitles = $("article.article-body h2").text();
-                  if (articleSubtitles) {
-                    let test = articleSubtitles.split(/(?=[A-Z])/);
-                    console.log(test);
-                  } */
-
-                  /* TO DO Ubacit svaki u articles array , daj mi povratno sam jel mi fali koji prop
-                   artikala body je tvoj content
-                   mogu uhvatit sve podnaslove al ih nemrem razdvojit jedinstveno za svaki clanak jer svi imaju iste klase (Kod iznad zakomentiran).  
-
-                  */
+                  let content = $("article.article-body").html();
+                  if (content) {
+                    content = content.replace(/\n/g, "").trim();
+                  }
+                  articles.push({
+                    ...this.default,
+                    articleId: articleLink.substring(
+                      articleLink.lastIndexOf("-") + 1
+                    ),
+                    articleLink,
+                    author,
+                    content,
+                    lead,
+                    time,
+                    title,
+                  });
                 }
               } catch (innerError: any) {
                 this.logger.error(innerError);

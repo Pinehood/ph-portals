@@ -21,6 +21,7 @@ import {
   ScrapeTportalService,
   ScrapeVecernjiService,
 } from "@scrapers/services";
+import { getPortalName } from "@resources/common";
 
 @Injectable()
 export class CronService {
@@ -101,6 +102,7 @@ export class CronService {
               TemplateNames.PORTAL,
               {
                 articles: ResponseConstants.NO_ARTICLES,
+                title: `Portali - ${getPortalName(service.type)}`,
               }
             );
       await this.redisService.set(service.type + "page", portalPage);
