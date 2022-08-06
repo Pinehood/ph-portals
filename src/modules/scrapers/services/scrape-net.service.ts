@@ -91,7 +91,10 @@ export class ScrapeNetService implements ScraperService {
                   }
                   let author = $('div[id="meta_author"]').text();
                   if (author) {
-                    lead = lead.replace(/\n/g, "").trim();
+                    author = author
+                      .replace(/\n/g, "")
+                      .replace(/\//g, ",")
+                      .trim();
                   }
                   let content = $("article.article-body").html();
                   if (content) {
