@@ -98,7 +98,19 @@ export class ScrapeDnevnikService implements ScraperService {
             });
           }
         } catch (innerError: any) {
-          this.logger.error(innerError);
+          if (
+            innerError.response &&
+            innerError.response.status &&
+            innerError.response.status >= 400
+          ) {
+            this.logger.error(
+              "Failed to retrieve data for article '%s' with status code '%d'",
+              articleLink,
+              innerError.response.status
+            );
+          } else {
+            this.logger.error(innerError);
+          }
         }
       }
     }

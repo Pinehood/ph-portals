@@ -1,0 +1,13 @@
+Home page potential additions:
+- Add "lastRefreshedOn"
+- Add "sumTotalScrapingTime"
+- Add "sumTotalScrapedArticles"
+- Add "totalScrapingTime" for every portal
+- Add "totalScrapedArticles" for every portal
+
+Scrape/support rest of the non-RSS portals:
+- Dnevno
+- Jutarnji
+- Sportske Novosti
+- Tportal
+- Večernji

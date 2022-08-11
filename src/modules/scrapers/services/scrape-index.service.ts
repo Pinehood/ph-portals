@@ -38,7 +38,6 @@ export class ScrapeIndexService implements ScraperService {
 
   async scrape(): Promise<Article[]> {
     let articles: Article[] = [];
-
     for (let i = 0; i < this.roots.length; i++) {
       const rootLink = this.roots[i];
       try {
@@ -120,13 +119,37 @@ export class ScrapeIndexService implements ScraperService {
                   });
                 }
               } catch (innerError: any) {
-                this.logger.error(innerError);
+                if (
+                  innerError.response &&
+                  innerError.response.status &&
+                  innerError.response.status >= 400
+                ) {
+                  this.logger.error(
+                    "Failed to retrieve data for article '%s' with status code '%d'",
+                    articleLink,
+                    innerError.response.status
+                  );
+                } else {
+                  this.logger.error(innerError);
+                }
               }
             }
           }
         }
       } catch (error: any) {
-        this.logger.error(error);
+        if (
+          error.response &&
+          error.response.status &&
+          error.response.status >= 400
+        ) {
+          this.logger.error(
+            "Failed to retrieve data for root '%s' with status code '%d'",
+            rootLink,
+            error.response.status
+          );
+        } else {
+          this.logger.error(error);
+        }
       }
     }
     articles = articles.filter(
