@@ -35,43 +35,48 @@ export class ScrapeSportskeNovostiService implements ScraperService {
       "https://sportske.jutarnji.hr/sn/nogomet/le-championnat",
       "https://sportske.jutarnji.hr/sn/nogomet/primera",
       "https://sportske.jutarnji.hr/sn/nogomet/reprezentacija/",
-    ]; //Non-RSS
-
-    // Pattern za linkove na stranice koje sadrze linkove na clanke  https://sportske.jutranji.hr/sn/sport/liga    ==> [https://sportske.jutarnji.hr/sn/nogomet/bundesliga/  ,https://sportske.jutarnji.hr/sn/kosarka/aba-liga, tak i za druge],
+    ];
   }
-  //Dohvation linkove na clanke
+
   async scrape(): Promise<Article[]> {
     let articles: Article[] = [];
-    try {
-      for (var i = 0; i < this.roots.length; i++) {
-        try {
-          let articleLinks = [];
-          let articleData = await axios.get(this.roots[i]);
-          if (articleData && articleData.data) {
-            let data = articleData.data as string;
-            let $ = cheerio.load(data);
-            $("image").remove();
-            $("iframe").remove();
-            /*   let article = $("a.card_article-link").attr("href");
-            console.log(article); */
-            let links = $("main a[class=card__article-link]").each(
-              (index, el) => {
-                let articleLink = $(el).attr("href");
-                if (articleLinks.findIndex((el) => el == articleLink) == -1) {
-                  articleLinks.push(articleLink);
-                }
-              }
-            );
-          }
-          console.log(articleLinks);
-        } catch (innerError: any) {
-          console.log(innerError);
+    for (let i = 0; i < this.roots.length; i++) {
+      const rootLink = this.roots[i];
+      try {
+        const articleLinks = [];
+        const articleData = await axios.get(rootLink);
+        if (articleData && articleData.data) {
+          const data = articleData.data as string;
+          const $ = cheerio.load(data);
+          $("image").remove();
+          $("iframe").remove();
+          $("main a[class=card__article-link]").each((_index, el) => {
+            const articleLink = $(el).attr("href");
+            if (articleLinks.findIndex((el) => el == articleLink) == -1) {
+              articleLinks.push(articleLink);
+            }
+          });
+        }
+        console.log(articleLinks);
+      } catch (error: any) {
+        if (
+          error.response &&
+          error.response.status &&
+          error.response.status >= 400
+        ) {
+          this.logger.error(
+            "Failed to retrieve data for root '%s' with status code '%d'",
+            rootLink,
+            error.response.status
+          );
+        } else {
+          this.logger.error(error);
         }
       }
-    } catch (error) {}
-    let $ = (articles = articles.filter(
+    }
+    articles = articles.filter(
       (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
-    ));
+    );
     this.logger.info(
       "Scraped '%d' articles from '%s'",
       articles.length,
