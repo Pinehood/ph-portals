@@ -3,6 +3,7 @@ import { Cron, CronExpression, Timeout } from "@nestjs/schedule";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import {
   Portals,
+  RedisStatsKeys,
   ResponseConstants,
   TemplateNames,
 } from "@resources/common/constants";
@@ -85,6 +86,7 @@ export class CronService {
 
   private async cachePortalAndArticles(service: ScraperService): Promise<void> {
     try {
+      const start = Date.now();
       const articles = await service.scrape();
       for (let i = 0; i < articles.length; i++) {
         articles[i].html = await this.portalsService.getFilledPageContent(
@@ -93,6 +95,20 @@ export class CronService {
           articles[i]
         );
       }
+      const end = Date.now();
+      const duration = end - start;
+      await this.redisService.set(
+        RedisStatsKeys.LAST_REFRESHED_ON_PREFIX + service.type,
+        Date.now()
+      );
+      await this.redisService.set(
+        RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + service.type,
+        articles.length
+      );
+      await this.redisService.set(
+        RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX + service.type,
+        duration
+      );
       await this.redisService.set(service.type, JSON.stringify(articles));
       const portalPage =
         articles && articles.length > 0
@@ -102,6 +118,7 @@ export class CronService {
               TemplateNames.PORTAL,
               {
                 articles: ResponseConstants.NO_ARTICLES,
+                stats: ResponseConstants.NO_STATS,
                 title: `Portali - ${getPortalName(service.type)}`,
               }
             );

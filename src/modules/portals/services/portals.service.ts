@@ -3,13 +3,16 @@ import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { Article } from "@resources/dtos";
 import { RedisService } from "@utils/services/redis.service";
 import {
+  formatDate,
   getPortalName,
   getPortalsLinks,
+  millisToMinutesAndSeconds,
   redirect,
 } from "@resources/common/functions";
 import {
   CommonConstants,
   Portals,
+  RedisStatsKeys,
   ResponseConstants,
   TemplateNames,
 } from "@resources/common/constants";
@@ -74,6 +77,7 @@ export class PortalsService {
         if (!articles || !templateContent) {
           return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
             articles: ResponseConstants.NO_ARTICLES,
+            stats: ResponseConstants.NO_STATS,
             title: `Portali - ${getPortalName(portal)}`,
           });
         }
@@ -83,8 +87,29 @@ export class PortalsService {
           const content = await this.fillPageContent(templateContent, article);
           finalContent += content;
         }
+        const duration = parseInt(
+          await this.redisService.get(
+            RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX + portal
+          )
+        );
+        const lastDate = parseInt(
+          await this.redisService.get(
+            RedisStatsKeys.LAST_REFRESHED_ON_PREFIX + portal
+          )
+        );
+        const numArticles = parseInt(
+          await this.redisService.get(
+            RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + portal
+          )
+        );
+        const stats = `Ukupan broj članaka: <strong>${numArticles}</strong> | Ukupno vrijeme obrade: <strong>${millisToMinutesAndSeconds(
+          duration
+        )}</strong>  | Zadnji puta osvježeno: <strong>${formatDate(
+          new Date(lastDate)
+        )}</strong> `;
         return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
           articles: finalContent,
+          stats,
           title: `Portali - ${getPortalName(portal)}`,
         });
       }

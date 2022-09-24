@@ -144,6 +144,30 @@ export function redirect(portal: Portals): string {
   }
 }
 
+export function formatDate(date: Date): string {
+  return (
+    ("0" + date.getUTCDate()).slice(-2) +
+    "." +
+    ("0" + (date.getUTCMonth() + 1)).slice(-2) +
+    "." +
+    date.getUTCFullYear() +
+    "." +
+    ("0" + date.getUTCHours()).slice(-2) +
+    ":" +
+    ("0" + date.getUTCMinutes()).slice(-2) +
+    ":" +
+    ("0" + date.getUTCSeconds()).slice(-2)
+  );
+}
+
+export function millisToMinutesAndSeconds(millis: number) {
+  const minutes = Math.floor(millis / 60000);
+  const seconds = parseInt(((millis % 60000) / 1000).toFixed(0));
+  return seconds == 60
+    ? minutes + 1 + ":00"
+    : minutes + "m" + (seconds < 10 ? "0" : "") + seconds + "s";
+}
+
 export function getDefaultArticle(
   type: Portals,
   link: string,

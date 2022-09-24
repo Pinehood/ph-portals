@@ -23,6 +23,7 @@ export enum ElasticConstants {
 export enum ResponseConstants {
   REDIRECT = '<!DOCTYPE html><html><head><meta http-equiv="Refresh" content="0; url=@redurl@"/></head><body></body></html>',
   NO_ARTICLES = '<h4 style="text-align: center">Nema članaka za prikaz.</h4>',
+  NO_STATS = "Statistika nedostupna.",
 }
 
 export enum PinoMode {
@@ -63,4 +64,10 @@ export enum Portals {
   TPORTAL = "tportal",
   SLOBODNA_DALMACIJA = "sd",
   SPORTSKE_NOVOSTI = "sn",
+}
+
+export enum RedisStatsKeys {
+  LAST_REFRESHED_ON_PREFIX = "last_refreshed_on_",
+  TOTAL_SCRAPING_TIME_PREFIX = "total_scraping_time_",
+  TOTAL_SCRAPED_ARTICLES_PREFIX = "total_scraped_articles_",
 }
