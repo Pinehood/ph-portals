@@ -89,31 +89,10 @@ export function shouldArticleBeDisplayed(article: Article): boolean {
         break;
       }
 
-      case Portals.JUTARNJI: {
-        if (
-          article.articleId &&
-          (article.articleId.toLowerCase().includes("https:--") ||
-            article.articleId.toLowerCase().includes("-vijesti-zagreb"))
-        ) {
-          return false;
-        }
-        break;
-      }
-
       case Portals.VECERNJI: {
         if (
           article.author &&
           article.author.toLowerCase().includes("pr članak")
-        ) {
-          return false;
-        }
-        break;
-      }
-
-      case Portals.NET: {
-        if (
-          article.articleId &&
-          article.articleId.toLowerCase().includes("https:")
         ) {
           return false;
         }
@@ -203,13 +182,13 @@ export async function TryCatch(
       error.response.status &&
       error.response.status >= 400
     ) {
-      logger.error(
+      logger.warn(
         "Failed to retrieve data for link '%s' with status code '%d'",
         link,
         error.response.status
       );
     } else {
-      logger.error("Failed to retrieve data for link '%s'", link);
+      logger.warn("Failed to retrieve data for link '%s'", link);
     }
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import IORedis, { Redis } from "ioredis";
-import { CommonConstants } from "@resources/common/constants";
 
 @Injectable()
 export class RedisService {
@@ -11,13 +10,11 @@ export class RedisService {
   }
 
   private init(): void {
-    if (process.env.IS_JEST_ENV !== CommonConstants.TRUE_STRING) {
-      this.redis = new IORedis({
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT),
-        password: process.env.REDIS_PASS,
-      });
-    }
+    this.redis = new IORedis({
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT),
+      password: process.env.REDIS_PASS,
+    });
   }
 
   get(key: string): Promise<string> {

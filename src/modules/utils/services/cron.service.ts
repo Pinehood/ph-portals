@@ -52,7 +52,10 @@ export class CronService {
   private async scrapeData(): Promise<void> {
     try {
       const portalPage = await this.portalsService.getPage(Portals.HOME);
-      await this.redisService.set(Portals.HOME + "page", portalPage);
+      await this.redisService.set(
+        Portals.HOME + RedisStatsKeys.PAGE_SUFFIX,
+        portalPage
+      );
       await Promise.all([
         this.cachePortalAndArticles(this.scrape24SataService),
         this.cachePortalAndArticles(this.scrapeDnevnikService),
@@ -122,7 +125,10 @@ export class CronService {
                 title: `Portali - ${getPortalName(service.type)}`,
               }
             );
-      await this.redisService.set(service.type + "page", portalPage);
+      await this.redisService.set(
+        service.type + RedisStatsKeys.PAGE_SUFFIX,
+        portalPage
+      );
     } catch (error: any) {
       this.logger.error(error);
     }

@@ -2,5 +2,3 @@ Scrape/support rest of the non-RSS portals:
 - Jutarnji
 - Večernji
 - Tportal
-- Remove unneeded Docker services
-- Fix Index.hr not working

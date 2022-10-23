@@ -9,6 +9,7 @@ import {
   getPortalName,
   isValidArticle,
   shouldArticleBeDisplayed,
+  TryCatch,
 } from "@resources/common/functions";
 import { ScraperService } from "@scrapers/services/scraper.service";
 
@@ -37,124 +38,93 @@ export class ScrapeIndexService implements ScraperService {
   }
 
   async articleLinks(): Promise<string[]> {
-    //TODO
-    return [];
-  }
-
-  async scrape(): Promise<Article[]> {
-    let articles: Article[] = [];
+    const articleLinks: string[] = [];
     for (let i = 0; i < this.roots.length; i++) {
       const rootLink = this.roots[i];
-      try {
+      await TryCatch(this.logger, rootLink, async () => {
         const rss = await axios.get(rootLink);
         if (rss && rss.data) {
-          const articleLinks = (rss.data as string)
+          const links = (rss.data as string)
             .match(/<link>(.*?)<\/link>/g)
             .map((articleLink) =>
               articleLink.replace("<link>", "").replace("</link>", "")
             )
             .filter((articleLink) => !this.roots.includes(articleLink));
-          const articleLeads = (rss.data as string)
-            .match(/<description>(.*?)<\/description>/g)
-            .map((articleLead) =>
-              articleLead
-                .replace("<description>", "")
-                .replace("</description>", "")
-            )
-            .filter((articleLead) => articleLead != "Index.hr RSS Feed");
-          if (articleLinks && articleLeads) {
-            for (let j = 0; j < articleLinks.length; j++) {
-              const articleLink = articleLinks[j];
-              const articleLead = articleLeads[j];
-              if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
-                continue;
+          if (links && links.length > 0) articleLinks.push(...links);
+        }
+      });
+    }
+    return articleLinks;
+  }
 
-              try {
-                const article = await axios.get(articleLink);
-                if (article && article.data) {
-                  const articleHtml = article.data as string;
-                  const $ = cheerio.load(articleHtml);
-                  $("div.js-slot-container").remove();
-                  $("div.brid").remove();
-                  $("img").remove();
-                  $("iframe").remove();
-                  let title = $("h1.title").text();
-                  if (title) {
-                    title = title.replace(/\n/g, "").trim();
-                  }
-                  let lead = articleLead;
-                  if (lead) {
-                    lead = lead.replace(/\n/g, "").trim();
-                  }
-                  let time = $("span.time.sport-text").text();
-                  if (time) {
-                    time = time.replace(/\n/g, "").trim();
-                  } else {
-                    time = "nedostupno";
-                  }
-                  let author = $("span.author").text();
-                  if (author) {
-                    author = author
-                      .replace(/\n/g, "")
-                      .replace(/  /g, "")
-                      .trim();
-                  }
-                  let content = $("div.text").html();
-                  if (content) {
-                    content = content
-                      .replace(
-                        /Znate li nešto više o temi ili želite prijaviti grešku u tekstu\?/g,
-                        ""
-                      )
-                      .replace(/USKORO OPŠIRNIJE/g, "")
-                      .replace(/\n/g, "")
-                      .trim();
-                  }
-                  articles.push({
-                    ...this.default,
-                    articleId: articleLink
-                      .substring(articleLink.lastIndexOf("/") + 1)
-                      .replace(".aspx", ""),
-                    articleLink,
-                    author,
-                    content,
-                    lead,
-                    time,
-                    title,
-                  });
-                }
-              } catch (innerError: any) {
-                if (
-                  innerError.response &&
-                  innerError.response.status &&
-                  innerError.response.status >= 400
-                ) {
-                  this.logger.error(
-                    "Failed to retrieve data for article '%s' with status code '%d'",
-                    articleLink,
-                    innerError.response.status
-                  );
-                } else {
-                  this.logger.error(innerError);
-                }
-              }
+  async scrape(): Promise<Article[]> {
+    let articles: Article[] = [];
+    const articleLinks = await this.articleLinks();
+    const articleLeads = await this.articleLeads();
+    if (
+      articleLinks &&
+      articleLeads &&
+      articleLinks.length > 0 &&
+      articleLeads.length > 0
+    ) {
+      for (let i = 0; i < articleLinks.length; i++) {
+        const articleLink = articleLinks[i];
+        const articleLead = articleLeads[i];
+        if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
+          continue;
+
+        await TryCatch(this.logger, articleLink, async () => {
+          const article = await axios.get(articleLink);
+          if (article && article.data) {
+            const articleHtml = article.data as string;
+            const $ = cheerio.load(articleHtml);
+            $("div.js-slot-container").remove();
+            $("div.brid").remove();
+            $("img").remove();
+            $("iframe").remove();
+            let title = $("h1.title").text();
+            if (title) {
+              title = title.replace(/\n/g, "").trim();
             }
+            let lead = articleLead;
+            if (lead) {
+              lead = lead.replace(/\n/g, "").trim();
+            }
+            let time = $("div.flex-1").last().text();
+            if (time) {
+              time = time.replace(/\n/g, "").trim();
+            } else {
+              time = "nedostupno";
+            }
+            let author = $("div.flex-1").first().text();
+            if (author) {
+              author = author.replace(/\n/g, "").replace(/  /g, "").trim();
+            }
+            let content = $("div.text").html();
+            if (content) {
+              content = content
+                .replace(
+                  /Znate li nešto više o temi ili želite prijaviti grešku u tekstu\?/g,
+                  ""
+                )
+                .replace(/USKORO OPŠIRNIJE/g, "")
+                .replace(/\n/g, "")
+                .trim();
+            }
+            articles.push({
+              ...this.default,
+              articleId: articleLink
+                .substring(articleLink.lastIndexOf("/") + 1)
+                .replace(".aspx", ""),
+              articleLink,
+              author,
+              content,
+              lead,
+              time,
+              title,
+            });
           }
-        }
-      } catch (error: any) {
-        if (
-          error.response &&
-          error.response.status &&
-          error.response.status >= 400
-        ) {
-          this.logger.error(
-            "Failed to retrieve data for root '%s' with status code '%d'",
-            rootLink,
-            error.response.status
-          );
-        } else {
-          this.logger.error(error);
-        }
+        });
       }
       articles = articles.filter(
         (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
@@ -166,5 +136,27 @@ export class ScrapeIndexService implements ScraperService {
       this.name
     );
     return articles;
+  }
+
+  private async articleLeads(): Promise<string[]> {
+    const articleLeads: string[] = [];
+    for (let i = 0; i < this.roots.length; i++) {
+      const rootLink = this.roots[i];
+      await TryCatch(this.logger, rootLink, async () => {
+        const rss = await axios.get(rootLink);
+        if (rss && rss.data) {
+          const leads = (rss.data as string)
+            .match(/<description>(.*?)<\/description>/g)
+            .map((articleLead) =>
+              articleLead
+                .replace("<description>", "")
+                .replace("</description>", "")
+            )
+            .filter((articleLead) => articleLead != "Index.hr RSS Feed");
+          if (leads && leads.length > 0) articleLeads.push(...leads);
+        }
+      });
+    }
+    return articleLeads;
   }
 }

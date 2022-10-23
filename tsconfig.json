@@ -13,12 +13,11 @@
     "incremental": true,
     "skipLibCheck": true,
     "paths": {
+      "@root/*": ["src/*"],
       "@modules/*": ["src/modules/*"],
       "@portals/*": ["src/modules/portals/*"],
       "@resources/*": ["src/resources/*"],
-      "@root/*": ["src/*"],
       "@scrapers/*": ["src/modules/scrapers/*"],
-      "@tests/*": ["src/tests/*"],
       "@utils/*": ["src/modules/utils/*"]
     }
   },

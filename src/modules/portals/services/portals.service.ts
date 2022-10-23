@@ -31,7 +31,7 @@ export class PortalsService {
 
   async getCachedPage(portal: Portals): Promise<string> {
     try {
-      const page = await this.redisService.get(portal + "page");
+      const page = await this.redisService.get(portal + RedisStatsKeys.PAGE_SUFFIX);
       if (page) {
         return page;
       } else {
