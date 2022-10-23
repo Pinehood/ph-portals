@@ -9,6 +9,7 @@ import {
   getPortalName,
   isValidArticle,
   shouldArticleBeDisplayed,
+  TryCatch,
 } from "@resources/common/functions";
 import { ScraperService } from "@scrapers/services/scraper.service";
 
@@ -38,15 +39,14 @@ export class ScrapeSportskeNovostiService implements ScraperService {
     ];
   }
 
-  async scrape(): Promise<Article[]> {
-    let articles: Article[] = [];
+  async articleLinks(): Promise<string[]> {
+    const articleLinks: string[] = [];
     for (let i = 0; i < this.roots.length; i++) {
       const rootLink = this.roots[i];
-      try {
-        const articleLinks = [];
-        const articleData = await axios.get(rootLink);
-        if (articleData && articleData.data) {
-          const data = articleData.data as string;
+      await TryCatch(this.logger, rootLink, async () => {
+        const articlesData = await axios.get(rootLink);
+        if (articlesData && articlesData.data) {
+          const data = articlesData.data as string;
           const $ = cheerio.load(data);
           $("image").remove();
           $("iframe").remove();
@@ -57,92 +57,71 @@ export class ScrapeSportskeNovostiService implements ScraperService {
             }
           });
         }
-
-        for (let j = 0; j < articleLinks.length; j++) {
-          const articleLink = articleLinks[j];
-          if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
-            continue;
-
-          try {
-            const article = await axios.get(articleLink);
-            if (article && article.data) {
-              const articleHtml = article.data as string;
-              const $ = cheerio.load(articleHtml);
-              $("img").remove();
-              $("iframe").remove();
-              $("figure").remove();
-              $("picture").remove();
-              $("script").remove();
-              let title = $("h1.item__title").text();
-              if (title) {
-                title = title.replace(/\n/g, "").trim();
-              }
-              let lead = $("div.item__subtitle").text();
-              if (lead) {
-                lead = lead.replace(/\n/g, "").trim();
-              }
-              let author = $("span.item__author-name").text();
-              if (author) {
-                author = author.replace(/\n/g, "").trim();
-              }
-              let time = $("span.item__author__date").text();
-              if (time) {
-                time = time.replace(/\n/g, "").trim();
-              } else {
-                time = "nedostupno";
-              }
-              let content = $("div.itemFullText").html();
-              if (content) {
-                content = content.replace(/\n/g, "").trim();
-              }
-              articles.push({
-                ...this.default,
-                articleId: articleLink.substring(
-                  articleLink.lastIndexOf("-") + 1
-                ),
-                articleLink,
-                author,
-                content,
-                lead,
-                time,
-                title,
-              });
-            }
-          } catch (innerError: any) {
-            if (
-              innerError.response &&
-              innerError.response.status &&
-              innerError.response.status >= 400
-            ) {
-              this.logger.error(
-                "Failed to retrieve data for article '%s' with status code '%d'",
-                articleLink,
-                innerError.response.status
-              );
-            } else {
-              this.logger.error(innerError);
-            }
-          }
-        }
-      } catch (error: any) {
-        if (
-          error.response &&
-          error.response.status &&
-          error.response.status >= 400
-        ) {
-          this.logger.error(
-            "Failed to retrieve data for root '%s' with status code '%d'",
-            rootLink,
-            error.response.status
-          );
-        } else {
-          this.logger.error(error);
-        }
-      }
+      });
     }
-    articles = articles.filter(
-      (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
-    );
+    return articleLinks;
+  }
+
+  async scrape(): Promise<Article[]> {
+    let articles: Article[] = [];
+    const articleLinks = await this.articleLinks();
+    if (articleLinks && articleLinks.length > 0) {
+      for (let i = 0; i < articleLinks.length; i++) {
+        const articleLink = articleLinks[i];
+        if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
+          continue;
+
+        await TryCatch(this.logger, articleLink, async () => {
+          const article = await axios.get(articleLink);
+          if (article && article.data) {
+            const articleHtml = article.data as string;
+            const $ = cheerio.load(articleHtml);
+            $("img").remove();
+            $("iframe").remove();
+            $("figure").remove();
+            $("picture").remove();
+            $("script").remove();
+            let title = $("h1.item__title").text();
+            if (title) {
+              title = title.replace(/\n/g, "").trim();
+            }
+            let lead = $("div.item__subtitle").text();
+            if (lead) {
+              lead = lead.replace(/\n/g, "").trim();
+            }
+            let author = $("span.item__author-name").text();
+            if (author) {
+              author = author.replace(/\n/g, "").trim();
+            }
+            let time = $("span.item__author__date").text();
+            if (time) {
+              time = time.replace(/\n/g, "").trim();
+            } else {
+              time = "nedostupno";
+            }
+            let content = $("div.itemFullText").html();
+            if (content) {
+              content = content.replace(/\n/g, "").trim();
+            }
+            articles.push({
+              ...this.default,
+              articleId: articleLink.substring(
+                articleLink.lastIndexOf("-") + 1
+              ),
+              articleLink,
+              author,
+              content,
+              lead,
+              time,
+              title,
+            });
+          }
+        });
+      }
+      articles = articles.filter(
+        (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
+      );
+    }
     this.logger.info(
       "Scraped '%d' articles from '%s'",
       articles.length,

@@ -29,6 +29,10 @@ export class ScrapeTportalService implements ScraperService {
     this.roots = []; //Non-RSS
   }
 
+  async articleLinks(): Promise<string[]> {
+    return null;
+  }
+
   async scrape(): Promise<Article[]> {
     let articles: Article[] = [];
     articles = articles.filter(

@@ -1,3 +1,4 @@
+import { PinoLogger } from "nestjs-pino";
 import { Article } from "@resources/dtos";
 import { Portals } from "@resources/common/constants";
 import { PortalsRoutes } from "@resources/common/routes";
@@ -187,4 +188,28 @@ export function getDefaultArticle(
     title: "",
     html: "",
   };
+}
+
+export async function TryCatch(
+  logger: PinoLogger,
+  link: string,
+  action: () => Promise<void>
+): Promise<void> {
+  try {
+    await action();
+  } catch (error: any) {
+    if (
+      error.response &&
+      error.response.status &&
+      error.response.status >= 400
+    ) {
+      logger.error(
+        "Failed to retrieve data for link '%s' with status code '%d'",
+        link,
+        error.response.status
+      );
+    } else {
+      logger.error("Failed to retrieve data for link '%s'", link);
+    }
+  }
 }

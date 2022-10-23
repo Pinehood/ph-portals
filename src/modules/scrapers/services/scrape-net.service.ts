@@ -8,6 +8,7 @@ import {
   getPortalName,
   isValidArticle,
   shouldArticleBeDisplayed,
+  TryCatch,
 } from "@resources/common/functions";
 import { ScraperService } from "@scrapers/services/scraper.service";
 import * as cheerio from "cheerio";
@@ -38,14 +39,14 @@ export class ScrapeNetService implements ScraperService {
     ];
   }
 
-  async scrape(): Promise<Article[]> {
-    let articles: Article[] = [];
+  async articleLinks(): Promise<string[]> {
+    const articleLinks: string[] = [];
     for (let i = 0; i < this.roots.length; i++) {
       const rootLink = this.roots[i];
-      try {
+      await TryCatch(this.logger, rootLink, async () => {
         const rss = await axios.get(rootLink);
         if (rss && rss.data) {
-          const articleLinks = (rss.data as string)
+          const links = (rss.data as string)
             .match(/<link>(.*?)<\/link>/g)
             .map((articleLink) =>
               articleLink.replace("<link>", "").replace("</link>", "")
@@ -56,100 +57,74 @@ export class ScrapeNetService implements ScraperService {
                 articleLink != this.link &&
                 !this.roots.includes(articleLink)
             );
-          if (articleLinks) {
-            for (let j = 0; j < articleLinks.length; j++) {
-              const articleLink = articleLinks[j];
-              if (
-                articles.findIndex((a) => a.articleLink == articleLink) > -1
-              ) {
-                continue;
-              }
-              try {
-                const article = await axios.get(articleLink);
-                if (article && article.data) {
-                  const articleHtml = article.data as string;
-                  const $ = cheerio.load(articleHtml);
-                  $("img").remove();
-                  $("iframe").remove();
-                  $("div.Image-noPlaceholder").remove();
-                  $("div.css-86pgy2").remove();
-                  $('div[id="mobileScaleDown"]').remove();
-                  $('div[id="desktopScaleDown"]').remove();
-                  let title = $("span.title_title").text();
-                  if (title) {
-                    title = title.replace(/\n/g, "").trim();
-                  }
-                  let lead = $("span.title_subtitle").text();
-                  if (lead) {
-                    lead = lead.replace(/\n/g, "").replace(" /", "").trim();
-                  }
-                  let time = $("div.metaItem_title").text();
-                  if (time) {
-                    time = time.split(/[a-z]/gi)[0]
-                      ? time.split(/[a-z]/gi)[0]
-                      : "nedostupno";
-                  }
-                  let author = $('div[id="meta_author"]').text();
-                  if (author) {
-                    author = author
-                      .replace(/\n/g, "")
-                      .replace(/\//g, ",")
-                      .trim();
-                  }
-                  let content = $("article.article-body").html();
-                  if (content) {
-                    content = content.replace(/\n/g, "").trim();
-                  }
-                  articles.push({
-                    ...this.default,
-                    articleId: articleLink.substring(
-                      articleLink.lastIndexOf("-") + 1
-                    ),
-                    articleLink,
-                    author,
-                    content,
-                    lead,
-                    time,
-                    title,
-                  });
-                }
-              } catch (innerError: any) {
-                if (
-                  innerError.response &&
-                  innerError.response.status &&
-                  innerError.response.status >= 400
-                ) {
-                  this.logger.error(
-                    "Failed to retrieve data for article '%s' with status code '%d'",
-                    articleLink,
-                    innerError.response.status
-                  );
-                } else {
-                  this.logger.error(innerError);
-                }
-              }
-            }
-          }
+          if (links && links.length > 0) articleLinks.push(...links);
         }
-      } catch (error: any) {
-        if (
-          error.response &&
-          error.response.status &&
-          error.response.status >= 400
-        ) {
-          this.logger.error(
-            "Failed to retrieve data for root '%s' with status code '%d'",
-            rootLink,
-            error.response.status
-          );
-        } else {
-          this.logger.error(error);
-        }
-      }
+      });
     }
-    articles = articles.filter(
-      (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
-    );
+    return articleLinks;
+  }
+
+  async scrape(): Promise<Article[]> {
+    let articles: Article[] = [];
+    const articleLinks = await this.articleLinks();
+    if (articleLinks && articleLinks.length > 0) {
+      for (let i = 0; i < articleLinks.length; i++) {
+        const articleLink = articleLinks[i];
+        if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
+          continue;
+
+        await TryCatch(this.logger, articleLink, async () => {
+          const article = await axios.get(articleLink);
+          if (article && article.data) {
+            const articleHtml = article.data as string;
+            const $ = cheerio.load(articleHtml);
+            $("img").remove();
+            $("iframe").remove();
+            $("div.Image-noPlaceholder").remove();
+            $("div.css-86pgy2").remove();
+            $('div[id="mobileScaleDown"]').remove();
+            $('div[id="desktopScaleDown"]').remove();
+            let title = $("span.title_title").text();
+            if (title) {
+              title = title.replace(/\n/g, "").trim();
+            }
+            let lead = $("span.title_subtitle").text();
+            if (lead) {
+              lead = lead.replace(/\n/g, "").replace(" /", "").trim();
+            }
+            let time = $("div.metaItem_title").text();
+            if (time) {
+              time = time.split(/[a-z]/gi)[0]
+                ? time.split(/[a-z]/gi)[0]
+                : "nedostupno";
+            }
+            let author = $('div[id="meta_author"]').text();
+            if (author) {
+              author = author.replace(/\n/g, "").replace(/\//g, ",").trim();
+            }
+            let content = $("article.article-body").html();
+            if (content) {
+              content = content.replace(/\n/g, "").trim();
+            }
+            articles.push({
+              ...this.default,
+              articleId: articleLink.substring(
+                articleLink.lastIndexOf("-") + 1
+              ),
+              articleLink,
+              author,
+              content,
+              lead,
+              time,
+              title,
+            });
+          }
+        });
+      }
+      articles = articles.filter(
+        (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
+      );
+    }
     this.logger.info(
       "Scraped '%d' articles from '%s'",
       articles.length,

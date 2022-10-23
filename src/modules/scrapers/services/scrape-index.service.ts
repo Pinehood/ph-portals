@@ -36,6 +36,11 @@ export class ScrapeIndexService implements ScraperService {
     ];
   }
 
+  async articleLinks(): Promise<string[]> {
+    //TODO
+    return [];
+  }
+
   async scrape(): Promise<Article[]> {
     let articles: Article[] = [];
     for (let i = 0; i < this.roots.length; i++) {
@@ -151,10 +156,10 @@ export class ScrapeIndexService implements ScraperService {
           this.logger.error(error);
         }
       }
+      articles = articles.filter(
+        (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
+      );
     }
-    articles = articles.filter(
-      (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
-    );
     this.logger.info(
       "Scraped '%d' articles from '%s'",
       articles.length,

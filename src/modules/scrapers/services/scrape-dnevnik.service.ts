@@ -9,6 +9,7 @@ import {
   getPortalName,
   isValidArticle,
   shouldArticleBeDisplayed,
+  TryCatch,
 } from "@resources/common/functions";
 import { ScraperService } from "@scrapers/services/scraper.service";
 
@@ -31,16 +32,48 @@ export class ScrapeDnevnikService implements ScraperService {
     this.roots = ["https://dnevnik.hr/ajax/loadMore"];
   }
 
+  async articleLinks(): Promise<string[]> {
+    const articleLinks: string[] = [];
+    await TryCatch(this.logger, this.roots[0], async () => {
+      const data =
+        "type=ng&boxInfo%5Btype%5D=Frontend_Box_Front_Entity_List&boxInfo%5Bparams%5D%5BuseFrontOptions%5D=&boxInfo%5Bparams%5D%5Bprofile%5D=&boxInfo%5Bparams%5D%5BparamsLoader%5D=&boxInfo%5Bparams%5D%5BallowedContentTypes%5D=article&boxInfo%5Bparams%5D%5Btemplate%5D=frontend%2Fbox%2Ffront%2Fentity%2Fsection-news-dnevnik.twig&boxInfo%5Bparams%5D%5BboxTitle%5D=&boxInfo%5Bparams%5D%5BtargetUrl%5D=&boxInfo%5Bparams%5D%5BcssClass%5D=&boxInfo%5Bparams%5D%5BpreventDuplicates%5D=1&boxInfo%5Bparams%5D%5BshowLoadMore%5D=ajax&boxInfo%5Bparams%5D%5Bsources%5D=subsectionarticles&boxInfo%5Bparams%5D%5Blimits%5D=200&boxInfo%5Bparams%5D%5BeditDescription%5D=&boxInfo%5Bctx%5D%5BsiteId%5D=10&boxInfo%5Bctx%5D%5BsectionId%5D=10001&boxInfo%5Bctx%5D%5BsubsiteId%5D=10004457&boxInfo%5Bctx%5D%5BlayoutDeviceVariant%5D=default&boxInfo%5Bctx%5D%5BlayoutFrontVariant%5D=default";
+      const ajaxResponse = await axios.request({
+        method: "POST",
+        data: data,
+        url: this.roots[0],
+        headers: {
+          Host: "dnevnik.hr",
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+      });
+      if (ajaxResponse && ajaxResponse.data) {
+        const links = (ajaxResponse.data as string)
+          .match(/<a data-upscore-url href="(.*)">/g)
+          .map((articleLink) => {
+            return (
+              this.link +
+              "/" +
+              articleLink
+                .replace('<a data-upscore-url href="', "")
+                .replace('">', "")
+            );
+          });
+        if (links && links.length > 0) articleLinks.push(...links);
+      }
+    });
+    return articleLinks;
+  }
+
   async scrape(): Promise<Article[]> {
     let articles: Article[] = [];
-    const articleLinks = await this.getArticleLinks();
-    if (articleLinks) {
-      for (let j = 0; j < articleLinks.length; j++) {
-        const articleLink = articleLinks[j];
+    const articleLinks = await this.articleLinks();
+    if (articleLinks && articleLinks.length > 0) {
+      for (let i = 0; i < articleLinks.length; i++) {
+        const articleLink = articleLinks[i];
         if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
           continue;
 
-        try {
+        await TryCatch(this.logger, articleLink, async () => {
           const article = await axios.get(articleLink);
           if (article && article.data) {
             const articleHtml = article.data as string;
@@ -97,61 +130,17 @@ export class ScrapeDnevnikService implements ScraperService {
               title,
             });
           }
-        } catch (innerError: any) {
-          if (
-            innerError.response &&
-            innerError.response.status &&
-            innerError.response.status >= 400
-          ) {
-            this.logger.error(
-              "Failed to retrieve data for article '%s' with status code '%d'",
-              articleLink,
-              innerError.response.status
-            );
-          } else {
-            this.logger.error(innerError);
-          }
-        }
+        });
       }
+      articles = articles.filter(
+        (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
+      );
     }
-    articles = articles.filter(
-      (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
-    );
     this.logger.info(
       "Scraped '%d' articles from '%s'",
       articles.length,
       this.name
     );
     return articles;
-  }
-
-  private async getArticleLinks(): Promise<string[]> {
-    try {
-      const data =
-        "type=ng&boxInfo%5Btype%5D=Frontend_Box_Front_Entity_List&boxInfo%5Bparams%5D%5BuseFrontOptions%5D=&boxInfo%5Bparams%5D%5Bprofile%5D=&boxInfo%5Bparams%5D%5BparamsLoader%5D=&boxInfo%5Bparams%5D%5BallowedContentTypes%5D=article&boxInfo%5Bparams%5D%5Btemplate%5D=frontend%2Fbox%2Ffront%2Fentity%2Fsection-news-dnevnik.twig&boxInfo%5Bparams%5D%5BboxTitle%5D=&boxInfo%5Bparams%5D%5BtargetUrl%5D=&boxInfo%5Bparams%5D%5BcssClass%5D=&boxInfo%5Bparams%5D%5BpreventDuplicates%5D=1&boxInfo%5Bparams%5D%5BshowLoadMore%5D=ajax&boxInfo%5Bparams%5D%5Bsources%5D=subsectionarticles&boxInfo%5Bparams%5D%5Blimits%5D=200&boxInfo%5Bparams%5D%5BeditDescription%5D=&boxInfo%5Bctx%5D%5BsiteId%5D=10&boxInfo%5Bctx%5D%5BsectionId%5D=10001&boxInfo%5Bctx%5D%5BsubsiteId%5D=10004457&boxInfo%5Bctx%5D%5BlayoutDeviceVariant%5D=default&boxInfo%5Bctx%5D%5BlayoutFrontVariant%5D=default";
-      const ajaxResponse = await axios.request({
-        method: "POST",
-        data: data,
-        url: this.roots[0],
-        headers: {
-          Host: "dnevnik.hr",
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-      });
-      return (ajaxResponse.data as string)
-        .match(/<a data-upscore-url href="(.*)">/g)
-        .map((articleLink) => {
-          return (
-            this.link +
-            "/" +
-            articleLink
-              .replace('<a data-upscore-url href="', "")
-              .replace('">', "")
-          );
-        });
-    } catch (error: any) {
-      this.logger.error(error);
-      return null;
-    }
   }
 }
