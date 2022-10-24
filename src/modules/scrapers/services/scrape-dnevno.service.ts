@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
-import axios from "@resources/common/axios";
+import axios from "@common/axios";
 import * as cheerio from "cheerio";
-import { Portals } from "@resources/common/constants";
+import { Portals } from "@common/constants";
 import { Article } from "@resources/dtos";
 import {
   getDefaultArticle,
@@ -10,7 +10,7 @@ import {
   isValidArticle,
   shouldArticleBeDisplayed,
   TryCatch,
-} from "@resources/common/functions";
+} from "@common/functions";
 import { ScraperService } from "@scrapers/services/scraper.service";
 
 @Injectable()
@@ -43,7 +43,7 @@ export class ScrapeDnevnoService implements ScraperService {
     const articleLinks: string[] = [];
     for (let i = 0; i < this.roots.length; i++) {
       const rootLink = this.roots[i];
-      await TryCatch(this.logger, rootLink, async () => {
+      await TryCatch(async () => {
         const articlesData = await axios.get(rootLink);
         if (articlesData && articlesData.data) {
           const $ = cheerio.load(articlesData.data as string);
@@ -71,7 +71,7 @@ export class ScrapeDnevnoService implements ScraperService {
         if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
           continue;
 
-        await TryCatch(this.logger, articleLink, async () => {
+        await TryCatch(async () => {
           const article = await axios.get(articleLink);
           if (article && article.data) {
             const articleHtml = article.data as string;

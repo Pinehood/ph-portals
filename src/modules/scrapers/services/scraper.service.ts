@@ -1,4 +1,4 @@
-import { Portals } from "@resources/common";
+import { Portals } from "@common/constants";
 import { Article } from "@resources/dtos";
 
 export interface ScraperService {

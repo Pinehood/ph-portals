@@ -7,7 +7,7 @@ import {
   CommonConstants,
   ControllerTags,
   SwaggerConstants,
-} from "@resources/common";
+} from "@common/constants";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });

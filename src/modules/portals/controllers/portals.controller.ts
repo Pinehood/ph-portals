@@ -11,14 +11,25 @@ import {
   ControllerTags,
   Portals,
   UrlParams,
-} from "@resources/common/constants";
-import { PortalsRoutes } from "@resources/common/routes";
+} from "@common/constants";
+import { PortalsRoutes } from "@common/routes";
 import { PortalsService } from "@portals/services";
 
 @ApiTags(ControllerTags.PORTALS)
-@Controller(PortalsRoutes.BASE)
+@Controller()
 export class PortalsController {
   constructor(private readonly portalsService: PortalsService) {}
+
+  @Get(PortalsRoutes.ROOT)
+  @ApiProduces(CommonConstants.TEXT_HTML)
+  @ApiOperation({ summary: "Fetch portal's home page content" })
+  @ApiResponse({
+    status: 200,
+    description: "Portal page content",
+  })
+  getHome(): Promise<string> {
+    return this.portalsService.getCachedPage(Portals.HOME);
+  }
 
   @Get(PortalsRoutes.PORTAL)
   @ApiProduces(CommonConstants.TEXT_HTML)

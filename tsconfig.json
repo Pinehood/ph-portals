@@ -18,7 +18,8 @@
       "@portals/*": ["src/modules/portals/*"],
       "@resources/*": ["src/resources/*"],
       "@scrapers/*": ["src/modules/scrapers/*"],
-      "@utils/*": ["src/modules/utils/*"]
+      "@utils/*": ["src/modules/utils/*"],
+      "@common/*": ["src/common/*"]
     }
   },
   "include": ["src/**/*"]

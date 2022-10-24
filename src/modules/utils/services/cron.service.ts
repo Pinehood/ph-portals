@@ -6,7 +6,7 @@ import {
   RedisStatsKeys,
   ResponseConstants,
   TemplateNames,
-} from "@resources/common/constants";
+} from "@common/constants";
 import { PortalsService } from "@portals/services/portals.service";
 import { RedisService } from "@utils/services/redis.service";
 import {
@@ -22,7 +22,7 @@ import {
   ScrapeTportalService,
   ScrapeVecernjiService,
 } from "@scrapers/services";
-import { getPortalName } from "@resources/common";
+import { getPortalName } from "@common/functions";
 
 @Injectable()
 export class CronService {

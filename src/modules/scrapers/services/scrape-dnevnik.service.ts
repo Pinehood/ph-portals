@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
-import axios from "@resources/common/axios";
+import axios from "@common/axios";
 import * as cheerio from "cheerio";
-import { Portals } from "@resources/common/constants";
+import { Portals } from "@common/constants";
 import { Article } from "@resources/dtos";
 import {
   getDefaultArticle,
@@ -10,7 +10,7 @@ import {
   isValidArticle,
   shouldArticleBeDisplayed,
   TryCatch,
-} from "@resources/common/functions";
+} from "@common/functions";
 import { ScraperService } from "@scrapers/services/scraper.service";
 
 @Injectable()
@@ -34,33 +34,36 @@ export class ScrapeDnevnikService implements ScraperService {
 
   async articleLinks(): Promise<string[]> {
     const articleLinks: string[] = [];
-    await TryCatch(this.logger, this.roots[0], async () => {
-      const data =
-        "type=ng&boxInfo%5Btype%5D=Frontend_Box_Front_Entity_List&boxInfo%5Bparams%5D%5BuseFrontOptions%5D=&boxInfo%5Bparams%5D%5Bprofile%5D=&boxInfo%5Bparams%5D%5BparamsLoader%5D=&boxInfo%5Bparams%5D%5BallowedContentTypes%5D=article&boxInfo%5Bparams%5D%5Btemplate%5D=frontend%2Fbox%2Ffront%2Fentity%2Fsection-news-dnevnik.twig&boxInfo%5Bparams%5D%5BboxTitle%5D=&boxInfo%5Bparams%5D%5BtargetUrl%5D=&boxInfo%5Bparams%5D%5BcssClass%5D=&boxInfo%5Bparams%5D%5BpreventDuplicates%5D=1&boxInfo%5Bparams%5D%5BshowLoadMore%5D=ajax&boxInfo%5Bparams%5D%5Bsources%5D=subsectionarticles&boxInfo%5Bparams%5D%5Blimits%5D=200&boxInfo%5Bparams%5D%5BeditDescription%5D=&boxInfo%5Bctx%5D%5BsiteId%5D=10&boxInfo%5Bctx%5D%5BsectionId%5D=10001&boxInfo%5Bctx%5D%5BsubsiteId%5D=10004457&boxInfo%5Bctx%5D%5BlayoutDeviceVariant%5D=default&boxInfo%5Bctx%5D%5BlayoutFrontVariant%5D=default";
-      const ajaxResponse = await axios.request({
-        method: "POST",
-        data: data,
-        url: this.roots[0],
-        headers: {
-          Host: "dnevnik.hr",
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
+    for (let i = 0; i < this.roots.length; i++) {
+      const rootLink = this.roots[i];
+      await TryCatch(async () => {
+        const data =
+          "type=ng&boxInfo%5Btype%5D=Frontend_Box_Front_Entity_List&boxInfo%5Bparams%5D%5BuseFrontOptions%5D=&boxInfo%5Bparams%5D%5Bprofile%5D=&boxInfo%5Bparams%5D%5BparamsLoader%5D=&boxInfo%5Bparams%5D%5BallowedContentTypes%5D=article&boxInfo%5Bparams%5D%5Btemplate%5D=frontend%2Fbox%2Ffront%2Fentity%2Fsection-news-dnevnik.twig&boxInfo%5Bparams%5D%5BboxTitle%5D=&boxInfo%5Bparams%5D%5BtargetUrl%5D=&boxInfo%5Bparams%5D%5BcssClass%5D=&boxInfo%5Bparams%5D%5BpreventDuplicates%5D=1&boxInfo%5Bparams%5D%5BshowLoadMore%5D=ajax&boxInfo%5Bparams%5D%5Bsources%5D=subsectionarticles&boxInfo%5Bparams%5D%5Blimits%5D=200&boxInfo%5Bparams%5D%5BeditDescription%5D=&boxInfo%5Bctx%5D%5BsiteId%5D=10&boxInfo%5Bctx%5D%5BsectionId%5D=10001&boxInfo%5Bctx%5D%5BsubsiteId%5D=10004457&boxInfo%5Bctx%5D%5BlayoutDeviceVariant%5D=default&boxInfo%5Bctx%5D%5BlayoutFrontVariant%5D=default";
+        const ajaxResponse = await axios.request({
+          method: "POST",
+          data: data,
+          url: rootLink,
+          headers: {
+            Host: "dnevnik.hr",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+        });
+        if (ajaxResponse && ajaxResponse.data) {
+          const links = (ajaxResponse.data as string)
+            .match(/<a data-upscore-url href="(.*)">/g)
+            .map((articleLink) => {
+              return (
+                this.link +
+                "/" +
+                articleLink
+                  .replace('<a data-upscore-url href="', "")
+                  .replace('">', "")
+              );
+            });
+          if (links && links.length > 0) articleLinks.push(...links);
+        }
       });
-      if (ajaxResponse && ajaxResponse.data) {
-        const links = (ajaxResponse.data as string)
-          .match(/<a data-upscore-url href="(.*)">/g)
-          .map((articleLink) => {
-            return (
-              this.link +
-              "/" +
-              articleLink
-                .replace('<a data-upscore-url href="', "")
-                .replace('">', "")
-            );
-          });
-        if (links && links.length > 0) articleLinks.push(...links);
-      }
-    });
+    }
     return articleLinks;
   }
 
@@ -73,7 +76,7 @@ export class ScrapeDnevnikService implements ScraperService {
         if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
           continue;
 
-        await TryCatch(this.logger, articleLink, async () => {
+        await TryCatch(async () => {
           const article = await axios.get(articleLink);
           if (article && article.data) {
             const articleHtml = article.data as string;

@@ -8,14 +8,14 @@ import {
   getPortalsLinks,
   millisToMinutesAndSeconds,
   redirect,
-} from "@resources/common/functions";
+} from "@common/functions";
 import {
   CommonConstants,
   Portals,
   RedisStatsKeys,
   ResponseConstants,
   TemplateNames,
-} from "@resources/common/constants";
+} from "@common/constants";
 import dirname from "@resources/templates";
 import { join } from "path";
 import * as fs from "fs";
@@ -31,7 +31,9 @@ export class PortalsService {
 
   async getCachedPage(portal: Portals): Promise<string> {
     try {
-      const page = await this.redisService.get(portal + RedisStatsKeys.PAGE_SUFFIX);
+      const page = await this.redisService.get(
+        portal + RedisStatsKeys.PAGE_SUFFIX
+      );
       if (page) {
         return page;
       } else {
@@ -180,7 +182,7 @@ export class PortalsService {
   ): Promise<string> {
     try {
       const links = getPortalsLinks(portal);
-      const content = await this.getTemplateContent(templateName, true);
+      const content = await this.getTemplateContent(templateName, true); //TODO: fix caching issues
       const template = Handlebars.compile(content, {
         noEscape: true,
         strict: false,

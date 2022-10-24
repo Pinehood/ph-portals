@@ -11,13 +11,13 @@ import {
   Portals,
   QueryParams,
   UrlParams,
-} from "@resources/common/constants";
-import { ApiRoutes } from "@resources/common/routes";
-import { ArticleInfo, Portal } from "@resources/dtos";
+} from "@common/constants";
+import { ApiRoutes } from "@common/routes";
+import { ArticleInfo, Portal, ScraperStats } from "@resources/dtos";
 import { ApiService } from "@portals/services";
 
 @ApiTags(ControllerTags.API)
-@Controller(ApiRoutes.BASE)
+@Controller()
 export class ApiController {
   constructor(private readonly apiService: ApiService) {}
 
@@ -58,5 +58,37 @@ export class ApiController {
     @Query(QueryParams.WITH_CONTENT) withContent: string
   ): Promise<any[]> {
     return this.apiService.getArticles(portal, withContent);
+  }
+
+  @Get(ApiRoutes.STATS)
+  @ApiOperation({
+    summary: "Fetch combined scraping statistics",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Total combined statistics",
+    type: ScraperStats,
+  })
+  getTotalStats(): Promise<any> {
+    return this.apiService.getTotalStats();
+  }
+
+  @Get(ApiRoutes.PORTAL_STATS)
+  @ApiOperation({
+    summary: "Fetch portal's scraping statistics",
+  })
+  @ApiParam({
+    name: UrlParams.PORTAL,
+    enum: Portals,
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Total scraper statistics",
+    type: ScraperStats,
+    isArray: true,
+  })
+  getPortalStats(@Param(UrlParams.PORTAL) portal: Portals): Promise<any> {
+    return this.apiService.getStats(portal);
   }
 }
