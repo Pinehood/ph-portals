@@ -26,6 +26,8 @@ services:
       REDIS_PASS: b4as55_efq267g
     ports:
       - 9994:3000
+    depends_on:
+      - redis
 
 networks:
   portals-net:

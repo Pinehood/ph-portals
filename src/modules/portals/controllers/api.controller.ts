@@ -86,7 +86,6 @@ export class ApiController {
     status: 200,
     description: "Total scraper statistics",
     type: ScraperStats,
-    isArray: true,
   })
   getPortalStats(@Param(UrlParams.PORTAL) portal: Portals): Promise<any> {
     return this.apiService.getStats(portal);
