@@ -1,3 +1,0 @@
-Scrape/support rest of the non-RSS portals:
-- Večernji
-- Tportal
