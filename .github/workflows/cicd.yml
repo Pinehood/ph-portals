@@ -1,12 +1,12 @@
 name: CI/CD
 on:
   push:
-    branches: [master, main, develop]
+    branches: [main]
   pull_request:
-    branches: [master, main, develop]
+    branches: [main]
 jobs:
   integrate:
-    name: Tests, Coverage & Lint
+    name: Lint
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -21,7 +21,6 @@ jobs:
           npm run build --if-present
       - run: |
           npm run lint
-          npm run test:cov
   build:
     needs: integrate
     name: Build Docker Image
@@ -43,4 +42,4 @@ jobs:
         uses: actions/checkout@v3
       - name: Trigger Deployment
         run: |
-          echo TODO deployment stage
+          docker-compose -f /opt/docker/portali/docker-compose.yml up -d portals-backend
