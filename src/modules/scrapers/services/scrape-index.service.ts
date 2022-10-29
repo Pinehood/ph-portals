@@ -60,16 +60,9 @@ export class ScrapeIndexService implements ScraperService {
   async scrape(): Promise<Article[]> {
     let articles: Article[] = [];
     const articleLinks = await this.articleLinks();
-    const articleLeads = await this.articleLeads();
-    if (
-      articleLinks &&
-      articleLeads &&
-      articleLinks.length > 0 &&
-      articleLeads.length > 0
-    ) {
+    if (articleLinks && articleLinks.length > 0) {
       for (let i = 0; i < articleLinks.length; i++) {
         const articleLink = articleLinks[i];
-        const articleLead = articleLeads[i];
         if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
           continue;
 
@@ -86,7 +79,7 @@ export class ScrapeIndexService implements ScraperService {
             if (title) {
               title = title.replace(/\n/g, "").trim();
             }
-            let lead = articleLead;
+            let lead = "";
             if (lead) {
               lead = lead.replace(/\n/g, "").trim();
             }
@@ -136,28 +129,5 @@ export class ScrapeIndexService implements ScraperService {
       this.name
     );
     return articles;
-  }
-
-  private async articleLeads(): Promise<string[]> {
-    //TODO: find somehow else
-    const articleLeads: string[] = [];
-    for (let i = 0; i < this.roots.length; i++) {
-      const rootLink = this.roots[i];
-      await TryCatch(async () => {
-        const rss = await axios.get(rootLink);
-        if (rss && rss.data) {
-          const leads = (rss.data as string)
-            .match(/<description>(.*?)<\/description>/g)
-            .map((articleLead) =>
-              articleLead
-                .replace("<description>", "")
-                .replace("</description>", "")
-            )
-            .filter((articleLead) => articleLead != "Index.hr RSS Feed");
-          if (leads && leads.length > 0) articleLeads.push(...leads);
-        }
-      });
-    }
-    return articleLeads;
   }
 }

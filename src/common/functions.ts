@@ -136,7 +136,8 @@ export function formatDate(date: Date): string {
     ":" +
     ("0" + date.getMinutes()).slice(-2) +
     ":" +
-    ("0" + date.getSeconds()).slice(-2)
+    ("0" + date.getSeconds()).slice(-2) +
+    (process.env.NODE_ENV == "production" ? " UTC" : "")
   );
 }
 
