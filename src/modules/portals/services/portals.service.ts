@@ -37,7 +37,7 @@ export class PortalsService {
       if (page) {
         return page;
       } else {
-        return redirect(portal);
+        return redirect(Portals.HOME);
       }
     } catch (error: any) {
       this.logger.error(error);
@@ -158,7 +158,7 @@ export class PortalsService {
       }
     } catch (error: any) {
       this.logger.error(error);
-      return "";
+      return error;
     }
   }
 
@@ -172,7 +172,7 @@ export class PortalsService {
       return result;
     } catch (error: any) {
       this.logger.error(error);
-      return "";
+      return error;
     }
   }
 
@@ -192,7 +192,7 @@ export class PortalsService {
       return result;
     } catch (error: any) {
       this.logger.error(error);
-      return "";
+      return error;
     }
   }
 }

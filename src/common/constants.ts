@@ -52,6 +52,9 @@ export enum Portals {
   SLOBODNA_DALMACIJA = "sd",
   SPORTSKE_NOVOSTI = "sn",
   DIREKTNO = "direktno",
+  POSLOVNI = "poslovni",
+  DANAS = "danas",
+  ZAGREB = "zagreb",
 }
 
 export enum RedisStatsKeys {

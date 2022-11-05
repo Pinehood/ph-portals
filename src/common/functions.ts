@@ -44,6 +44,12 @@ export function getPortalIcon(portal: Portals): string {
     return "https://sportske.jutarnji.hr/templates/site/images/pngs/favicon-sn/android-icon-192x192.png";
   else if (portal == Portals.DIREKTNO)
     return "https://direktno.hr/favicon-32x32.png";
+  else if (portal == Portals.POSLOVNI)
+    return "https://www.poslovni.hr/wp-content/themes/poslovni/static/img/fav/favicon-32x32.png";
+  else if (portal == Portals.DANAS)
+    return "https://cdn.danas.hr/favicon/danas/favicon-32x32.png";
+  else if (portal == Portals.ZAGREB)
+    return "https://www.zagreb.info/wp-content/uploads/2018/02/zagreb-favicon-2.png";
   else
     return "https://static.vecteezy.com/system/resources/thumbnails/000/365/820/small/Basic_Elements__2818_29.jpg";
 }
@@ -61,6 +67,9 @@ export function getPortalName(portal: Portals): string {
   else if (portal == Portals.SLOBODNA_DALMACIJA) return "Slobodna Dalmacija";
   else if (portal == Portals.SPORTSKE_NOVOSTI) return "Sportske Novosti";
   else if (portal == Portals.DIREKTNO) return "Direktno";
+  else if (portal == Portals.POSLOVNI) return "Poslovni";
+  else if (portal == Portals.DANAS) return "Danas";
+  else if (portal == Portals.ZAGREB) return "ZagrebInfo";
   else return "N/A";
 }
 

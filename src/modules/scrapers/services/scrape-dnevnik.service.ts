@@ -59,7 +59,8 @@ export class ScrapeDnevnikService implements ScraperService {
                   .replace('<a data-upscore-url href="', "")
                   .replace('">', "")
               );
-            });
+            })
+            .map((articleLink) => articleLink.replace("//", "/"));
           if (links && links.length > 0) articleLinks.push(...links);
         }
       });
