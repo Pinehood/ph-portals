@@ -2,6 +2,7 @@ import { forwardRef, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import {
   Scrape24SataService,
+  ScrapeDirektnoService,
   ScrapeDnevnikService,
   ScrapeDnevnoService,
   ScrapeIndexService,
@@ -23,6 +24,7 @@ import { PortalsModule } from "@portals/portals.module";
   ],
   providers: [
     Scrape24SataService,
+    ScrapeDirektnoService,
     ScrapeDnevnikService,
     ScrapeDnevnoService,
     ScrapeIndexService,
@@ -35,6 +37,7 @@ import { PortalsModule } from "@portals/portals.module";
   ],
   exports: [
     Scrape24SataService,
+    ScrapeDirektnoService,
     ScrapeDnevnikService,
     ScrapeDnevnoService,
     ScrapeIndexService,

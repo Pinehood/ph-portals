@@ -1,4 +1,5 @@
 export * from "./scrape-24sata.service";
+export * from "./scrape-direktno.service";
 export * from "./scrape-dnevnik.service";
 export * from "./scrape-dnevno.service";
 export * from "./scrape-index.service";

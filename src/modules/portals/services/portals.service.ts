@@ -6,7 +6,7 @@ import {
   formatDate,
   getPortalName,
   getPortalsLinks,
-  millisToMinutesAndSeconds,
+  millisToSeconds,
   redirect,
 } from "@common/functions";
 import {
@@ -104,10 +104,11 @@ export class PortalsService {
             RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + portal
           )
         );
-        const stats = `Ukupan broj članaka: <strong>${numArticles}</strong> | Ukupno vrijeme obrade: <strong>${millisToMinutesAndSeconds(
+        const stats = `Članci: <strong>${numArticles}</strong> | Obrada: <strong>${millisToSeconds(
           duration
-        )}</strong>  | Zadnji puta osvježeno: <strong>${formatDate(
-          new Date(lastDate)
+        )}</strong>  | Osvježeno: <strong>${formatDate(
+          new Date(lastDate),
+          true
         )}</strong> `;
         return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
           articles: finalContent,

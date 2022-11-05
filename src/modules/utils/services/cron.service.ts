@@ -11,6 +11,7 @@ import { PortalsService } from "@portals/services/portals.service";
 import { RedisService } from "@utils/services/redis.service";
 import {
   Scrape24SataService,
+  ScrapeDirektnoService,
   ScrapeDnevnikService,
   ScrapeDnevnoService,
   ScrapeIndexService,
@@ -39,7 +40,8 @@ export class CronService {
     private readonly scrapeSlobodnaDalmacijaService: ScrapeSlobodnaDalmacijaService,
     private readonly scrapeSportskeNovostiService: ScrapeSportskeNovostiService,
     private readonly scrapeTportalService: ScrapeTportalService,
-    private readonly scrapeVecernjiService: ScrapeVecernjiService
+    private readonly scrapeVecernjiService: ScrapeVecernjiService,
+    private readonly scrapeDirektnoService: ScrapeDirektnoService
   ) {}
 
   @Timeout(2000)
@@ -48,7 +50,7 @@ export class CronService {
     this.scrapeData();
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   private async scrapeData(): Promise<void> {
     try {
       const portalPage = await this.portalsService.getPage(Portals.HOME);
@@ -67,6 +69,7 @@ export class CronService {
         this.cachePortalAndArticles(this.scrapeSportskeNovostiService),
         this.cachePortalAndArticles(this.scrapeTportalService),
         this.cachePortalAndArticles(this.scrapeVecernjiService),
+        this.cachePortalAndArticles(this.scrapeDirektnoService),
       ]);
     } catch (error: any) {
       this.logger.error(error);

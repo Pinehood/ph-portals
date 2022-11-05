@@ -51,6 +51,7 @@ export enum Portals {
   TPORTAL = "tportal",
   SLOBODNA_DALMACIJA = "sd",
   SPORTSKE_NOVOSTI = "sn",
+  DIREKTNO = "direktno",
 }
 
 export enum RedisStatsKeys {

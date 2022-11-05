@@ -42,6 +42,8 @@ export function getPortalIcon(portal: Portals): string {
     return "https://slobodnadalmacija.hr/templates/site/images/pngs/favicon-sd/favicon-32x32.png";
   else if (portal == Portals.SPORTSKE_NOVOSTI)
     return "https://sportske.jutarnji.hr/templates/site/images/pngs/favicon-sn/android-icon-192x192.png";
+  else if (portal == Portals.DIREKTNO)
+    return "https://direktno.hr/favicon-32x32.png";
   else
     return "https://static.vecteezy.com/system/resources/thumbnails/000/365/820/small/Basic_Elements__2818_29.jpg";
 }
@@ -58,6 +60,7 @@ export function getPortalName(portal: Portals): string {
   else if (portal == Portals.TPORTAL) return "Tportal";
   else if (portal == Portals.SLOBODNA_DALMACIJA) return "Slobodna Dalmacija";
   else if (portal == Portals.SPORTSKE_NOVOSTI) return "Sportske Novosti";
+  else if (portal == Portals.DIREKTNO) return "Direktno";
   else return "N/A";
 }
 
@@ -124,29 +127,42 @@ export function redirect(portal: Portals): string {
   }
 }
 
-export function formatDate(date: Date): string {
-  return (
-    ("0" + date.getDate()).slice(-2) +
-    "." +
-    ("0" + (date.getMonth() + 1)).slice(-2) +
-    "." +
-    date.getFullYear() +
-    ". " +
-    ("0" + date.getHours()).slice(-2) +
-    ":" +
-    ("0" + date.getMinutes()).slice(-2) +
-    ":" +
-    ("0" + date.getSeconds()).slice(-2) +
-    (process.env.NODE_ENV == "production" ? " UTC" : "")
-  );
+export function formatDate(date: Date, onlyHoursMinutes?: boolean): string {
+  if (onlyHoursMinutes == true) {
+    return (
+      ("0" + date.getHours()).slice(-2) +
+      ":" +
+      ("0" + date.getMinutes()).slice(-2) +
+      (process.env.NODE_ENV == "production" ? " UTC" : "")
+    );
+  } else {
+    return (
+      ("0" + date.getDate()).slice(-2) +
+      "." +
+      ("0" + (date.getMonth() + 1)).slice(-2) +
+      "." +
+      date.getFullYear() +
+      ". " +
+      ("0" + date.getHours()).slice(-2) +
+      ":" +
+      ("0" + date.getMinutes()).slice(-2) +
+      ":" +
+      ("0" + date.getSeconds()).slice(-2) +
+      (process.env.NODE_ENV == "production" ? " UTC" : "")
+    );
+  }
 }
 
-export function millisToMinutesAndSeconds(millis: number) {
+export function millisToMinutesAndSeconds(millis: number): string {
   const minutes = Math.floor(millis / 60000);
   const seconds = parseInt(((millis % 60000) / 1000).toFixed(0));
   return seconds == 60
-    ? minutes + 1 + ":00"
+    ? minutes + 1 + "m00s"
     : minutes + "m" + (seconds < 10 ? "0" : "") + seconds + "s";
+}
+
+export function millisToSeconds(millis: number): string {
+  return `${parseInt((millis / 1000).toFixed(0)).toFixed(0)}s`;
 }
 
 export function getDefaultArticle(
