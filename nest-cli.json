@@ -9,7 +9,7 @@
         }
       }
     ],
-    "assets": ["**/{templates,resources}/*.{html,css,json}"],
+    "assets": [{ "include": "**/templates/*.html", "outDir": "dist" }],
     "watchAssets": true
   }
 }
