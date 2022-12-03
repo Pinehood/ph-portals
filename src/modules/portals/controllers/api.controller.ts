@@ -29,7 +29,7 @@ export class ApiController {
     type: Portal,
     isArray: true,
   })
-  getPortals(): any[] {
+  getPortals(): Portal[] {
     return this.apiService.getPortals();
   }
 
@@ -56,7 +56,7 @@ export class ApiController {
   getArticles(
     @Param(UrlParams.PORTAL) portal: Portals,
     @Query(QueryParams.WITH_CONTENT) withContent: string
-  ): Promise<any[]> {
+  ): Promise<ArticleInfo[]> {
     return this.apiService.getArticles(portal, withContent);
   }
 
@@ -69,7 +69,7 @@ export class ApiController {
     description: "Total combined statistics",
     type: ScraperStats,
   })
-  getTotalStats(): Promise<any> {
+  getTotalStats(): Promise<ScraperStats> {
     return this.apiService.getTotalStats();
   }
 
@@ -87,7 +87,9 @@ export class ApiController {
     description: "Total scraper statistics",
     type: ScraperStats,
   })
-  getPortalStats(@Param(UrlParams.PORTAL) portal: Portals): Promise<any> {
+  getPortalStats(
+    @Param(UrlParams.PORTAL) portal: Portals
+  ): Promise<ScraperStats> {
     return this.apiService.getStats(portal);
   }
 }
