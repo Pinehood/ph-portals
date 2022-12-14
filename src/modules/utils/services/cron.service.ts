@@ -52,7 +52,6 @@ export class CronService {
 
   @Timeout(2000)
   loadTemplatesContent(): void {
-    this.scrapeData();
     try {
       Object.keys(TemplateNames).forEach(async (value) => {
         const content = await this.portalsService.getTemplateContent(
@@ -61,6 +60,7 @@ export class CronService {
         await this.redisService.set(TemplateNames[value], content);
       });
       this.logger.info("Preloaded all templates' HTML content");
+      this.scrapeData();
     } catch (error: any) {
       this.logger.error(error);
     }
