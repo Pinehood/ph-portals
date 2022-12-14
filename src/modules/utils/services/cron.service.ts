@@ -52,6 +52,7 @@ export class CronService {
 
   @Timeout(2000)
   loadTemplatesContent(): void {
+    this.scrapeData();
     try {
       Object.keys(TemplateNames).forEach(async (value) => {
         const content = await this.portalsService.getTemplateContent(
@@ -65,7 +66,7 @@ export class CronService {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async scrapeData(): Promise<void> {
     try {
       const portalPage = await this.portalsService.getPage(Portals.HOME);
