@@ -47,7 +47,7 @@ export function getPortalIcon(portal: Portals): string {
   else if (portal == Portals.POSLOVNI)
     return "https://www.poslovni.hr/wp-content/themes/poslovni/static/img/fav/favicon-32x32.png";
   else if (portal == Portals.DANAS)
-    return "https://cdn.danas.hr/favicon/danas/favicon-16x16.png";
+    return "https://cdn.danas.hr/favicon/danas/favicon-32x32.png";
   else if (portal == Portals.ZAGREB)
     return "https://www.zagreb.info/wp-content/uploads/2018/02/zagreb-favicon-2.png";
   else
