@@ -77,23 +77,29 @@ export class ScrapeVecernjiService implements ScraperService {
             $("iframe").remove();
             $("span.widgetWrap").remove();
             $("div.article__body_banner_article_bottom").remove();
-            let title = $("h1.article__title").text();
+            let title = $("h1.single-article__title").text();
             if (title) {
               title = title.replace(/\n/g, "").trim();
             }
-            let lead = $("span.article__lead").text();
+            let lead = $("div.single-article__row").first().text();
             if (lead) {
               lead = lead.replace(/\n/g, "").trim();
             }
             let time = $("span.article__header_date").text();
             if (time) {
               time = time.replace(/\n/g, "").trim();
+            } else {
+              time = "nedostupno";
             }
-            let author = $("a.article__author--link").text();
+            let author = $("div.author__name").text();
             if (author) {
-              author = author.replace(/\n/g, "").replace(/  /g, "").trim();
+              author = author
+                .replace(/\n/g, "")
+                .replace(/  /g, "")
+                .replace("Autor", "")
+                .trim();
             }
-            let content = $("div.article__body--main_content").html();
+            let content = $("div.single-article__content").html();
             if (content) {
               content = content.replace(/\n/g, "").trim();
             }
