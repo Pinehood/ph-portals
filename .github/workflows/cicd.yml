@@ -1,45 +1,75 @@
 name: CI/CD
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [develop]
 jobs:
   integrate:
-    name: Lint
-    runs-on: self-hosted
+    name: Install, Build & Lint
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Use Node.js 18.x
+      - name: Setup
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: "npm"
-      - run: |
-          npm ci
-          npm run build --if-present
-      - run: |
-          npm run lint
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Lint
+        run: npm run lint
   build:
     needs: integrate
     name: Build Docker Image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Build Docker Image
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+      - name: Login to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build & Upload Image to AWS ECR
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
+          ECR_REPOSITORY: ph-portals
         run: |
-          docker build -f ./Dockerfile -t portals-backend:latest .
+          docker build -f ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
   deploy:
     needs: build
     name: Deploy Docker Image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Trigger Deployment
-        run: |
-          docker-compose -f /opt/docker/portali/docker-compose.yml up -d backend
+      - name: Pull Latest Image & Deploy to Container
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
+          ECR_REPOSITORY: ph-portals
+          ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          REGION: eu-central-1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: 22
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          envs: ECR_REGISTRY,ECR_REPOSITORY,ACCESS_KEY_ID,SECRET_ACCESS_KEY,REGION
+          script: |
+            aws --profile default configure set aws_access_key_id "$ACCESS_KEY_ID"
+            aws --profile default configure set aws_secret_access_key "$SECRET_ACCESS_KEY"
+            aws --profile default configure set aws_default_region "$REGION"
+            aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+            docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest
+            cd /opt/docker/ph-portals
+            env REGISTRY=$ECR_REGISTRY docker-compose up -d backend

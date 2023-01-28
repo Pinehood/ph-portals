@@ -13,7 +13,7 @@ services:
 
   backend:
     container_name: portals-backend
-    image: portals-backend:latest
+    image: ${REGISTRY}/portals-backend:latest
     restart: unless-stopped
     networks:
       - portals-net
