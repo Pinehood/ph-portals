@@ -78,7 +78,7 @@ export class ScrapeVecernjiService implements ScraperService {
             $("span.widgetWrap").remove();
             $("div.article__body_banner_article_bottom").remove();
             $("div.image").remove();
-            $("article").remove();
+            //$("article").remove();
             let title = $("h1.single-article__title").text();
             if (title) {
               title = title.replace(/\n/g, "").trim();
