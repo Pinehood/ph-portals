@@ -77,11 +77,13 @@ export class ScrapeVecernjiService implements ScraperService {
             $("iframe").remove();
             $("span.widgetWrap").remove();
             $("div.article__body_banner_article_bottom").remove();
+            $("div.image").remove();
+            $("article").remove();
             let title = $("h1.single-article__title").text();
             if (title) {
               title = title.replace(/\n/g, "").trim();
             }
-            let lead = $("div.single-article__row").first().text();
+            let lead = $("div.single-article__headline").first().text();
             if (lead) {
               lead = lead.replace(/\n/g, "").trim();
             }
