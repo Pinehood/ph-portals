@@ -102,7 +102,7 @@ export class ScrapeVecernjiService implements ScraperService {
                 .replace("Autor", "")
                 .trim();
             }
-            let content = $("div.single-article__content p").html();
+            let content = $("div.single-article__content").html();
             if (content) {
               content = content.replace(/\n/g, "").trim();
             }
