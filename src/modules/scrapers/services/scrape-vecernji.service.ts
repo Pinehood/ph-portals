@@ -78,7 +78,8 @@ export class ScrapeVecernjiService implements ScraperService {
             $("span.widgetWrap").remove();
             $("div.article__body_banner_article_bottom").remove();
             $("div.image").remove();
-            //$("article").remove();
+            $("div.dfp_banner--divInArticle").remove();
+            $("div.js_bannerInArticle2").remove();
             let title = $("h1.single-article__title").text();
             if (title) {
               title = title.replace(/\n/g, "").trim();
@@ -101,7 +102,7 @@ export class ScrapeVecernjiService implements ScraperService {
                 .replace("Autor", "")
                 .trim();
             }
-            let content = $("div.single-article__content").html();
+            let content = $("div.single-article__content p").html();
             if (content) {
               content = content.replace(/\n/g, "").trim();
             }
