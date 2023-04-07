@@ -1,7 +1,7 @@
 {
-  "name": "ph-portal-scraper",
+  "name": "ph-portals",
   "version": "1.0.0",
-  "description": "Pinehood Portal Scraper",
+  "description": "Pinehood Portals Scraper",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

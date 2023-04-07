@@ -52,7 +52,7 @@ jobs:
     if: github.event_name != 'pull_request'
     steps:
       - name: Pull Latest Image & Deploy to Container
-        uses: appleboy/ssh-action@v0.1.9
+        uses: appleboy/ssh-action@v0.1.4
         env:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
           ECR_REPOSITORY: ph-portals
@@ -70,5 +70,5 @@ jobs:
             aws --profile default configure set aws_access_key_id "$ACCESS_KEY_ID"
             aws --profile default configure set aws_secret_access_key "$SECRET_ACCESS_KEY"
             aws --profile default configure set aws_default_region "$REGION"
-            aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+            docker login --username AWS -p $(aws ecr get-login-password --region $REGION) $ECR_REGISTRY
             docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest
