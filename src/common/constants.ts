@@ -55,6 +55,7 @@ export enum Portals {
   POSLOVNI = "poslovni",
   DANAS = "danas",
   ZAGREB = "zagreb",
+  TELEGRAM = "telegram",
 }
 
 export enum RedisStatsKeys {

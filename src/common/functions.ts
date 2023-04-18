@@ -1,4 +1,4 @@
-import { Article } from "@resources/dtos";
+import { Article, Portal } from "@resources/dtos";
 import { Portals } from "@common/constants";
 import { ResponseConstants } from ".";
 
@@ -50,6 +50,8 @@ export function getPortalIcon(portal: Portals): string {
     return "https://cdn.danas.hr/favicon/danas/favicon-16x16.png";
   else if (portal == Portals.ZAGREB)
     return "https://www.zagreb.info/wp-content/uploads/2018/02/zagreb-favicon-2.png";
+  else if (portal == Portals.TELEGRAM)
+    return "https://www.telegram.hr/_nuxt/icons/icon_64x64.28ac38.png";
   else
     return "https://static.vecteezy.com/system/resources/thumbnails/000/365/820/small/Basic_Elements__2818_29.jpg";
 }
@@ -70,6 +72,7 @@ export function getPortalName(portal: Portals): string {
   else if (portal == Portals.POSLOVNI) return "Poslovni";
   else if (portal == Portals.DANAS) return "Danas";
   else if (portal == Portals.ZAGREB) return "ZagrebInfo";
+  else if (portal == Portals.TELEGRAM) return "Telegram";
   else return "N/A";
 }
 

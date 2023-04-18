@@ -9,6 +9,7 @@ export * from "./scrape-net.service";
 export * from "./scrape-poslovni.service";
 export * from "./scrape-slobodna-dalmacija.service";
 export * from "./scrape-sportske-novosti.service";
+export * from "./scrape-telegram.service";
 export * from "./scrape-tportal.service";
 export * from "./scrape-vecernji.service";
 export * from "./scrape-zagreb.service";

@@ -22,6 +22,7 @@ import {
   ScraperService,
   ScrapeSlobodnaDalmacijaService,
   ScrapeSportskeNovostiService,
+  ScrapeTelegramService,
   ScrapeTportalService,
   ScrapeVecernjiService,
   ScrapeZagrebService,
@@ -47,7 +48,8 @@ export class CronService {
     private readonly scrapeSportskeNovostiService: ScrapeSportskeNovostiService,
     private readonly scrapeTportalService: ScrapeTportalService,
     private readonly scrapeVecernjiService: ScrapeVecernjiService,
-    private readonly scrapeZagrebService: ScrapeZagrebService
+    private readonly scrapeZagrebService: ScrapeZagrebService,
+    private readonly scrapeTelegramService: ScrapeTelegramService
   ) {}
 
   @Timeout(2000)
@@ -89,6 +91,7 @@ export class CronService {
         this.cachePortalAndArticles(this.scrapeTportalService),
         this.cachePortalAndArticles(this.scrapeVecernjiService),
         this.cachePortalAndArticles(this.scrapeZagrebService),
+        this.cachePortalAndArticles(this.scrapeTelegramService),
       ]);
     } catch (error: any) {
       this.logger.error(error);

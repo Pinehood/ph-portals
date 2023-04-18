@@ -80,19 +80,21 @@ export class ScrapeTportalService implements ScraperService {
             $("div.listComponentType2").remove();
             $("figure").remove();
             $("figcaption").remove();
-            let title = $("h1.title").text();
+            let title = $("h1.js_articleTitle").text();
             if (title) {
               title = title.replace(/\n/g, "").trim();
             }
-            let lead = $("p.leadTitle").first().text();
+            let lead = $("div.js_articleText p").first().text();
             if (lead) {
               lead = lead.replace(/\n/g, "").trim();
             }
-            let time = $("li.publishDate").text();
+            let time = $("header.relative div.basis-full div.flex div.flex")
+              .last()
+              .text();
             if (time) {
               time = time.replace("Objavljeno", "").replace(/\n/g, "").trim();
             }
-            let author = $("ul.meta").first().text();
+            let author = $('a[href^="/autor"] p').text();
             if (author) {
               author = author
                 .replace("Autor: ", "")
@@ -101,7 +103,7 @@ export class ScrapeTportalService implements ScraperService {
                 .split("Zadnja")[0]
                 .trim();
             }
-            let content = $("section.articleComponents").html();
+            let content = $("div.article-content").html();
             if (content) {
               content = content.replace(/\n/g, "").trim();
             }

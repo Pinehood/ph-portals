@@ -12,6 +12,7 @@ import {
   ScrapePoslovniService,
   ScrapeSlobodnaDalmacijaService,
   ScrapeSportskeNovostiService,
+  ScrapeTelegramService,
   ScrapeTportalService,
   ScrapeVecernjiService,
   ScrapeZagrebService,
@@ -40,6 +41,7 @@ import { PortalsModule } from "@portals/portals.module";
     ScrapeTportalService,
     ScrapeVecernjiService,
     ScrapeZagrebService,
+    ScrapeTelegramService,
   ],
   exports: [
     Scrape24SataService,
@@ -56,6 +58,7 @@ import { PortalsModule } from "@portals/portals.module";
     ScrapeTportalService,
     ScrapeVecernjiService,
     ScrapeZagrebService,
+    ScrapeTelegramService,
   ],
 })
 export class ScrapersModule {}
