@@ -1,4 +1,4 @@
-import { Article, Portal } from "@resources/dtos";
+import { Article } from "@resources/dtos";
 import { Portals } from "@common/constants";
 import { ResponseConstants } from ".";
 

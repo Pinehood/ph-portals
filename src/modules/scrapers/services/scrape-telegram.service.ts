@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import axios from "@common/axios";
-import * as cheerio from "cheerio";
 import { Portals } from "@common/constants";
 import { Article } from "@resources/dtos";
 import {
