@@ -51,7 +51,7 @@ export class ScrapeTelegramService implements ScraperService {
           continue;
 
         await TryCatch(async () => {
-          const article = await axios.get(articleLink);
+          const article = await axios.get<object>(articleLink);
           if (article && article.data) {
             const obj = article.data as {
               category: string;
@@ -60,7 +60,7 @@ export class ScrapeTelegramService implements ScraperService {
             };
             if (obj.posts && obj.posts.length > 0) {
               obj.posts.forEach((post) => {
-                if (post.paywall === "none" || post.paywall === "never") {
+                if (post.paywall == "none" || post.paywall == "never") {
                   articles.push({
                     ...this.default,
                     articleId: articleLink.substring(
