@@ -76,8 +76,11 @@ export class ScrapeTportalService implements ScraperService {
             $("iframe").remove();
             $("div.banner").remove();
             $("div.embedComponent").remove();
+            $("div.mediaComponent").remove();
+            $("div.iframeWrap").remove();
             $("div.autoRelatedArticles").remove();
             $("div.listComponentType2").remove();
+            $("div.related-news").remove();
             $("figure").remove();
             $("figcaption").remove();
             let title = $("h1.js_articleTitle").text();

@@ -58,24 +58,26 @@ export class ScrapeTelegramService implements ScraperService {
               description: string;
               posts: any[];
             };
-            obj.posts.forEach((post) => {
-              if (post.paywall === "none" || post.paywall === "never") {
-                articles.push({
-                  ...this.default,
-                  articleId: articleLink.substring(
-                    articleLink.lastIndexOf("-") + 1
-                  ),
-                  articleLink: this.link + post.permalink,
-                  author: (post.authors as any[])
-                    .map((author) => author.name)
-                    .join(","),
-                  content: post.content,
-                  lead: post.description,
-                  time: new Date(parseInt(post.time) * 1000).toUTCString(),
-                  title: post.portal_title,
-                });
-              }
-            });
+            if (obj.posts && obj.posts.length > 0) {
+              obj.posts.forEach((post) => {
+                if (post.paywall === "none" || post.paywall === "never") {
+                  articles.push({
+                    ...this.default,
+                    articleId: articleLink.substring(
+                      articleLink.lastIndexOf("-") + 1
+                    ),
+                    articleLink: this.link + post.permalink,
+                    author: (post.authors as any[])
+                      .map((author) => author.name)
+                      .join(","),
+                    content: post.content,
+                    lead: post.description,
+                    time: new Date(parseInt(post.time) * 1000).toUTCString(),
+                    title: post.portal_title,
+                  });
+                }
+              });
+            }
           }
         });
       }
