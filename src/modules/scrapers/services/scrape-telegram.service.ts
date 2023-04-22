@@ -51,9 +51,9 @@ export class ScrapeTelegramService implements ScraperService {
           continue;
 
         await TryCatch(async () => {
-          const article = await axios.get<object>(articleLink);
+          const article = await axios.get(articleLink);
           if (article && article.data) {
-            const obj = article.data as {
+            const obj = JSON.parse(article.data) as {
               category: string;
               description: string;
               posts: any[];
@@ -63,9 +63,7 @@ export class ScrapeTelegramService implements ScraperService {
                 if (post.paywall == "none" || post.paywall == "never") {
                   articles.push({
                     ...this.default,
-                    articleId: articleLink.substring(
-                      articleLink.lastIndexOf("-") + 1
-                    ),
+                    articleId: post.id,
                     articleLink: this.link + post.permalink,
                     author: (post.authors as any[])
                       .map((author) => author.name)
