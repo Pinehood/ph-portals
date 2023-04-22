@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import axios from "@common/axios";
+import * as cheerio from "cheerio";
 import { Portals } from "@common/constants";
 import { Article } from "@resources/dtos";
 import {
@@ -34,6 +35,8 @@ export class ScrapeTelegramService implements ScraperService {
       "https://www.telegram.hr/api/category/najnovije/page/3",
       "https://www.telegram.hr/api/category/najnovije/page/4",
       "https://www.telegram.hr/api/category/najnovije/page/5",
+      "https://www.telegram.hr/api/category/najnovije/page/6",
+      "https://www.telegram.hr/api/category/najnovije/page/7",
     ];
   }
 
@@ -60,6 +63,10 @@ export class ScrapeTelegramService implements ScraperService {
             };
             if (obj.posts && obj.posts.length > 0) {
               obj.posts.forEach((post) => {
+                const $ = cheerio.load(post.content);
+                $("img").remove();
+                $("figure").remove();
+                $("iframe").remove();
                 if (post.paywall == "none" || post.paywall == "never") {
                   articles.push({
                     ...this.default,
@@ -68,7 +75,7 @@ export class ScrapeTelegramService implements ScraperService {
                     author: (post.authors as any[])
                       .map((author) => author.name)
                       .join(","),
-                    content: post.content,
+                    content: $().html(),
                     lead: post.description,
                     time: new Date(parseInt(post.time) * 1000).toUTCString(),
                     title: post.portal_title,
