@@ -30,12 +30,21 @@ export class ScrapeSportskeNovostiService implements ScraperService {
     this.link = "https://sportske.jutarnji.hr";
     this.default = getDefaultArticle(this.type, this.link, this.name);
     this.roots = [
-      "https://sportske.jutarnji.hr/sn/nogomet/bundesliga/",
-      "https://sportske.jutarnji.hr/sn/nogomet/serie-a/",
-      "https://sportske.jutarnji.hr/sn/nogomet/premiership/",
+      "https://sportske.jutarnji.hr/sn/nogomet/bundesliga",
+      "https://sportske.jutarnji.hr/sn/nogomet/serie-a",
+      "https://sportske.jutarnji.hr/sn/nogomet/premiership",
       "https://sportske.jutarnji.hr/sn/nogomet/le-championnat",
       "https://sportske.jutarnji.hr/sn/nogomet/primera",
-      "https://sportske.jutarnji.hr/sn/nogomet/reprezentacija/",
+      "https://sportske.jutarnji.hr/sn/nogomet/reprezentacija",
+      "https://sportske.jutarnji.hr/sn/kosarka/aba-liga",
+      "https://sportske.jutarnji.hr/sn/kosarka/nba",
+      "https://sportske.jutarnji.hr/sn/kosarka/basket-euroliga",
+      "https://sportske.jutarnji.hr/sn/kosarka/basket-international",
+      "https://sportske.jutarnji.hr/sn/sport-mix/rukomet/rukomet-lpm",
+      "https://sportske.jutarnji.hr/sn/tenis/atp-wta-turniri",
+      "https://sportske.jutarnji.hr/sn/tenis/grand-slam",
+      "https://sportske.jutarnji.hr/sn/tenis/davis-cup",
+      "https://sportske.jutarnji.hr/sn/sport-mix/",
     ];
   }
 

@@ -30,13 +30,15 @@ export class ScrapeDirektnoService implements ScraperService {
     this.link = "https://www.direktno.hr";
     this.default = getDefaultArticle(this.type, this.link, this.name);
     this.roots = [
-      "https://direktno.hr/rss/publish/latest/direkt-50/",
-      "https://direktno.hr/rss/publish/latest/domovina-10/",
-      "https://direktno.hr/rss/publish/latest/zagreb-15/",
-      "https://direktno.hr/rss/publish/latest/eu_svijet/",
-      "https://direktno.hr/rss/publish/latest/razvoj-110/",
+      "https://direktno.hr/rss/publish/latest/direkt-50",
+      "https://direktno.hr/rss/publish/latest/domovina-10",
+      "https://direktno.hr/rss/publish/latest/zagreb-15",
+      "https://direktno.hr/rss/publish/latest/eu_svijet",
+      "https://direktno.hr/rss/publish/latest/razvoj-110",
       "https://direktno.hr/rss/publish/latest/sport-60",
-      "https://direktno.hr/rss/publish/latest/zivot-70/",
+      "https://direktno.hr/rss/publish/latest/zivot-70",
+      "https://direktno.hr/rss/publish/latest/kolumne-80",
+      "https://direktno.hr/rss/publish/latest/medijski-partneri-90",
     ];
   }
 

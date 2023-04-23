@@ -32,8 +32,10 @@ export class ScrapeIndexService implements ScraperService {
     this.roots = [
       "https://www.index.hr/rss",
       "https://www.index.hr/rss/vijesti",
+      "https://www.index.hr/rss/vijesti-svijet",
       "https://www.index.hr/rss/najcitanije",
       "https://www.index.hr/rss/sport",
+      "https://www.index.hr/rss/magazin",
     ];
   }
 

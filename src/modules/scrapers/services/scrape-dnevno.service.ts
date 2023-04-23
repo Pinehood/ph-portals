@@ -30,12 +30,14 @@ export class ScrapeDnevnoService implements ScraperService {
     this.link = "https://www.dnevno.hr";
     this.default = getDefaultArticle(this.type, this.link, this.name);
     this.roots = [
-      "https://www.dnevno.hr/category/vijesti/",
+      "https://www.dnevno.hr/category/vijesti",
       "https://www.dnevno.hr/category/sport",
       "https://www.dnevno.hr/category/magazin",
       "https://www.dnevno.hr/category/gospodarstvo-i-turizam",
+      "https://www.dnevno.hr/category/planet-x",
       "https://www.dnevno.hr/category/zdravlje",
       "https://www.dnevno.hr/category/domovina",
+      "https://www.dnevno.hr/category/vjera",
     ];
   }
 

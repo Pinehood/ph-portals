@@ -37,6 +37,9 @@ export class ScrapeTelegramService implements ScraperService {
       "https://www.telegram.hr/api/category/najnovije/page/5",
       "https://www.telegram.hr/api/category/najnovije/page/6",
       "https://www.telegram.hr/api/category/najnovije/page/7",
+      "https://www.telegram.hr/api/category/najnovije/page/8",
+      "https://www.telegram.hr/api/category/najnovije/page/9",
+      "https://www.telegram.hr/api/category/najnovije/page/10",
     ];
   }
 
@@ -63,7 +66,10 @@ export class ScrapeTelegramService implements ScraperService {
             };
             if (obj.posts && obj.posts.length > 0) {
               obj.posts.forEach((post) => {
-                const $ = cheerio.load(post.content);
+                const html = `<!DOCTYPE html><html><head></head><body><div>${
+                  post.content as string
+                }</div></body></html>`;
+                const $ = cheerio.load(html);
                 $("img").remove();
                 $("figure").remove();
                 $("iframe").remove();
@@ -75,7 +81,7 @@ export class ScrapeTelegramService implements ScraperService {
                     author: (post.authors as any[])
                       .map((author) => author.name)
                       .join(","),
-                    content: $().html(),
+                    content: $("body").html(),
                     lead: post.description,
                     time: new Date(parseInt(post.time) * 1000).toUTCString(),
                     title: post.portal_title,

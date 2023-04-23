@@ -35,6 +35,10 @@ export class ScrapeSlobodnaDalmacijaService implements ScraperService {
       "https://slobodnadalmacija.hr/feed/category/142",
       "https://slobodnadalmacija.hr/feed/category/241",
       "https://slobodnadalmacija.hr/feed/category/242",
+      "https://slobodnadalmacija.hr/feed/category/243",
+      "https://slobodnadalmacija.hr/feed/category/244",
+      "https://slobodnadalmacija.hr/feed/category/255",
+      "https://slobodnadalmacija.hr/feed/category/256",
     ];
   }
 

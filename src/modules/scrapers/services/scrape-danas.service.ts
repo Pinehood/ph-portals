@@ -33,6 +33,9 @@ export class ScrapeDanasService implements ScraperService {
       "https://www.danas.hr/hrvatska",
       "https://www.danas.hr/svijet",
       "https://www.danas.hr/sport",
+      "https://www.danas.hr/crna-kronika",
+      "https://www.danas.hr/vrijeme",
+      "https://www.danas.hr/videovijesti/vijesti-videa",
     ];
   }
 

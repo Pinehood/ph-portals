@@ -36,6 +36,10 @@ export class ScrapeVecernjiService implements ScraperService {
       "https://www.vecernji.hr/sport",
       "https://www.vecernji.hr/zagreb",
       "https://www.vecernji.hr/showbiz",
+      "https://www.vecernji.hr/biznis",
+      "https://www.vecernji.hr/techsci",
+      "https://www.vecernji.hr/znanost",
+      "https://www.vecernji.hr/zanimljivosti",
     ];
   }
 

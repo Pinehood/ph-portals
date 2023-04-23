@@ -35,6 +35,9 @@ export class ScrapePoslovniService implements ScraperService {
       "https://www.poslovni.hr/vijesti/europska-unija",
       "https://www.poslovni.hr/vijesti/svijet",
       "https://www.poslovni.hr/sci-tech",
+      "https://www.poslovni.hr/kompanije",
+      "https://www.poslovni.hr/financije",
+      "https://www.poslovni.hr/lifestyle",
     ];
   }
 
