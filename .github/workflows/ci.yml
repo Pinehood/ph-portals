@@ -1,4 +1,4 @@
-name: CI/CD
+name: Continuous Integration
 on:
   push:
     branches: [main, develop]
@@ -14,7 +14,7 @@ jobs:
       - name: Setup
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: ${{ vars.NODE_VERSION }}
           cache: "npm"
       - name: Install
         run: npm ci
@@ -54,31 +54,3 @@ jobs:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
           ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           BRANCH: ${{ github.ref_name }}
-  deploy:
-    needs: build
-    name: Deploy Docker Image
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
-    steps:
-      - name: Pull Latest Image
-        uses: appleboy/ssh-action@v0.1.4
-        env:
-          ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
-          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          REGION: ${{ vars.AWS_REGION }}
-          BRANCH: ${{ github.ref_name }}
-        with:
-          port: 22
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
-          passphrase: ${{ secrets.VPS_KEY_PASSPHRASE }}
-          envs: ECR_REGISTRY,ECR_REPOSITORY,ACCESS_KEY_ID,SECRET_ACCESS_KEY,REGION,BRANCH
-          script: |
-            aws --profile default configure set aws_access_key_id "$ACCESS_KEY_ID"
-            aws --profile default configure set aws_secret_access_key "$SECRET_ACCESS_KEY"
-            aws --profile default configure set aws_default_region "$REGION"
-            aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
-            docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH
