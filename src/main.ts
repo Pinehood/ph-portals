@@ -15,7 +15,7 @@ async function bootstrap() {
     credentials: true,
     origin: "*",
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useLogger(app.get(Logger));
 
   const options = new DocumentBuilder()
