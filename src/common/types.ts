@@ -1,4 +1,4 @@
-import { Portals } from "@common/constants";
+import { Portals } from "@/common";
 
 export type ScraperConfig = {
   type: Portals;
@@ -8,19 +8,21 @@ export type ScraperConfig = {
   rss: boolean;
   roots: string[];
   links: (link: string) => Promise<string[]>;
-  id: (link: string) => Promise<string>;
+  id: (link: string) => string;
   remove1: string[];
   title: Cheerio;
   lead: Cheerio;
   author: Cheerio;
   time: Cheerio;
   remove2?: string[] | null;
-  content: Omit<Omit<Cheerio, "take">, "transform">;
+  content: CheerioLimited;
 };
 
-export type Cheerio = {
+type Cheerio = {
   find: string;
   replace?: string[] | null;
   take: "first" | "last" | "normal";
   transform?: (value: string) => string;
 };
+
+type CheerioLimited = Omit<Omit<Cheerio, "take">, "transform">;

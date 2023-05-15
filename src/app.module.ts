@@ -5,9 +5,23 @@ import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { LoggerModule } from "nestjs-pino";
 import { default as pinoPretty } from "pino-pretty";
-import { PortalsModule } from "@portals/portals.module";
-import { ScrapersModule } from "@scrapers/scrapers.module";
-import { UtilsModule } from "@utils/utils.module";
+import { ApiController, PortalsController } from "@/controllers";
+import {
+  ApiService,
+  CronService,
+  PortalsService,
+  RedisService,
+  ScrapeIndexService,
+  ScrapeJutarnjiService,
+  ScrapeNetService,
+  ScrapePoslovniService,
+  ScrapeSlobodnaDalmacijaService,
+  ScrapeSportskeNovostiService,
+  ScrapeTelegramService,
+  ScrapeTportalService,
+  ScrapeVecernjiService,
+  ScrapeZagrebService,
+} from "@/services";
 
 @Module({
   imports: [
@@ -24,11 +38,23 @@ import { UtilsModule } from "@utils/utils.module";
         autoLogging: false,
       },
     }),
-    PortalsModule,
-    ScrapersModule,
-    UtilsModule,
   ],
+  controllers: [ApiController, PortalsController],
   providers: [
+    ApiService,
+    CronService,
+    PortalsService,
+    RedisService,
+    ScrapeIndexService,
+    ScrapeJutarnjiService,
+    ScrapeNetService,
+    ScrapePoslovniService,
+    ScrapeSlobodnaDalmacijaService,
+    ScrapeSportskeNovostiService,
+    ScrapeTportalService,
+    ScrapeVecernjiService,
+    ScrapeZagrebService,
+    ScrapeTelegramService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

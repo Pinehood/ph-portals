@@ -1,5 +1,10 @@
 - Finish service->config switch
 - Figure out solution for "API portals" (Telegram example)
-- Static file serving instead of Redis loading
-- Exposed API update?
-- Google Analytics integration?
+- Exposed API updates/additions
+- Google Analytics integration (non-dev purposes)
+- Service & Git versioning/tagging/releasing
+- Create README.md
+- Create PULL_REQUEST_TEMPLATE
+- Create issues template
+- Latest ^version packages
+- Proper license choosing

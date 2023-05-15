@@ -2,14 +2,10 @@ import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { Logger } from "nestjs-pino";
-import { AppModule } from "@root/app.module";
-import {
-  CommonConstants,
-  ControllerTags,
-  SwaggerConstants,
-} from "@common/constants";
+import { AppModule } from "@/app.module";
+import { CommonConstants, ControllerTags, SwaggerConstants } from "@/common";
 
-async function bootstrap() {
+(async function entrypoint() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.enableCors({
     credentials: true,
@@ -30,5 +26,4 @@ async function bootstrap() {
   SwaggerModule.setup(SwaggerConstants.URL, app, document);
 
   await app.listen(CommonConstants.LISTEN_PORT);
-}
-bootstrap();
+})();
