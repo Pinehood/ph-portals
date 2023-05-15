@@ -42,7 +42,7 @@ export class ScrapeSlobodnaDalmacijaService implements ScraperService {
     ];
   }
 
-  async articleLinks(): Promise<string[]> {
+  async links(): Promise<string[]> {
     const articleLinks: string[] = [];
     for (let i = 0; i < this.roots.length; i++) {
       const rootLink = this.roots[i];
@@ -64,7 +64,7 @@ export class ScrapeSlobodnaDalmacijaService implements ScraperService {
 
   async scrape(): Promise<Article[]> {
     let articles: Article[] = [];
-    const articleLinks = await this.articleLinks();
+    const articleLinks = await this.links();
     if (articleLinks && articleLinks.length > 0) {
       for (let i = 0; i < articleLinks.length; i++) {
         const articleLink = articleLinks[i];

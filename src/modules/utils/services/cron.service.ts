@@ -10,11 +10,7 @@ import {
 import { PortalsService } from "@portals/services/portals.service";
 import { RedisService } from "@utils/services/redis.service";
 import {
-  Scrape24SataService,
-  ScrapeDanasService,
-  ScrapeDirektnoService,
-  ScrapeDnevnikService,
-  ScrapeDnevnoService,
+  ConfiguredScraperService,
   ScrapeIndexService,
   ScrapeJutarnjiService,
   ScrapeNetService,
@@ -28,6 +24,14 @@ import {
   ScrapeZagrebService,
 } from "@scrapers/services";
 import { getPortalName } from "@common/functions";
+import { ScraperConfig } from "@root/common";
+import {
+  Scrape24SataConfig,
+  ScrapeDanasConfig,
+  ScrapeDirektnoConfig,
+  ScrapeDnevnikConfig,
+  ScrapeDnevnoConfig,
+} from "@resources/configs";
 
 @Injectable()
 export class CronService {
@@ -35,11 +39,6 @@ export class CronService {
     @InjectPinoLogger(CronService.name) private readonly logger: PinoLogger,
     private readonly redisService: RedisService,
     private readonly portalsService: PortalsService,
-    private readonly scrape24SataService: Scrape24SataService,
-    private readonly scrapeDanasService: ScrapeDanasService,
-    private readonly scrapeDirektnoService: ScrapeDirektnoService,
-    private readonly scrapeDnevnikService: ScrapeDnevnikService,
-    private readonly scrapeDnevnoService: ScrapeDnevnoService,
     private readonly scrapeIndexService: ScrapeIndexService,
     private readonly scrapeJutarnjiService: ScrapeJutarnjiService,
     private readonly scrapeNetService: ScrapeNetService,
@@ -77,11 +76,11 @@ export class CronService {
         portalPage
       );
       await Promise.all([
-        this.cachePortalAndArticles(this.scrape24SataService),
-        this.cachePortalAndArticles(this.scrapeDanasService),
-        this.cachePortalAndArticles(this.scrapeDirektnoService),
-        this.cachePortalAndArticles(this.scrapeDnevnikService),
-        this.cachePortalAndArticles(this.scrapeDnevnoService),
+        this.cachePortalAndArticlesEx(Scrape24SataConfig),
+        this.cachePortalAndArticlesEx(ScrapeDanasConfig),
+        this.cachePortalAndArticlesEx(ScrapeDirektnoConfig),
+        this.cachePortalAndArticlesEx(ScrapeDnevnikConfig),
+        this.cachePortalAndArticlesEx(ScrapeDnevnoConfig),
         this.cachePortalAndArticles(this.scrapeIndexService),
         this.cachePortalAndArticles(this.scrapeJutarnjiService),
         this.cachePortalAndArticles(this.scrapeNetService),
@@ -93,6 +92,58 @@ export class CronService {
         this.cachePortalAndArticles(this.scrapeZagrebService),
         this.cachePortalAndArticles(this.scrapeTelegramService),
       ]);
+    } catch (error: any) {
+      this.logger.error(error);
+    }
+  }
+
+  private async cachePortalAndArticlesEx(config: ScraperConfig): Promise<void> {
+    try {
+      const start = Date.now();
+      const articles = await ConfiguredScraperService.scrape(config);
+      for (let i = 0; i < articles.length; i++) {
+        articles[i].html = await this.portalsService.getFilledPageContent(
+          config.type,
+          TemplateNames.ARTICLE,
+          articles[i]
+        );
+      }
+      const end = Date.now();
+      const duration = end - start;
+      this.logger.info(
+        "Scraped '%d' articles from '%s'",
+        articles.length,
+        config.name
+      );
+      await this.redisService.set(
+        RedisStatsKeys.LAST_REFRESHED_ON_PREFIX + config.type,
+        Date.now()
+      );
+      await this.redisService.set(
+        RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + config.type,
+        articles.length
+      );
+      await this.redisService.set(
+        RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX + config.type,
+        duration
+      );
+      await this.redisService.set(config.type, JSON.stringify(articles));
+      const portalPage =
+        articles && articles.length > 0
+          ? await this.portalsService.getPage(config.type)
+          : await this.portalsService.getFilledPageContent(
+              config.type,
+              TemplateNames.PORTAL,
+              {
+                articles: ResponseConstants.NO_ARTICLES,
+                stats: ResponseConstants.NO_STATS,
+                title: `Portali - ${getPortalName(config.type)}`,
+              }
+            );
+      await this.redisService.set(
+        config.type + RedisStatsKeys.PAGE_SUFFIX,
+        portalPage
+      );
     } catch (error: any) {
       this.logger.error(error);
     }

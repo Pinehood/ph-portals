@@ -1,0 +1,5 @@
+- Finish service->config switch
+- Figure out solution for "API portals" (Telegram example)
+- Static file serving instead of Redis loading
+- Exposed API update?
+- Google Analytics integration?

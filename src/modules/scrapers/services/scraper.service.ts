@@ -7,6 +7,6 @@ export interface ScraperService {
   link: string;
   type: Portals;
   default: Article;
-  articleLinks: () => Promise<string[]>;
+  links: () => Promise<string[]>;
   scrape: () => Promise<Article[]>;
 }
