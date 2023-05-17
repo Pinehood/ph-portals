@@ -1,5 +1,3 @@
-import { Injectable } from "@nestjs/common";
-import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import axios from "@/common/axios";
 import * as cheerio from "cheerio";
 import { Article } from "@/dtos";
@@ -13,7 +11,6 @@ import {
   TryCatch,
 } from "@/common";
 
-@Injectable()
 export class ScrapeTportalService implements ScraperService {
   roots: string[];
   name: string;
@@ -21,10 +18,7 @@ export class ScrapeTportalService implements ScraperService {
   type: Portals;
   default: Article;
 
-  constructor(
-    @InjectPinoLogger(ScrapeTportalService.name)
-    private readonly logger: PinoLogger
-  ) {
+  constructor() {
     this.type = Portals.TPORTAL;
     this.name = getPortalName(this.type);
     this.link = "https://www.tportal.hr";
@@ -129,11 +123,6 @@ export class ScrapeTportalService implements ScraperService {
         (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
       );
     }
-    this.logger.info(
-      "Scraped '%d' articles from '%s'",
-      articles.length,
-      this.name
-    );
     return articles;
   }
 }

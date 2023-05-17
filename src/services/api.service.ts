@@ -1,20 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { Article, ArticleInfo, Portal, ScraperStats } from "@/dtos";
-import {
-  CommonConstants,
-  getPortalName,
-  Portals,
-  RedisStatsKeys,
-} from "@/common";
-import { RedisService } from "@/services/utils/redis.service";
+import { CommonConstants, getPortalName, Portals } from "@/common";
+import { PortalsService } from "@/services/portals.service";
 
 @Injectable()
 export class ApiService {
   constructor(
     @InjectPinoLogger(ApiService.name)
     private readonly logger: PinoLogger,
-    private readonly redisService: RedisService
+    private readonly portalsService: PortalsService
   ) {}
 
   getPortals(): Portal[] {
@@ -31,14 +26,9 @@ export class ApiService {
     return portals;
   }
 
-  async getArticles(
-    portal: Portals,
-    withContent: string
-  ): Promise<ArticleInfo[]> {
+  getArticles(portal: Portals, withContent: string): ArticleInfo[] {
     try {
-      const articles = JSON.parse(
-        await this.redisService.get(portal)
-      ) as Article[];
+      const articles = this.portalsService.getArticles(portal);
       if (!articles) return null;
       return articles.map((a) => this.articleToArticleInfo(a, withContent));
     } catch (error: any) {
@@ -47,12 +37,12 @@ export class ApiService {
     }
   }
 
-  async getTotalStats(): Promise<ScraperStats> {
+  getTotalStats(): ScraperStats {
     try {
       let articles = 0;
       let duration = 0;
       for (const portal in Portals) {
-        const stats = await this.getStats(Portals[portal]);
+        const stats = this.getStats(Portals[portal]);
         if (stats) {
           articles += stats.articles;
           duration += stats.duration;
@@ -65,25 +55,10 @@ export class ApiService {
     }
   }
 
-  async getStats(portal: Portals): Promise<ScraperStats> {
+  getStats(portal: Portals): ScraperStats {
     try {
       if (portal == Portals.HOME) return null;
-      const date = parseInt(
-        await this.redisService.get(
-          RedisStatsKeys.LAST_REFRESHED_ON_PREFIX + portal
-        )
-      );
-      const articles = parseInt(
-        await this.redisService.get(
-          RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + portal
-        )
-      );
-      const duration = parseInt(
-        await this.redisService.get(
-          RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX + portal
-        )
-      );
-      return { articles, date, duration };
+      return this.portalsService.getStats(portal);
     } catch (error: any) {
       this.logger.error(error);
       return null;

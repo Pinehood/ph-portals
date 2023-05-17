@@ -6,22 +6,7 @@ import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { LoggerModule } from "nestjs-pino";
 import { default as pinoPretty } from "pino-pretty";
 import { ApiController, PortalsController } from "@/controllers";
-import {
-  ApiService,
-  CronService,
-  PortalsService,
-  RedisService,
-  ScrapeIndexService,
-  ScrapeJutarnjiService,
-  ScrapeNetService,
-  ScrapePoslovniService,
-  ScrapeSlobodnaDalmacijaService,
-  ScrapeSportskeNovostiService,
-  ScrapeTelegramService,
-  ScrapeTportalService,
-  ScrapeVecernjiService,
-  ScrapeZagrebService,
-} from "@/services";
+import { ApiService, CronService, PortalsService } from "@/services";
 
 @Module({
   imports: [
@@ -41,20 +26,9 @@ import {
   ],
   controllers: [ApiController, PortalsController],
   providers: [
+    PortalsService,
     ApiService,
     CronService,
-    PortalsService,
-    RedisService,
-    ScrapeIndexService,
-    ScrapeJutarnjiService,
-    ScrapeNetService,
-    ScrapePoslovniService,
-    ScrapeSlobodnaDalmacijaService,
-    ScrapeSportskeNovostiService,
-    ScrapeTportalService,
-    ScrapeVecernjiService,
-    ScrapeZagrebService,
-    ScrapeTelegramService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

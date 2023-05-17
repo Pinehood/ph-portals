@@ -1,5 +1,6 @@
-export * from "./portals/api.service";
-export * from "./portals/portals.service";
+export * from "./api.service";
+export * from "./cron.service";
+export * from "./portals.service";
 export * from "./scrapers/configured-scraper.service";
 export * from "./scrapers/scrape-index.service";
 export * from "./scrapers/scrape-jutarnji.service";
@@ -11,5 +12,3 @@ export * from "./scrapers/scrape-telegram.service";
 export * from "./scrapers/scrape-tportal.service";
 export * from "./scrapers/scrape-vecernji.service";
 export * from "./scrapers/scrape-zagreb.service";
-export * from "./utils/cron.service";
-export * from "./utils/redis.service";

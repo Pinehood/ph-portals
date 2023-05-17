@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { Logger } from "nestjs-pino";
 import { AppModule } from "@/app.module";
-import { CommonConstants, ControllerTags, SwaggerConstants } from "@/common";
+import { CommonConstants, SwaggerConstants } from "@/common";
 
 (async function entrypoint() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -18,8 +18,6 @@ import { CommonConstants, ControllerTags, SwaggerConstants } from "@/common";
     .setTitle(SwaggerConstants.TITLE)
     .setDescription(SwaggerConstants.DESCRIPTION)
     .setVersion(SwaggerConstants.VERSION)
-    .addTag(ControllerTags.PORTALS)
-    .addTag(ControllerTags.API)
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

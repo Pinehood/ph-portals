@@ -3,8 +3,7 @@ import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { join } from "path";
 import * as fs from "fs";
 import * as Handlebars from "handlebars";
-import { Article } from "@/dtos";
-import { RedisService } from "@/services/utils/redis.service";
+import { Article, ScraperStats } from "@/dtos";
 import {
   CommonConstants,
   formatDate,
@@ -19,19 +18,19 @@ import {
 } from "@/common";
 import dirname from "@/templates";
 
+const CACHE_MAP = new Map<string, any>();
+
 @Injectable()
 export class PortalsService {
   constructor(
     @InjectPinoLogger(PortalsService.name)
-    private readonly logger: PinoLogger,
-    private readonly redisService: RedisService
+    private readonly logger: PinoLogger
   ) {}
 
-  async getCachedPage(portal: Portals): Promise<string> {
+  getCachedPage(portal: Portals): string {
     try {
-      const page = await this.redisService.get(
-        portal + RedisStatsKeys.PAGE_SUFFIX
-      );
+      const key = `${portal}${RedisStatsKeys.PAGE_SUFFIX}`;
+      const page = CACHE_MAP.get(key) as string;
       if (page) {
         return page;
       } else {
@@ -43,11 +42,9 @@ export class PortalsService {
     }
   }
 
-  async getCachedArticle(portal: Portals, articleId: string): Promise<string> {
+  getCachedArticle(portal: Portals, articleId: string): string {
     try {
-      const articles = JSON.parse(
-        await this.redisService.get(portal)
-      ) as Article[];
+      const articles = CACHE_MAP.get(portal) as Article[];
       if (!articles) return "";
       const article = articles.find((a) => a.articleId == articleId);
       if (!article) return "";
@@ -58,24 +55,18 @@ export class PortalsService {
     }
   }
 
-  async getPage(portal: Portals): Promise<string> {
+  getPage(portal: Portals): string {
     try {
       if (portal == Portals.HOME) {
-        return await this.getFilledPageContent(
-          Portals.HOME,
-          TemplateNames.HOME,
-          {}
-        );
+        return this.getFilledPageContent(Portals.HOME, TemplateNames.HOME, {});
       } else {
-        const articles = JSON.parse(
-          await this.redisService.get(portal)
-        ) as Article[];
-        const templateContent = await this.getTemplateContent(
+        const articles = CACHE_MAP.get(portal) as Article[];
+        const templateContent = this.getTemplateContent(
           TemplateNames.ITEM,
           true
         );
         if (!articles || !templateContent) {
-          return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
+          return this.getFilledPageContent(portal, TemplateNames.PORTAL, {
             articles: ResponseConstants.NO_ARTICLES,
             stats: ResponseConstants.NO_STATS,
             title: `Portali - ${getPortalName(portal)}`,
@@ -84,31 +75,22 @@ export class PortalsService {
         let finalContent = "";
         for (let i = 0; i < articles.length; i++) {
           const article = articles[i];
-          const content = await this.fillPageContent(templateContent, article);
+          const content = this.fillPageContent(templateContent, article);
           finalContent += content;
         }
-        const duration = parseInt(
-          await this.redisService.get(
-            RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX + portal
-          )
-        );
-        const lastDate = parseInt(
-          await this.redisService.get(
-            RedisStatsKeys.LAST_REFRESHED_ON_PREFIX + portal
-          )
-        );
-        const numArticles = parseInt(
-          await this.redisService.get(
-            RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + portal
-          )
-        );
+        const durationKey = `${RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
+        const duration = parseInt(CACHE_MAP.get(durationKey));
+        const lastDateKey = `${RedisStatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
+        const lastDate = parseInt(CACHE_MAP.get(lastDateKey));
+        const numArticlesKey = `${RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
+        const numArticles = parseInt(CACHE_MAP.get(numArticlesKey));
         const stats = `Članci: <strong>${numArticles}</strong> | Obrada: <strong>${millisToSeconds(
           duration
         )}</strong>  | Osvježeno: <strong>${formatDate(
           new Date(lastDate),
           true
         )}</strong> `;
-        return await this.getFilledPageContent(portal, TemplateNames.PORTAL, {
+        return this.getFilledPageContent(portal, TemplateNames.PORTAL, {
           articles: finalContent,
           stats,
           title: `Portali - ${getPortalName(portal)}`,
@@ -120,15 +102,13 @@ export class PortalsService {
     }
   }
 
-  async getArticle(portal: Portals, articleId: string): Promise<string> {
+  getArticle(portal: Portals, articleId: string): string {
     try {
-      const articles = JSON.parse(
-        await this.redisService.get(portal)
-      ) as Article[];
+      const articles = CACHE_MAP.get(portal) as Article[];
       if (!articles) return "";
       const article = articles.find((a) => a.articleId == articleId);
       if (!article) return "";
-      const content = await this.getFilledPageContent(
+      const content = this.getFilledPageContent(
         portal,
         TemplateNames.ARTICLE,
         article
@@ -140,13 +120,10 @@ export class PortalsService {
     }
   }
 
-  async getTemplateContent(
-    template: TemplateNames,
-    redis?: boolean
-  ): Promise<string> {
+  getTemplateContent(template: TemplateNames, cache?: boolean): string {
     try {
-      if (redis == true) {
-        return await this.redisService.get(template);
+      if (cache == true) {
+        return CACHE_MAP.get(template) as string;
       } else {
         const path = join(dirname(), template);
         const content = fs.readFileSync(path, {
@@ -160,28 +137,30 @@ export class PortalsService {
     }
   }
 
-  async fillPageContent(content: string, data: any): Promise<string> {
+  fillPageContent(content: string, data: any): string {
     try {
       const template = Handlebars.compile(content, {
         noEscape: true,
         strict: false,
       });
-      const result = template(data);
-      return result;
+      return template(data);
     } catch (error: any) {
       this.logger.error(error);
       return error;
     }
   }
 
-  async getFilledPageContent(
+  getFilledPageContent(
     portal: Portals,
     templateName: TemplateNames,
     data: any
-  ): Promise<string> {
+  ): string {
     try {
       const links = getPortalsLinks(portal);
-      const content = await this.getTemplateContent(templateName, true); //TODO: fix caching issues
+      let content = this.getTemplateContent(templateName, true);
+      if (!content) {
+        content = this.getTemplateContent(templateName);
+      }
       const template = Handlebars.compile(content, {
         noEscape: true,
         strict: false,
@@ -192,5 +171,28 @@ export class PortalsService {
       this.logger.error(error);
       return error;
     }
+  }
+
+  save(key: string, value: any): void {
+    CACHE_MAP.set(key, value);
+  }
+
+  get(key: string): any {
+    return CACHE_MAP.get(key);
+  }
+
+  getArticles(portal: Portals): Article[] {
+    return CACHE_MAP.get(portal) as Article[];
+  }
+
+  getStats(portal: Portals): ScraperStats {
+    const durationKey = `${RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
+    const lastDateKey = `${RedisStatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
+    const numArticlesKey = `${RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
+    return {
+      articles: parseInt(CACHE_MAP.get(numArticlesKey)),
+      date: parseInt(CACHE_MAP.get(lastDateKey)),
+      duration: parseInt(CACHE_MAP.get(durationKey)),
+    };
   }
 }

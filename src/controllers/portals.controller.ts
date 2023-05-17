@@ -27,7 +27,7 @@ export class PortalsController {
     status: 200,
     description: "Portal page content",
   })
-  getHome(): Promise<string> {
+  getHome(): string {
     return this.portalsService.getCachedPage(Portals.HOME);
   }
 
@@ -43,7 +43,7 @@ export class PortalsController {
     status: 200,
     description: "Portal page content",
   })
-  getPage(@Param(UrlParams.PORTAL) portal: Portals): Promise<string> {
+  getPage(@Param(UrlParams.PORTAL) portal: Portals): string {
     return this.portalsService.getCachedPage(portal);
   }
 
@@ -62,7 +62,7 @@ export class PortalsController {
   getArticle(
     @Param(UrlParams.PORTAL) portal: Portals,
     @Param(UrlParams.ARTICLE_ID) articleId: string
-  ): Promise<string> {
+  ): string {
     return this.portalsService.getCachedArticle(portal, articleId);
   }
 }

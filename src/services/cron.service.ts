@@ -17,49 +17,37 @@ import {
   ScrapeDnevnikConfig,
   ScrapeDnevnoConfig,
 } from "@/configs";
+import { PortalsService } from "@/services/portals.service";
 import {
   ConfiguredScraperService,
-  PortalsService,
   ScrapeIndexService,
   ScrapeJutarnjiService,
   ScrapeNetService,
   ScrapePoslovniService,
   ScrapeSlobodnaDalmacijaService,
   ScrapeSportskeNovostiService,
-  ScrapeTelegramService,
   ScrapeTportalService,
   ScrapeVecernjiService,
   ScrapeZagrebService,
+  ScrapeTelegramService,
 } from "@/services";
-import { RedisService } from "@/services/utils/redis.service";
 
 @Injectable()
 export class CronService {
   constructor(
     @InjectPinoLogger(CronService.name) private readonly logger: PinoLogger,
-    private readonly redisService: RedisService,
-    private readonly portalsService: PortalsService,
-    private readonly scrapeIndexService: ScrapeIndexService,
-    private readonly scrapeJutarnjiService: ScrapeJutarnjiService,
-    private readonly scrapeNetService: ScrapeNetService,
-    private readonly scrapePoslovniService: ScrapePoslovniService,
-    private readonly scrapeSlobodnaDalmacijaService: ScrapeSlobodnaDalmacijaService,
-    private readonly scrapeSportskeNovostiService: ScrapeSportskeNovostiService,
-    private readonly scrapeTportalService: ScrapeTportalService,
-    private readonly scrapeVecernjiService: ScrapeVecernjiService,
-    private readonly scrapeZagrebService: ScrapeZagrebService,
-    private readonly scrapeTelegramService: ScrapeTelegramService
+    private readonly portalsService: PortalsService
   ) {}
 
   @Timeout(2000)
   loadTemplatesContent(): void {
     try {
-      Object.keys(TemplateNames).forEach(async (value) => {
-        const content = await this.portalsService.getTemplateContent(
-          TemplateNames[value]
-        );
-        await this.redisService.set(TemplateNames[value], content);
-      });
+      Object.keys(TemplateNames).forEach((value) =>
+        this.portalsService.save(
+          TemplateNames[value],
+          this.portalsService.getTemplateContent(TemplateNames[value])
+        )
+      );
       this.logger.info("Preloaded all templates' HTML content");
       this.scrapeData();
     } catch (error: any) {
@@ -70,8 +58,8 @@ export class CronService {
   @Cron(CronExpression.EVERY_30_MINUTES)
   async scrapeData(): Promise<void> {
     try {
-      const portalPage = await this.portalsService.getPage(Portals.HOME);
-      await this.redisService.set(
+      const portalPage = this.portalsService.getPage(Portals.HOME);
+      this.portalsService.save(
         Portals.HOME + RedisStatsKeys.PAGE_SUFFIX,
         portalPage
       );
@@ -81,16 +69,16 @@ export class CronService {
         this.cachePortalAndArticlesEx(ScrapeDirektnoConfig),
         this.cachePortalAndArticlesEx(ScrapeDnevnikConfig),
         this.cachePortalAndArticlesEx(ScrapeDnevnoConfig),
-        this.cachePortalAndArticles(this.scrapeIndexService),
-        this.cachePortalAndArticles(this.scrapeJutarnjiService),
-        this.cachePortalAndArticles(this.scrapeNetService),
-        this.cachePortalAndArticles(this.scrapePoslovniService),
-        this.cachePortalAndArticles(this.scrapeSlobodnaDalmacijaService),
-        this.cachePortalAndArticles(this.scrapeSportskeNovostiService),
-        this.cachePortalAndArticles(this.scrapeTportalService),
-        this.cachePortalAndArticles(this.scrapeVecernjiService),
-        this.cachePortalAndArticles(this.scrapeZagrebService),
-        this.cachePortalAndArticles(this.scrapeTelegramService),
+        this.cachePortalAndArticles(new ScrapeIndexService()),
+        this.cachePortalAndArticles(new ScrapeJutarnjiService()),
+        this.cachePortalAndArticles(new ScrapeNetService()),
+        this.cachePortalAndArticles(new ScrapePoslovniService()),
+        this.cachePortalAndArticles(new ScrapeSlobodnaDalmacijaService()),
+        this.cachePortalAndArticles(new ScrapeSportskeNovostiService()),
+        this.cachePortalAndArticles(new ScrapeTportalService()),
+        this.cachePortalAndArticles(new ScrapeVecernjiService()),
+        this.cachePortalAndArticles(new ScrapeZagrebService()),
+        this.cachePortalAndArticles(new ScrapeTelegramService()),
       ]);
     } catch (error: any) {
       this.logger.error(error);
@@ -102,7 +90,7 @@ export class CronService {
       const start = Date.now();
       const articles = await ConfiguredScraperService.scrape(config);
       for (let i = 0; i < articles.length; i++) {
-        articles[i].html = await this.portalsService.getFilledPageContent(
+        articles[i].html = this.portalsService.getFilledPageContent(
           config.type,
           TemplateNames.ARTICLE,
           articles[i]
@@ -115,23 +103,23 @@ export class CronService {
         articles.length,
         config.name
       );
-      await this.redisService.set(
+      this.portalsService.save(
         RedisStatsKeys.LAST_REFRESHED_ON_PREFIX + config.type,
         Date.now()
       );
-      await this.redisService.set(
+      this.portalsService.save(
         RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + config.type,
         articles.length
       );
-      await this.redisService.set(
+      this.portalsService.save(
         RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX + config.type,
         duration
       );
-      await this.redisService.set(config.type, JSON.stringify(articles));
+      this.portalsService.save(config.type, articles);
       const portalPage =
         articles && articles.length > 0
-          ? await this.portalsService.getPage(config.type)
-          : await this.portalsService.getFilledPageContent(
+          ? this.portalsService.getPage(config.type)
+          : this.portalsService.getFilledPageContent(
               config.type,
               TemplateNames.PORTAL,
               {
@@ -140,7 +128,7 @@ export class CronService {
                 title: `Portali - ${getPortalName(config.type)}`,
               }
             );
-      await this.redisService.set(
+      this.portalsService.save(
         config.type + RedisStatsKeys.PAGE_SUFFIX,
         portalPage
       );
@@ -154,7 +142,7 @@ export class CronService {
       const start = Date.now();
       const articles = await service.scrape();
       for (let i = 0; i < articles.length; i++) {
-        articles[i].html = await this.portalsService.getFilledPageContent(
+        articles[i].html = this.portalsService.getFilledPageContent(
           service.type,
           TemplateNames.ARTICLE,
           articles[i]
@@ -162,23 +150,28 @@ export class CronService {
       }
       const end = Date.now();
       const duration = end - start;
-      await this.redisService.set(
+      this.portalsService.save(
         RedisStatsKeys.LAST_REFRESHED_ON_PREFIX + service.type,
         Date.now()
       );
-      await this.redisService.set(
+      this.logger.info(
+        "Scraped '%d' articles from '%s'",
+        articles.length,
+        service.name
+      );
+      this.portalsService.save(
         RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + service.type,
         articles.length
       );
-      await this.redisService.set(
+      this.portalsService.save(
         RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX + service.type,
         duration
       );
-      await this.redisService.set(service.type, JSON.stringify(articles));
+      this.portalsService.save(service.type, articles);
       const portalPage =
         articles && articles.length > 0
-          ? await this.portalsService.getPage(service.type)
-          : await this.portalsService.getFilledPageContent(
+          ? this.portalsService.getPage(service.type)
+          : this.portalsService.getFilledPageContent(
               service.type,
               TemplateNames.PORTAL,
               {
@@ -187,7 +180,7 @@ export class CronService {
                 title: `Portali - ${getPortalName(service.type)}`,
               }
             );
-      await this.redisService.set(
+      this.portalsService.save(
         service.type + RedisStatsKeys.PAGE_SUFFIX,
         portalPage
       );
