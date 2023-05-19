@@ -1,3 +1,22 @@
+export enum Portals {
+  HOME = "home",
+  SATA24 = "24sata",
+  INDEX = "index",
+  VECERNJI = "vecernji",
+  JUTARNJI = "jutarnji",
+  NET = "net",
+  DNEVNIK = "dnevnik",
+  DNEVNO = "dnevno",
+  TPORTAL = "tportal",
+  SLOBODNA_DALMACIJA = "sd",
+  SPORTSKE_NOVOSTI = "sn",
+  DIREKTNO = "direktno",
+  POSLOVNI = "poslovni",
+  DANAS = "danas",
+  ZAGREB = "zagreb",
+  TELEGRAM = "telegram",
+}
+
 export enum CommonConstants {
   LISTEN_PORT = 3000,
   TRUE_STRING = "true",
@@ -39,26 +58,7 @@ export enum TemplateNames {
   ITEM = "item.html",
 }
 
-export enum Portals {
-  HOME = "home",
-  SATA24 = "24sata",
-  INDEX = "index",
-  VECERNJI = "vecernji",
-  JUTARNJI = "jutarnji",
-  NET = "net",
-  DNEVNIK = "dnevnik",
-  DNEVNO = "dnevno",
-  TPORTAL = "tportal",
-  SLOBODNA_DALMACIJA = "sd",
-  SPORTSKE_NOVOSTI = "sn",
-  DIREKTNO = "direktno",
-  POSLOVNI = "poslovni",
-  DANAS = "danas",
-  ZAGREB = "zagreb",
-  TELEGRAM = "telegram",
-}
-
-export enum RedisStatsKeys {
+export enum StatsKeys {
   LAST_REFRESHED_ON_PREFIX = "last_refreshed_on_",
   TOTAL_SCRAPING_TIME_PREFIX = "total_scraping_time_",
   TOTAL_SCRAPED_ARTICLES_PREFIX = "total_scraped_articles_",

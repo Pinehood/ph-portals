@@ -1,5 +1,5 @@
-import axios from "@/common/axios";
-import { Portals, ScraperConfig } from "@/common";
+import { Portals } from "@/common/enums";
+import { ScraperConfig } from "@/common/types";
 
 export const ScrapeDirektnoConfig: ScraperConfig = {
   type: Portals.DIREKTNO,
@@ -18,19 +18,6 @@ export const ScrapeDirektnoConfig: ScraperConfig = {
     "https://direktno.hr/rss/publish/latest/kolumne-80",
     "https://direktno.hr/rss/publish/latest/medijski-partneri-90",
   ],
-  id: (link: string) =>
-    link.substring(link.lastIndexOf("-") + 1).replace("/", ""),
-  links: async (link: string) => {
-    const rss = await axios.get(link);
-    if (rss && rss.data) {
-      return (rss.data as string)
-        .match(/<link>(.*?)<\/link>/g)
-        .map((articleLink) =>
-          articleLink.replace("<link>", "").replace("</link>", "")
-        )
-        .filter((articleLink) => articleLink.includes("-"));
-    }
-  },
   remove1: ["img", "iframe", "div.banner"],
   title: {
     find: "h1.pd-title",

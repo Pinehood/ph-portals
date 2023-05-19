@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { Article, ArticleInfo, Portal, ScraperStats } from "@/dtos";
-import { CommonConstants, getPortalName, Portals } from "@/common";
+import { CommonConstants, Portals, PORTAL_SCRAPERS } from "@/common";
 import { PortalsService } from "@/services/portals.service";
 
 @Injectable()
@@ -16,9 +16,10 @@ export class ApiService {
     const portals: Portal[] = [];
     Object.keys(Portals).forEach((value) => {
       const portal = Portals[value];
+      const ps = PORTAL_SCRAPERS[portal] as any;
       if (portal != Portals.HOME) {
         portals.push({
-          name: getPortalName(portal),
+          name: ps.name,
           value: portal,
         });
       }

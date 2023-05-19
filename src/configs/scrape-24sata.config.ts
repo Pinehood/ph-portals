@@ -1,5 +1,5 @@
-import axios from "@/common/axios";
-import { Portals, ScraperConfig } from "@/common";
+import { Portals } from "@/common/enums";
+import { ScraperConfig } from "@/common/types";
 
 export const Scrape24SataConfig: ScraperConfig = {
   type: Portals.SATA24,
@@ -17,18 +17,6 @@ export const Scrape24SataConfig: ScraperConfig = {
     "https://www.24sata.hr/feeds/tech.xml",
     "https://www.24sata.hr/feeds/fun.xml",
   ],
-  id: (link: string) => link.substring(link.lastIndexOf("-") + 1),
-  links: async (link: string) => {
-    const rss = await axios.get(link);
-    if (rss && rss.data) {
-      return (rss.data as string)
-        .match(/<link>(.*?)<\/link>/g)
-        .map((articleLink) =>
-          articleLink.replace("<link>", "").replace("</link>", "")
-        )
-        .filter((articleLink) => articleLink.includes("-"));
-    }
-  },
   remove1: ["img", "iframe"],
   title: {
     find: "h1.article__title",

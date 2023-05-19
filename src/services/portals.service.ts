@@ -7,12 +7,10 @@ import { Article, ScraperStats } from "@/dtos";
 import {
   CommonConstants,
   formatDate,
-  getPortalName,
-  getPortalsLinks,
   millisToSeconds,
   Portals,
-  redirect,
-  RedisStatsKeys,
+  PORTAL_SCRAPERS,
+  StatsKeys,
   ResponseConstants,
   TemplateNames,
 } from "@/common";
@@ -27,18 +25,41 @@ export class PortalsService {
     private readonly logger: PinoLogger
   ) {}
 
+  save(key: string, value: any): void {
+    CACHE_MAP.set(key, value);
+  }
+
+  get(key: string): any {
+    return CACHE_MAP.get(key);
+  }
+
+  getArticles(portal: Portals): Article[] {
+    return CACHE_MAP.get(portal) as Article[];
+  }
+
+  getStats(portal: Portals): ScraperStats {
+    const durationKey = `${StatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
+    const lastDateKey = `${StatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
+    const numArticlesKey = `${StatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
+    return {
+      articles: parseInt(CACHE_MAP.get(numArticlesKey)),
+      date: parseInt(CACHE_MAP.get(lastDateKey)),
+      duration: parseInt(CACHE_MAP.get(durationKey)),
+    };
+  }
+
   getCachedPage(portal: Portals): string {
     try {
-      const key = `${portal}${RedisStatsKeys.PAGE_SUFFIX}`;
+      const key = `${portal}${StatsKeys.PAGE_SUFFIX}`;
       const page = CACHE_MAP.get(key) as string;
       if (page) {
         return page;
       } else {
-        return redirect(Portals.HOME);
+        return this.redirect(Portals.HOME);
       }
     } catch (error: any) {
       this.logger.error(error);
-      return redirect(Portals.HOME);
+      return this.redirect(Portals.HOME);
     }
   }
 
@@ -51,7 +72,7 @@ export class PortalsService {
       return article.html;
     } catch (error: any) {
       this.logger.error(error);
-      return redirect(portal);
+      return this.redirect(portal);
     }
   }
 
@@ -60,6 +81,7 @@ export class PortalsService {
       if (portal == Portals.HOME) {
         return this.getFilledPageContent(Portals.HOME, TemplateNames.HOME, {});
       } else {
+        const ps = PORTAL_SCRAPERS[portal] as any;
         const articles = CACHE_MAP.get(portal) as Article[];
         const templateContent = this.getTemplateContent(
           TemplateNames.ITEM,
@@ -69,7 +91,7 @@ export class PortalsService {
           return this.getFilledPageContent(portal, TemplateNames.PORTAL, {
             articles: ResponseConstants.NO_ARTICLES,
             stats: ResponseConstants.NO_STATS,
-            title: `Portali - ${getPortalName(portal)}`,
+            title: `Portali - ${ps.name}`,
           });
         }
         let finalContent = "";
@@ -78,11 +100,11 @@ export class PortalsService {
           const content = this.fillPageContent(templateContent, article);
           finalContent += content;
         }
-        const durationKey = `${RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
+        const durationKey = `${StatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
         const duration = parseInt(CACHE_MAP.get(durationKey));
-        const lastDateKey = `${RedisStatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
+        const lastDateKey = `${StatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
         const lastDate = parseInt(CACHE_MAP.get(lastDateKey));
-        const numArticlesKey = `${RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
+        const numArticlesKey = `${StatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
         const numArticles = parseInt(CACHE_MAP.get(numArticlesKey));
         const stats = `Članci: <strong>${numArticles}</strong> | Obrada: <strong>${millisToSeconds(
           duration
@@ -93,30 +115,12 @@ export class PortalsService {
         return this.getFilledPageContent(portal, TemplateNames.PORTAL, {
           articles: finalContent,
           stats,
-          title: `Portali - ${getPortalName(portal)}`,
+          title: `Portali - ${ps.name}`,
         });
       }
     } catch (error: any) {
       this.logger.error(error);
-      return redirect(Portals.HOME);
-    }
-  }
-
-  getArticle(portal: Portals, articleId: string): string {
-    try {
-      const articles = CACHE_MAP.get(portal) as Article[];
-      if (!articles) return "";
-      const article = articles.find((a) => a.articleId == articleId);
-      if (!article) return "";
-      const content = this.getFilledPageContent(
-        portal,
-        TemplateNames.ARTICLE,
-        article
-      );
-      return content;
-    } catch (error: any) {
-      this.logger.error(error);
-      return redirect(portal);
+      return this.redirect(Portals.HOME);
     }
   }
 
@@ -137,26 +141,13 @@ export class PortalsService {
     }
   }
 
-  fillPageContent(content: string, data: any): string {
-    try {
-      const template = Handlebars.compile(content, {
-        noEscape: true,
-        strict: false,
-      });
-      return template(data);
-    } catch (error: any) {
-      this.logger.error(error);
-      return error;
-    }
-  }
-
   getFilledPageContent(
     portal: Portals,
     templateName: TemplateNames,
     data: any
   ): string {
     try {
-      const links = getPortalsLinks(portal);
+      const links = this.getPortalsLinks(portal);
       let content = this.getTemplateContent(templateName, true);
       if (!content) {
         content = this.getTemplateContent(templateName);
@@ -173,26 +164,57 @@ export class PortalsService {
     }
   }
 
-  save(key: string, value: any): void {
-    CACHE_MAP.set(key, value);
+  private fillPageContent(content: string, data: any): string {
+    try {
+      const template = Handlebars.compile(content, {
+        noEscape: true,
+        strict: false,
+      });
+      return template(data);
+    } catch (error: any) {
+      this.logger.error(error);
+      return error;
+    }
   }
 
-  get(key: string): any {
-    return CACHE_MAP.get(key);
+  private redirect(portal: Portals): string {
+    try {
+      return ResponseConstants.REDIRECT.replace(
+        "@redurl@",
+        `/portals/${portal}`
+      );
+    } catch {
+      return `/portals/home`;
+    }
   }
 
-  getArticles(portal: Portals): Article[] {
-    return CACHE_MAP.get(portal) as Article[];
-  }
-
-  getStats(portal: Portals): ScraperStats {
-    const durationKey = `${RedisStatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
-    const lastDateKey = `${RedisStatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
-    const numArticlesKey = `${RedisStatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
-    return {
-      articles: parseInt(CACHE_MAP.get(numArticlesKey)),
-      date: parseInt(CACHE_MAP.get(lastDateKey)),
-      duration: parseInt(CACHE_MAP.get(durationKey)),
-    };
+  private getPortalsLinks(portal: Portals): string {
+    try {
+      const linkTemplateHtml = `<a href="/portals/@portal@" class="@active@item" title="@name@"><img src="@link@" style="max-width:16px;max-height:16px;margin:auto;"/></a>`;
+      let linksHtml = "";
+      Object.keys(Portals).forEach((value) => {
+        const po = Portals[value];
+        const ps = PORTAL_SCRAPERS[po];
+        let linkHtml = linkTemplateHtml
+          .replace("@portal@", po)
+          .replace(
+            "@link@",
+            po == Portals.HOME
+              ? "https://cdn-icons-png.flaticon.com/128/553/553376.png"
+              : ps.icon
+          )
+          .replace("@name@", po == Portals.HOME ? "Početna" : ps.name);
+        if (po == portal) {
+          linkHtml = linkHtml.replace("@active@", "active ");
+        } else {
+          linkHtml = linkHtml.replace("@active@", "");
+        }
+        linksHtml += linkHtml;
+      });
+      return linksHtml;
+    } catch (error: any) {
+      this.logger.error(error);
+      return "";
+    }
   }
 }

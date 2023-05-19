@@ -1,6 +1,5 @@
-import * as cheerio from "cheerio";
-import axios from "@/common/axios";
-import { Portals, ScraperConfig } from "@/common";
+import { Portals } from "@/common/enums";
+import { ScraperConfig } from "@/common/types";
 
 export const ScrapeDanasConfig: ScraperConfig = {
   type: Portals.DANAS,
@@ -16,28 +15,22 @@ export const ScrapeDanasConfig: ScraperConfig = {
     "https://www.danas.hr/vrijeme",
     "https://www.danas.hr/videovijesti/vijesti-videa",
   ],
-  id: (link: string) => link.substring(link.lastIndexOf("-") + 1),
-  links: async (link: string) => {
-    const articleLinks: string[] = [];
-    const articlesData = await axios.get(link);
-    if (articlesData && articlesData.data) {
-      const $ = cheerio.load(articlesData.data as string);
-      $("div.articleCard a.cardInner").each((_index, el) => {
-        const articleLink = "https://www.danas.hr" + $(el).attr("href");
-        if (
-          articleLinks.findIndex((el) => el == articleLink) == -1 &&
-          articleLink.startsWith("https://")
-        ) {
-          articleLinks.push(articleLink);
-        }
-      });
-    }
-    return articleLinks;
+  linker: {
+    find: "div.articleCard a.cardInner",
+    prefix: "https://www.danas.hr",
   },
-  remove1: ["img", "iframe", "figure", "picture"],
+  remove1: [
+    "img",
+    "iframe",
+    "figure",
+    "picture",
+    'div[id="mobileScaleDown"]',
+    'div[id="desktopScaleDown"]',
+  ],
   title: {
-    find: "span.titleContent",
+    find: "h1.title",
     take: "first",
+    transform: (value: string): string => value.replace(/Više s weba/g, ""),
   },
   lead: {
     find: "span.subtitle",

@@ -1,10 +1,6 @@
-- Finish service->config switch
-- Figure out solution for "API portals" (Telegram example)
 - Exposed API updates/additions
 - Google Analytics integration (non-dev purposes)
 - Service & Git versioning/tagging/releasing
-- Create README.md
-- Create PULL_REQUEST_TEMPLATE
-- Create issues template
+- Create README.md and other relevant files
 - Latest ^version packages
 - Proper license choosing

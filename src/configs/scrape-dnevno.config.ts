@@ -1,6 +1,5 @@
-import * as cheerio from "cheerio";
-import axios from "@/common/axios";
-import { Portals, ScraperConfig } from "@/common";
+import { Portals } from "@/common/enums";
+import { ScraperConfig } from "@/common/types";
 
 export const ScrapeDnevnoConfig: ScraperConfig = {
   type: Portals.DNEVNO,
@@ -18,24 +17,8 @@ export const ScrapeDnevnoConfig: ScraperConfig = {
     "https://www.dnevno.hr/category/domovina",
     "https://www.dnevno.hr/category/vjera",
   ],
-  id: (link: string) =>
-    link.substring(link.lastIndexOf("-") + 1).replace("/", ""),
-  links: async (link: string) => {
-    const articleLinks: string[] = [];
-    const articlesData = await axios.get(link);
-    if (articlesData && articlesData.data) {
-      const $ = cheerio.load(articlesData.data as string);
-      $("article.post a").each((_index, el) => {
-        const articleLink = $(el).attr("href");
-        if (
-          articleLinks.findIndex((el) => el == articleLink) == -1 &&
-          articleLink.startsWith("https://")
-        ) {
-          articleLinks.push(articleLink);
-        }
-      });
-    }
-    return articleLinks;
+  linker: {
+    find: "article.post a",
   },
   remove1: [
     "img",

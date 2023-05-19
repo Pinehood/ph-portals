@@ -1,5 +1,6 @@
 import axios from "@/common/axios";
-import { Portals, ScraperConfig } from "@/common";
+import { Portals } from "@/common/enums";
+import { ScraperConfig } from "@/common/types";
 
 export const ScrapeDnevnikConfig: ScraperConfig = {
   type: Portals.DNEVNIK,
@@ -8,8 +9,6 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
   icon: "https://dnevnik.hr/favicon.ico",
   rss: false,
   roots: ["https://dnevnik.hr/ajax/loadMore"],
-  id: (link: string) =>
-    link.substring(link.lastIndexOf("-") + 1).replace(".html", ""),
   links: async (link: string) => {
     const data =
       "type=ng&boxInfo%5Btype%5D=Frontend_Box_Front_Entity_List&boxInfo%5Bparams%5D%5BuseFrontOptions%5D=&boxInfo%5Bparams%5D%5Bprofile%5D=&boxInfo%5Bparams%5D%5BparamsLoader%5D=&boxInfo%5Bparams%5D%5BallowedContentTypes%5D=article&boxInfo%5Bparams%5D%5Btemplate%5D=frontend%2Fbox%2Ffront%2Fentity%2Fsection-news-dnevnik.twig&boxInfo%5Bparams%5D%5BboxTitle%5D=&boxInfo%5Bparams%5D%5BtargetUrl%5D=&boxInfo%5Bparams%5D%5BcssClass%5D=&boxInfo%5Bparams%5D%5BpreventDuplicates%5D=1&boxInfo%5Bparams%5D%5BshowLoadMore%5D=ajax&boxInfo%5Bparams%5D%5Bsources%5D=subsectionarticles&boxInfo%5Bparams%5D%5Blimits%5D=200&boxInfo%5Bparams%5D%5BeditDescription%5D=&boxInfo%5Bctx%5D%5BsiteId%5D=10&boxInfo%5Bctx%5D%5BsectionId%5D=10001&boxInfo%5Bctx%5D%5BsubsiteId%5D=10004457&boxInfo%5Bctx%5D%5BlayoutDeviceVariant%5D=default&boxInfo%5Bctx%5D%5BlayoutFrontVariant%5D=default";

@@ -1,4 +1,4 @@
-import { Portals } from "@/common";
+import { Portals } from "@/common/enums";
 
 export type ScraperConfig = {
   type: Portals;
@@ -7,8 +7,9 @@ export type ScraperConfig = {
   icon: string;
   rss: boolean;
   roots: string[];
-  links: (link: string) => Promise<string[]>;
-  id: (link: string) => string;
+  linker?: Linker;
+  links?: (link: string) => Promise<string[]>;
+  id?: (link: string) => string;
   remove1: string[];
   title: Cheerio;
   lead: Cheerio;
@@ -23,6 +24,11 @@ type Cheerio = {
   replace?: string[] | null;
   take: "first" | "last" | "normal";
   transform?: (value: string) => string;
+};
+
+type Linker = {
+  find: string;
+  prefix?: string | null;
 };
 
 type CheerioLimited = Omit<Omit<Cheerio, "take">, "transform">;
