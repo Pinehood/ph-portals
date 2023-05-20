@@ -86,10 +86,12 @@ export class PortalsService {
     try {
       const gtag =
         process.env.NODE_ENV == CommonConstants.PROD_ENV
-          ? this.getTemplateContent(TemplateNames.GTAG, true).replace(
-              new RegExp(Tokens.GOOGLE_TAG_ID, "g"),
-              process.env.GOOGLE_ANALYTICS_TAG
-            )
+          ? this.getTemplateContent(TemplateNames.GTAG, true)
+              .replace(
+                new RegExp(Tokens.GOOGLE_TAG_ID, "g"),
+                process.env.GOOGLE_ANALYTICS_TAG
+              )
+              .replace(Tokens.PORTAL, portal)
           : "<br/>";
       if (portal == Portals.HOME) {
         return this.getFilledPageContent(Portals.HOME, TemplateNames.HOME, {
