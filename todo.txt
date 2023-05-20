@@ -1,2 +1,0 @@
-- README.md completion
-- Service & Git versioning/tagging/releasing

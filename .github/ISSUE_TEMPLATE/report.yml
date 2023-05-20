@@ -47,9 +47,6 @@ body:
       label: "Packages and versions"
       description: |
         You could leave your whole `package.json` or other similar dependencies list here.
-      value: |
-        ```txt
-        ```
 
   - type: input
     attributes:

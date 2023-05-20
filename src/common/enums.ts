@@ -25,6 +25,8 @@ export enum CommonConstants {
   HOME_NAME = "Početna",
   HOME_ICON = "https://cdn-icons-png.flaticon.com/128/553/553376.png",
   PROD_ENV = "production",
+  STATS = `Članci: <strong>@num@</strong> | Obrada: <strong>@duration@</strong>  | Osvježeno: <strong>@date@</strong>`,
+  NO_STATS = "Statistika nedostupna.",
 }
 
 export enum SwaggerConstants {
@@ -32,14 +34,6 @@ export enum SwaggerConstants {
   DESCRIPTION = "The appropriate API documentation",
   VERSION = "1.0.0",
   URL = "docs",
-}
-
-export enum TokenizedConstants {
-  REDIRECT = '<!DOCTYPE html><html><head><meta http-equiv="Refresh" content="0; url=@redurl@"/></head><body></body></html>',
-  STATS = `Članci: <strong>@num@</strong> | Obrada: <strong>@duration@</strong>  | Osvježeno: <strong>@date@</strong>`,
-  LINK = `<a href="/portals/@portal@" class="@active@item" title="@name@"><img src="@link@" style="max-width:16px;max-height:16px;margin:auto;"/></a>`,
-  NO_ARTICLES = '<h4 style="text-align: center">Nema članaka za prikaz.</h4>',
-  NO_STATS = "Statistika nedostupna.",
 }
 
 export enum Tokens {
@@ -70,11 +64,16 @@ export enum TemplateNames {
   ARTICLE = "article.html",
   PORTAL = "portal.html",
   ITEM = "item.html",
+  GTAG = "gtag.html",
+  NO_ARTICLES = "empty.html",
+  LINK = "link.html",
+  REDIRECT = "redirect.html",
 }
 
 export enum StatsKeys {
   LAST_REFRESHED_ON_PREFIX = "last_refreshed_on_",
   TOTAL_SCRAPING_TIME_PREFIX = "total_scraping_time_",
   TOTAL_SCRAPED_ARTICLES_PREFIX = "total_scraped_articles_",
+  CACHE_MEMORY = "cache_memory",
   PAGE_SUFFIX = "page",
 }

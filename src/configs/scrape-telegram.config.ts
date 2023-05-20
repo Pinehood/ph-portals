@@ -34,7 +34,14 @@ export const ScrapeTelegramConfig: ScraperConfig = {
       if (obj && obj.posts && obj.posts.length > 0) {
         for (let i = 0; i < obj.posts.length; i++) {
           const post = obj.posts[i];
-          const articleLink = "https://www.telegram.hr" + post.permalink;
+          let articleLink = post.permalink;
+          if (!articleLink.startsWith("http")) {
+            if (!articleLink.startsWith("/")) {
+              articleLink = `https://www.telegram.hr/${articleLink}`;
+            } else {
+              articleLink = `https://www.telegram.hr${articleLink}`;
+            }
+          }
           if (articleLinks.findIndex((el) => el == articleLink) == -1) {
             articleLinks.push(articleLink);
           }
@@ -53,11 +60,11 @@ export const ScrapeTelegramConfig: ScraperConfig = {
     take: "normal",
   },
   time: {
-    find: "span.meta-date",
+    find: "div.full.column.article-head.column-top-pad.flex > h5:nth-child(6) > span",
     take: "first",
   },
   author: {
-    find: "span.author",
+    find: "div.full.column.article-head.column-top-pad.flex > h5:nth-child(6) > a:nth-child(2) > span.vcard.author",
     take: "first",
   },
   content: {

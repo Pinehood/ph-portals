@@ -24,13 +24,18 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
     if (ajaxResponse && ajaxResponse.data) {
       return (ajaxResponse.data as string)
         .match(/<a data-upscore-url href="(.*)">/g)
-        .map((articleLink) => {
-          return (
-            "https://www.dnevnik.hr/" +
-            articleLink
-              .replace('<a data-upscore-url href="', "")
-              .replace('">', "")
-          );
+        .map((link) => {
+          let articleLink = link
+            .replace('<a data-upscore-url href="', "")
+            .replace('">', "");
+          if (!articleLink.startsWith("http")) {
+            if (!articleLink.startsWith("/")) {
+              articleLink = `https://www.dnevnik.hr/${articleLink}`;
+            } else {
+              articleLink = `https://www.dnevnik.hr${articleLink}`;
+            }
+          }
+          return articleLink;
         })
         .map((articleLink) => articleLink.replace("//", "/"));
     }

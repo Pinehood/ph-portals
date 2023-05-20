@@ -54,7 +54,12 @@ export class ApiService {
           duration += stats.duration;
         }
       }
-      return { articles, date: Date.now(), duration };
+      return {
+        articles,
+        date: Date.now(),
+        duration,
+        cache: this.portalsService.getCacheMemorySize(),
+      };
     } catch (error: any) {
       this.logger.error(error);
       return null;

@@ -5,16 +5,15 @@ import * as fs from "fs";
 import * as Handlebars from "handlebars";
 import { Article, ScraperStats } from "@/dtos";
 import {
+  calculateMapMemoryUsage,
   CommonConstants,
   formatDate,
-  GTAG_HTML,
   millisToSeconds,
   Portals,
   PORTAL_SCRAPERS,
   ScraperConfig,
   StatsKeys,
   TemplateNames,
-  TokenizedConstants,
   Tokens,
 } from "@/common";
 import dirname from "@/templates";
@@ -40,6 +39,12 @@ export class PortalsService {
     return CACHE_MAP.get(portal) as Article[];
   }
 
+  getCacheMemorySize(calculate?: boolean): number {
+    return calculate == true
+      ? calculateMapMemoryUsage(CACHE_MAP)
+      : parseInt(CACHE_MAP.get(StatsKeys.CACHE_MEMORY), 10);
+  }
+
   getStats(portal: Portals): ScraperStats {
     const durationKey = `${StatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
     const lastDateKey = `${StatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
@@ -57,13 +62,11 @@ export class PortalsService {
       const page = CACHE_MAP.get(key) as string;
       if (page) {
         return page;
-      } else {
-        return this.redirect(Portals.HOME);
       }
     } catch (error: any) {
       this.logger.error(error);
-      return this.redirect(Portals.HOME);
     }
+    return this.redirect(Portals.HOME);
   }
 
   getCachedArticle(portal: Portals, articleId: string): string {
@@ -83,7 +86,7 @@ export class PortalsService {
     try {
       const gtag =
         process.env.NODE_ENV == CommonConstants.PROD_ENV
-          ? GTAG_HTML.replace(
+          ? this.getTemplateContent(TemplateNames.GTAG, true).replace(
               new RegExp(Tokens.GOOGLE_TAG_ID, "g"),
               process.env.GOOGLE_ANALYTICS_TAG
             )
@@ -101,8 +104,8 @@ export class PortalsService {
         );
         if (!articles || !templateContent) {
           return this.getFilledPageContent(portal, TemplateNames.PORTAL, {
-            articles: TokenizedConstants.NO_ARTICLES,
-            stats: TokenizedConstants.NO_STATS,
+            articles: this.getTemplateContent(TemplateNames.NO_ARTICLES, true),
+            stats: CommonConstants.NO_STATS,
             title: `Portali - ${ps.name}`,
             ga: gtag,
           });
@@ -119,7 +122,7 @@ export class PortalsService {
         const lastDate = parseInt(CACHE_MAP.get(lastDateKey), 10);
         const numArticlesKey = `${StatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
         const numArticles = parseInt(CACHE_MAP.get(numArticlesKey), 10);
-        const stats = TokenizedConstants.STATS.replace(
+        const stats = CommonConstants.STATS.replace(
           Tokens.NUMBER,
           "" + numArticles
         )
@@ -163,9 +166,7 @@ export class PortalsService {
     try {
       const links = this.getPortalsLinks(portal);
       let content = this.getTemplateContent(templateName, true);
-      if (!content) {
-        content = this.getTemplateContent(templateName);
-      }
+      if (!content) content = this.getTemplateContent(templateName);
       return this.fillPageContent(content, { links, ...data });
     } catch (error: any) {
       this.logger.error(error);
@@ -188,7 +189,7 @@ export class PortalsService {
 
   private redirect(portal: Portals): string {
     try {
-      return TokenizedConstants.REDIRECT.replace(
+      return this.getTemplateContent(TemplateNames.REDIRECT, true).replace(
         Tokens.REDIRECT_URL,
         `/portals/${portal}`
       );
@@ -203,7 +204,8 @@ export class PortalsService {
       Object.keys(Portals).forEach((value) => {
         const po = Portals[value];
         const psc = PORTAL_SCRAPERS[po] as ScraperConfig;
-        let linkHtml = TokenizedConstants.LINK.replace(Tokens.PORTAL, po)
+        let linkHtml = this.getTemplateContent(TemplateNames.LINK)
+          .replace(Tokens.PORTAL, po)
           .replace(
             Tokens.LINK,
             po == Portals.HOME ? CommonConstants.HOME_ICON : psc.icon

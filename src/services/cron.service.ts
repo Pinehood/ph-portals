@@ -5,9 +5,9 @@ import {
   Portals,
   PORTAL_SCRAPERS,
   StatsKeys,
-  TokenizedConstants,
   ScraperConfig,
   TemplateNames,
+  CommonConstants,
 } from "@/common";
 import { ScraperService } from "@/services/scraper.service";
 import { PortalsService } from "@/services/portals.service";
@@ -38,15 +38,16 @@ export class CronService {
   @Cron(CronExpression.EVERY_30_MINUTES)
   async scrapeData(): Promise<void> {
     try {
-      const portalPage = this.portalsService.getPage(Portals.HOME);
-      this.portalsService.save(
-        Portals.HOME + StatsKeys.PAGE_SUFFIX,
-        portalPage
+      const homePage = this.portalsService.getPage(Portals.HOME);
+      const homeKey = Portals.HOME + StatsKeys.PAGE_SUFFIX;
+      this.portalsService.save(homeKey, homePage);
+      const scrapers = Object.entries(PORTAL_SCRAPERS).map(([, value]) =>
+        this.cachePortalAndArticles(value)
       );
-      await Promise.all(
-        Object.entries(PORTAL_SCRAPERS).map(([, value]) =>
-          this.cachePortalAndArticles(value)
-        )
+      await Promise.all(scrapers);
+      this.portalsService.save(
+        StatsKeys.CACHE_MEMORY,
+        this.portalsService.getCacheMemorySize(true)
       );
     } catch (error: any) {
       this.logger.error(error);
@@ -87,8 +88,10 @@ export class CronService {
               portal,
               TemplateNames.PORTAL,
               {
-                articles: TokenizedConstants.NO_ARTICLES,
-                stats: TokenizedConstants.NO_STATS,
+                articles: this.portalsService.getTemplateContent(
+                  TemplateNames.NO_ARTICLES
+                ),
+                stats: CommonConstants.NO_STATS,
                 title: `Portali - ${name}`,
               }
             );

@@ -43,9 +43,6 @@ body:
     attributes:
       label: "Input code"
       description: "Write some code snippets, if you think it is worth it."
-      value: |
-        ```txt
-        ```
 
   - type: textarea
     validations:
