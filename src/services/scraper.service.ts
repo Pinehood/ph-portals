@@ -24,12 +24,12 @@ export class ScraperService {
         const articleLinks = config.links
           ? await config.links(rootLink)
           : config.rss
-          ? await ScraperService.rssLinks(rootLink)
+          ? await ScraperService.rssLinks(rootLink, config.link)
           : config.linker
           ? await ScraperService.nonRssLinks(
               rootLink,
-              config.linker.find,
-              config.linker.prefix
+              config.link,
+              config.linker
             )
           : [];
         if (articleLinks && articleLinks.length > 0) {
@@ -51,30 +51,30 @@ export class ScraperService {
                   : ScraperService.id(articleLink);
 
                 const title =
-                  config.title.find === "first"
+                  config.title.find == "first"
                     ? $(config.title.find).first().text()
-                    : config.title.find === "last"
+                    : config.title.find == "last"
                     ? $(config.title.find).last().text()
                     : $(config.title.find).text();
 
                 const lead =
-                  config.lead.find === "first"
+                  config.lead.find == "first"
                     ? $(config.lead.find).first().text()
-                    : config.lead.find === "last"
+                    : config.lead.find == "last"
                     ? $(config.lead.find).last().text()
                     : $(config.lead.find).text();
 
                 const time =
-                  config.time.find === "first"
+                  config.time.find == "first"
                     ? $(config.time.find).first().text()
-                    : config.time.find === "last"
+                    : config.time.find == "last"
                     ? $(config.time.find).last().text()
                     : $(config.time.find).text();
 
                 const author =
-                  config.author.find === "first"
+                  config.author.find == "first"
                     ? $(config.author.find).first().text()
-                    : config.author.find === "last"
+                    : config.author.find == "last"
                     ? $(config.author.find).last().text()
                     : $(config.author.find).text();
 
@@ -118,15 +118,23 @@ export class ScraperService {
     }
   }
 
-  private static async rssLinks(link: string): Promise<string[]> {
+  private static async rssLinks(link: string, base: string): Promise<string[]> {
     try {
       const rss = await axios.get(link);
       if (rss && rss.data) {
         return (rss.data as string)
           .match(/<link>(.*?)<\/link>/g)
-          .map((articleLink) =>
-            articleLink.replace("<link>", "").replace("</link>", "")
-          )
+          .map((link) => {
+            let articleLink = link.replace("<link>", "").replace("</link>", "");
+            if (!articleLink.startsWith("http")) {
+              if (!articleLink.startsWith("/")) {
+                articleLink = `${base}/${articleLink}`;
+              } else {
+                articleLink = `${base}${articleLink}`;
+              }
+            }
+            return articleLink;
+          })
           .filter((articleLink) => articleLink.includes("-"));
       }
     } catch {
@@ -136,25 +144,23 @@ export class ScraperService {
 
   private static async nonRssLinks(
     link: string,
-    find: string,
-    prefix?: string | null
+    base: string,
+    find: string
   ): Promise<string[]> {
     try {
       const articleLinks: string[] = [];
       const articlesData = await axios.get(link);
       if (articlesData && articlesData.data) {
         const $ = cheerio.load(articlesData.data as string);
-        $("image").remove();
-        $("iframe").remove();
-        $("picture").remove();
-        $("figure").remove();
-        $("img").remove();
-        $("style").remove();
-        $("script").remove();
         $(find).each((_, el) => {
-          const articleLink = prefix
-            ? prefix + $(el).attr("href")
-            : $(el).attr("href");
+          let articleLink = $(el).attr("href");
+          if (!articleLink.startsWith("http")) {
+            if (!articleLink.startsWith("/")) {
+              articleLink = `${base}/${articleLink}`;
+            } else {
+              articleLink = `${base}${articleLink}`;
+            }
+          }
           if (articleLinks.findIndex((el) => el == articleLink) == -1) {
             articleLinks.push(articleLink);
           }
@@ -213,8 +219,6 @@ export class ScraperService {
       if (config.time.transform) {
         article.time = config.time.transform(article.time);
       }
-    } else {
-      article.time = "N/A";
     }
 
     if (article.author) {

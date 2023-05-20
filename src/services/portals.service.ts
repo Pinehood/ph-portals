@@ -10,9 +10,11 @@ import {
   millisToSeconds,
   Portals,
   PORTAL_SCRAPERS,
+  ScraperConfig,
   StatsKeys,
-  ResponseConstants,
   TemplateNames,
+  TokenizedConstants,
+  Tokens,
 } from "@/common";
 import dirname from "@/templates";
 
@@ -42,9 +44,9 @@ export class PortalsService {
     const lastDateKey = `${StatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
     const numArticlesKey = `${StatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
     return {
-      articles: parseInt(CACHE_MAP.get(numArticlesKey)),
-      date: parseInt(CACHE_MAP.get(lastDateKey)),
-      duration: parseInt(CACHE_MAP.get(durationKey)),
+      articles: parseInt(CACHE_MAP.get(numArticlesKey), 10),
+      date: parseInt(CACHE_MAP.get(lastDateKey), 10),
+      duration: parseInt(CACHE_MAP.get(durationKey), 10),
     };
   }
 
@@ -89,8 +91,8 @@ export class PortalsService {
         );
         if (!articles || !templateContent) {
           return this.getFilledPageContent(portal, TemplateNames.PORTAL, {
-            articles: ResponseConstants.NO_ARTICLES,
-            stats: ResponseConstants.NO_STATS,
+            articles: TokenizedConstants.NO_ARTICLES,
+            stats: TokenizedConstants.NO_STATS,
             title: `Portali - ${ps.name}`,
           });
         }
@@ -101,17 +103,17 @@ export class PortalsService {
           finalContent += content;
         }
         const durationKey = `${StatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
-        const duration = parseInt(CACHE_MAP.get(durationKey));
+        const duration = parseInt(CACHE_MAP.get(durationKey), 10);
         const lastDateKey = `${StatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
-        const lastDate = parseInt(CACHE_MAP.get(lastDateKey));
+        const lastDate = parseInt(CACHE_MAP.get(lastDateKey), 10);
         const numArticlesKey = `${StatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
-        const numArticles = parseInt(CACHE_MAP.get(numArticlesKey));
-        const stats = `Članci: <strong>${numArticles}</strong> | Obrada: <strong>${millisToSeconds(
-          duration
-        )}</strong>  | Osvježeno: <strong>${formatDate(
-          new Date(lastDate),
-          true
-        )}</strong> `;
+        const numArticles = parseInt(CACHE_MAP.get(numArticlesKey), 10);
+        const stats = TokenizedConstants.STATS.replace(
+          Tokens.NUMBER,
+          "" + numArticles
+        )
+          .replace(Tokens.DURATION, millisToSeconds(duration))
+          .replace(Tokens.DATE, formatDate(new Date(lastDate), true));
         return this.getFilledPageContent(portal, TemplateNames.PORTAL, {
           articles: finalContent,
           stats,
@@ -152,12 +154,7 @@ export class PortalsService {
       if (!content) {
         content = this.getTemplateContent(templateName);
       }
-      const template = Handlebars.compile(content, {
-        noEscape: true,
-        strict: false,
-      });
-      const result = template({ links, ...data });
-      return result;
+      return this.fillPageContent(content, { links, ...data });
     } catch (error: any) {
       this.logger.error(error);
       return error;
@@ -179,8 +176,8 @@ export class PortalsService {
 
   private redirect(portal: Portals): string {
     try {
-      return ResponseConstants.REDIRECT.replace(
-        "@redurl@",
+      return TokenizedConstants.REDIRECT.replace(
+        Tokens.REDIRECT_URL,
         `/portals/${portal}`
       );
     } catch {
@@ -190,24 +187,23 @@ export class PortalsService {
 
   private getPortalsLinks(portal: Portals): string {
     try {
-      const linkTemplateHtml = `<a href="/portals/@portal@" class="@active@item" title="@name@"><img src="@link@" style="max-width:16px;max-height:16px;margin:auto;"/></a>`;
       let linksHtml = "";
       Object.keys(Portals).forEach((value) => {
         const po = Portals[value];
-        const ps = PORTAL_SCRAPERS[po];
-        let linkHtml = linkTemplateHtml
-          .replace("@portal@", po)
+        const psc = PORTAL_SCRAPERS[po] as ScraperConfig;
+        let linkHtml = TokenizedConstants.LINK.replace(Tokens.PORTAL, po)
           .replace(
-            "@link@",
-            po == Portals.HOME
-              ? "https://cdn-icons-png.flaticon.com/128/553/553376.png"
-              : ps.icon
+            Tokens.LINK,
+            po == Portals.HOME ? CommonConstants.HOME_ICON : psc.icon
           )
-          .replace("@name@", po == Portals.HOME ? "Početna" : ps.name);
+          .replace(
+            Tokens.NAME,
+            po == Portals.HOME ? CommonConstants.HOME_NAME : psc.name
+          );
         if (po == portal) {
-          linkHtml = linkHtml.replace("@active@", "active ");
+          linkHtml = linkHtml.replace(Tokens.ACTIVE, "active ");
         } else {
-          linkHtml = linkHtml.replace("@active@", "");
+          linkHtml = linkHtml.replace(Tokens.ACTIVE, "");
         }
         linksHtml += linkHtml;
       });

@@ -26,12 +26,12 @@ export function formatDate(date: Date, onlyHoursMinutes?: boolean): string {
 
 export function millisToMinutesAndSeconds(millis: number): string {
   const minutes = Math.floor(millis / 60000);
-  const seconds = parseInt(((millis % 60000) / 1000).toFixed(0));
+  const seconds = parseInt(((millis % 60000) / 1000).toFixed(0), 10);
   return seconds == 60
     ? minutes + 1 + "m00s"
     : minutes + "m" + (seconds < 10 ? "0" : "") + seconds + "s";
 }
 
 export function millisToSeconds(millis: number): string {
-  return `${parseInt((millis / 1000).toFixed(0)).toFixed(0)}s`;
+  return `${parseInt((millis / 1000).toFixed(0), 10).toFixed(0)}s`;
 }

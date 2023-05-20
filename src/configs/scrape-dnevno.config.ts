@@ -17,9 +17,7 @@ export const ScrapeDnevnoConfig: ScraperConfig = {
     "https://www.dnevno.hr/category/domovina",
     "https://www.dnevno.hr/category/vjera",
   ],
-  linker: {
-    find: "article.post a",
-  },
+  linker: "article.post a",
   remove1: [
     "img",
     "iframe",

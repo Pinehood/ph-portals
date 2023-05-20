@@ -13,8 +13,8 @@ import { ApiService, CronService, PortalsService } from "@/services";
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({
-      ttl: parseInt(process.env.THROTTLER_TTL),
-      limit: parseInt(process.env.THROTTLER_REQ_PER_TTL),
+      ttl: parseInt(process.env.THROTTLER_TTL, 10),
+      limit: parseInt(process.env.THROTTLER_REQ_PER_TTL, 10),
     }),
     LoggerModule.forRoot({
       pinoHttp: {

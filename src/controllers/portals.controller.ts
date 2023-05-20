@@ -9,9 +9,9 @@ import {
 import {
   CommonConstants,
   ControllerTags,
+  Params,
   Portals,
   PortalsRoutes,
-  UrlParams,
 } from "@/common";
 import { PortalsService } from "@/services";
 
@@ -35,7 +35,7 @@ export class PortalsController {
   @ApiProduces(CommonConstants.TEXT_HTML)
   @ApiOperation({ summary: "Fetch portal's page content with article list" })
   @ApiParam({
-    name: UrlParams.PORTAL,
+    name: Params.PORTAL,
     enum: Portals,
     required: true,
   })
@@ -43,7 +43,7 @@ export class PortalsController {
     status: 200,
     description: "Portal page content",
   })
-  getPage(@Param(UrlParams.PORTAL) portal: Portals): string {
+  getPage(@Param(Params.PORTAL) portal: Portals): string {
     return this.portalsService.getCachedPage(portal);
   }
 
@@ -51,7 +51,7 @@ export class PortalsController {
   @ApiProduces(CommonConstants.TEXT_HTML)
   @ApiOperation({ summary: "Fetch article's page content" })
   @ApiParam({
-    name: UrlParams.PORTAL,
+    name: Params.PORTAL,
     enum: Portals,
     required: true,
   })
@@ -60,8 +60,8 @@ export class PortalsController {
     description: "Article page content",
   })
   getArticle(
-    @Param(UrlParams.PORTAL) portal: Portals,
-    @Param(UrlParams.ARTICLE_ID) articleId: string
+    @Param(Params.PORTAL) portal: Portals,
+    @Param(Params.ARTICLE_ID) articleId: string
   ): string {
     return this.portalsService.getCachedArticle(portal, articleId);
   }

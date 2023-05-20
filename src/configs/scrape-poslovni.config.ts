@@ -17,9 +17,7 @@ export const ScrapePoslovniConfig: ScraperConfig = {
     "https://www.poslovni.hr/financije",
     "https://www.poslovni.hr/lifestyle",
   ],
-  linker: {
-    find: "article a",
-  },
+  linker: "article a",
   remove1: ["img", "iframe", "figure", "picture", "div.lwdgt"],
   title: {
     find: "h1.title",

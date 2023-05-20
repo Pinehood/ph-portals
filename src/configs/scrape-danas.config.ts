@@ -15,10 +15,7 @@ export const ScrapeDanasConfig: ScraperConfig = {
     "https://www.danas.hr/vrijeme",
     "https://www.danas.hr/videovijesti/vijesti-videa",
   ],
-  linker: {
-    find: "div.articleCard a.cardInner",
-    prefix: "https://www.danas.hr",
-  },
+  linker: "div.articleCard a.cardInner",
   remove1: [
     "img",
     "iframe",

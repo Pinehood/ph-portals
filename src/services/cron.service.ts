@@ -5,7 +5,7 @@ import {
   Portals,
   PORTAL_SCRAPERS,
   StatsKeys,
-  ResponseConstants,
+  TokenizedConstants,
   ScraperConfig,
   TemplateNames,
 } from "@/common";
@@ -73,18 +73,12 @@ export class CronService {
         articles.length,
         name
       );
-      this.portalsService.save(
-        StatsKeys.LAST_REFRESHED_ON_PREFIX + portal,
-        Date.now()
-      );
-      this.portalsService.save(
-        StatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX + portal,
-        articles.length
-      );
-      this.portalsService.save(
-        StatsKeys.TOTAL_SCRAPING_TIME_PREFIX + portal,
-        duration
-      );
+      const durationKey = `${StatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
+      this.portalsService.save(durationKey, duration);
+      const lastDateKey = `${StatsKeys.LAST_REFRESHED_ON_PREFIX}${portal}`;
+      this.portalsService.save(lastDateKey, Date.now());
+      const numArticlesKey = `${StatsKeys.TOTAL_SCRAPED_ARTICLES_PREFIX}${portal}`;
+      this.portalsService.save(numArticlesKey, articles.length);
       this.portalsService.save(portal, articles);
       const portalPage =
         articles && articles.length > 0
@@ -93,8 +87,8 @@ export class CronService {
               portal,
               TemplateNames.PORTAL,
               {
-                articles: ResponseConstants.NO_ARTICLES,
-                stats: ResponseConstants.NO_STATS,
+                articles: TokenizedConstants.NO_ARTICLES,
+                stats: TokenizedConstants.NO_STATS,
                 title: `Portali - ${name}`,
               }
             );

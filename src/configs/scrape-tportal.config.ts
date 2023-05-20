@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { Portals } from "@/common/enums";
 import { ScraperConfig } from "@/common/types";
 
@@ -8,11 +9,8 @@ export const ScrapeTportalConfig: ScraperConfig = {
   icon: "https://tportal.hr/favicon.ico",
   rss: false,
   roots: ["https://www.tportal.hr/najnovije-vijesti"],
-  id: () => Math.floor(100000000 + Math.random() * 900000000).toString(),
-  linker: {
-    find: "a.articlePreview",
-    prefix: "https://www.tportal.hr",
-  },
+  id: () => randomUUID(),
+  linker: "a.articlePreview",
   remove1: [
     "img",
     "iframe",

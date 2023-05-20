@@ -6,13 +6,7 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import {
-  ApiRoutes,
-  ControllerTags,
-  Portals,
-  QueryParams,
-  UrlParams,
-} from "@/common";
+import { ApiRoutes, ControllerTags, Params, Portals } from "@/common";
 import { ArticleInfo, Portal, ScraperStats } from "@/dtos";
 import { ApiService } from "@/services";
 
@@ -38,12 +32,12 @@ export class ApiController {
     summary: "Fetch a list of articles for a selected news portal",
   })
   @ApiParam({
-    name: UrlParams.PORTAL,
+    name: Params.PORTAL,
     enum: Portals,
     required: true,
   })
   @ApiQuery({
-    name: QueryParams.WITH_CONTENT,
+    name: Params.WITH_CONTENT,
     type: Boolean,
     required: true,
   })
@@ -54,8 +48,8 @@ export class ApiController {
     isArray: true,
   })
   getArticles(
-    @Param(UrlParams.PORTAL) portal: Portals,
-    @Query(QueryParams.WITH_CONTENT) withContent: string
+    @Param(Params.PORTAL) portal: Portals,
+    @Query(Params.WITH_CONTENT) withContent: string
   ): ArticleInfo[] {
     return this.apiService.getArticles(portal, withContent);
   }
@@ -78,7 +72,7 @@ export class ApiController {
     summary: "Fetch portal's scraping statistics",
   })
   @ApiParam({
-    name: UrlParams.PORTAL,
+    name: Params.PORTAL,
     enum: Portals,
     required: true,
   })
@@ -87,7 +81,7 @@ export class ApiController {
     description: "Total scraper statistics",
     type: ScraperStats,
   })
-  getPortalStats(@Param(UrlParams.PORTAL) portal: Portals): ScraperStats {
+  getPortalStats(@Param(Params.PORTAL) portal: Portals): ScraperStats {
     return this.apiService.getStats(portal);
   }
 }

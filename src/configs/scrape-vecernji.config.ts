@@ -19,10 +19,7 @@ export const ScrapeVecernjiConfig: ScraperConfig = {
     "https://www.vecernji.hr/znanost",
     "https://www.vecernji.hr/zanimljivosti",
   ],
-  linker: {
-    find: "a.card__link",
-    prefix: "https://www.vecernji.hr",
-  },
+  linker: "a.card__link",
   remove1: [
     "img",
     "iframe",

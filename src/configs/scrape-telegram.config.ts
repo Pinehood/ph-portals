@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import axios from "@/common/axios";
 import { Portals } from "@/common/enums";
 import { ScraperConfig } from "@/common/types";
@@ -20,7 +21,7 @@ export const ScrapeTelegramConfig: ScraperConfig = {
     "https://www.telegram.hr/api/category/najnovije/page/9",
     "https://www.telegram.hr/api/category/najnovije/page/10",
   ],
-  id: () => Math.floor(100000000 + Math.random() * 900000000).toString(),
+  id: () => randomUUID(),
   links: async (link: string) => {
     const articleLinks: string[] = [];
     const list = await axios.get(link);
@@ -53,11 +54,11 @@ export const ScrapeTelegramConfig: ScraperConfig = {
   },
   time: {
     find: "span.meta-date",
-    take: "normal",
+    take: "first",
   },
   author: {
-    find: "a.meta-author",
-    take: "normal",
+    find: "span.author",
+    take: "first",
   },
   content: {
     find: 'div[id="article-content"]',

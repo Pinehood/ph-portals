@@ -14,10 +14,7 @@ export const ScrapeJutarnjiConfig: ScraperConfig = {
     "https://www.jutarnji.hr/vijesti/zagreb",
     "https://www.jutarnji.hr/vijesti/crna-kronika",
   ],
-  linker: {
-    find: "a.card__article-link",
-    prefix: "https://www.jutarnji.hr",
-  },
+  linker: "a.card__article-link",
   remove1: [
     "img",
     "iframe",

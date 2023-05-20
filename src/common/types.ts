@@ -7,7 +7,7 @@ export type ScraperConfig = {
   icon: string;
   rss: boolean;
   roots: string[];
-  linker?: Linker;
+  linker?: string;
   links?: (link: string) => Promise<string[]>;
   id?: (link: string) => string;
   remove1: string[];
@@ -24,11 +24,6 @@ type Cheerio = {
   replace?: string[] | null;
   take: "first" | "last" | "normal";
   transform?: (value: string) => string;
-};
-
-type Linker = {
-  find: string;
-  prefix?: string | null;
 };
 
 type CheerioLimited = Omit<Omit<Cheerio, "take">, "transform">;

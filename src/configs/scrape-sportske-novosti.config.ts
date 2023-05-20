@@ -24,10 +24,7 @@ export const ScrapeSportskeNovostiConfig: ScraperConfig = {
     "https://sportske.jutarnji.hr/sn/tenis/davis-cup",
     "https://sportske.jutarnji.hr/sn/sport-mix/",
   ],
-  linker: {
-    find: "main a[class=card__article-link]",
-    prefix: "https://sportske.jutarnji.hr",
-  },
+  linker: "main a[class=card__article-link]",
   remove1: ["img", "iframe", "figure", "picture", "script"],
   title: {
     find: "h1.item__title",
