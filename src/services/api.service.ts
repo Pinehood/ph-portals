@@ -58,7 +58,6 @@ export class ApiService {
         articles,
         date: Date.now(),
         duration,
-        cache: this.portalsService.getCacheMemorySize(),
       };
     } catch (error: any) {
       this.logger.error(error);
