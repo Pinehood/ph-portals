@@ -34,3 +34,19 @@ export const PORTAL_SCRAPERS = {
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
   [Portals.ZAGREB]: ScrapeZagrebConfig,
 } as const;
+
+export const GTAG_HTML = `
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=@gtid@"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", "@gtid@");
+  </script>
+` as const;

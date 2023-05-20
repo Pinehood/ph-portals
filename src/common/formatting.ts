@@ -1,10 +1,12 @@
+import { CommonConstants } from "@/common/enums";
+
 export function formatDate(date: Date, onlyHoursMinutes?: boolean): string {
   if (onlyHoursMinutes == true) {
     return (
       ("0" + date.getHours()).slice(-2) +
       ":" +
       ("0" + date.getMinutes()).slice(-2) +
-      (process.env.NODE_ENV == "production" ? " UTC" : "")
+      (process.env.NODE_ENV == CommonConstants.PROD_ENV ? " UTC" : "")
     );
   } else {
     return (
@@ -19,7 +21,7 @@ export function formatDate(date: Date, onlyHoursMinutes?: boolean): string {
       ("0" + date.getMinutes()).slice(-2) +
       ":" +
       ("0" + date.getSeconds()).slice(-2) +
-      (process.env.NODE_ENV == "production" ? " UTC" : "")
+      (process.env.NODE_ENV == CommonConstants.PROD_ENV ? " UTC" : "")
     );
   }
 }

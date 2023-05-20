@@ -7,6 +7,7 @@ import { Article, ScraperStats } from "@/dtos";
 import {
   CommonConstants,
   formatDate,
+  GTAG_HTML,
   millisToSeconds,
   Portals,
   PORTAL_SCRAPERS,
@@ -80,8 +81,17 @@ export class PortalsService {
 
   getPage(portal: Portals): string {
     try {
+      const gtag =
+        process.env.NODE_ENV == CommonConstants.PROD_ENV
+          ? GTAG_HTML.replace(
+              new RegExp(Tokens.GOOGLE_TAG_ID, "g"),
+              process.env.GOOGLE_ANALYTICS_TAG
+            )
+          : "<br/>";
       if (portal == Portals.HOME) {
-        return this.getFilledPageContent(Portals.HOME, TemplateNames.HOME, {});
+        return this.getFilledPageContent(Portals.HOME, TemplateNames.HOME, {
+          ga: gtag,
+        });
       } else {
         const ps = PORTAL_SCRAPERS[portal] as any;
         const articles = CACHE_MAP.get(portal) as Article[];
@@ -94,6 +104,7 @@ export class PortalsService {
             articles: TokenizedConstants.NO_ARTICLES,
             stats: TokenizedConstants.NO_STATS,
             title: `Portali - ${ps.name}`,
+            ga: gtag,
           });
         }
         let finalContent = "";
@@ -118,6 +129,7 @@ export class PortalsService {
           articles: finalContent,
           stats,
           title: `Portali - ${ps.name}`,
+          ga: gtag,
         });
       }
     } catch (error: any) {

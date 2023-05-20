@@ -24,6 +24,7 @@ export enum CommonConstants {
   TEXT_HTML = "text/html",
   HOME_NAME = "Početna",
   HOME_ICON = "https://cdn-icons-png.flaticon.com/128/553/553376.png",
+  PROD_ENV = "production",
 }
 
 export enum SwaggerConstants {
@@ -50,6 +51,7 @@ export enum Tokens {
   NAME = "@name@",
   LINK = "@link@",
   ACTIVE = "@active@",
+  GOOGLE_TAG_ID = "@gtid@",
 }
 
 export enum ControllerTags {
