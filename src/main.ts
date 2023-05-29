@@ -7,10 +7,7 @@ import { CommonConstants, SwaggerConstants } from "@/common";
 
 (async function entrypoint() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
-  app.enableCors({
-    credentials: true,
-    origin: "*",
-  });
+  app.enableCors({ origin: "*" });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useLogger(app.get(Logger));
 

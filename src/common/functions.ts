@@ -1,5 +1,6 @@
 import { Article } from "@/dtos";
-import { Portals } from "@/common/enums";
+import { Params, Portals } from "@/common/enums";
+import { PortalsRoutes } from "@/common/routes";
 
 export function getDefaultArticle(
   type: Portals,
@@ -10,7 +11,7 @@ export function getDefaultArticle(
     articleId: "",
     articleLink: "",
     author: "",
-    backLink: `/portals/${type}`,
+    backLink: PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, type),
     content: "",
     lead: "",
     portalLink: link,
@@ -34,7 +35,9 @@ export async function TryCatch(action: () => Promise<void>): Promise<void> {
   }
 }
 
-export function calculateMapMemoryUsage(map: Map<string, any>): number {
+export function calculateApproximateMapMemoryUsage(
+  map: Map<string, any>
+): number {
   let memoryUsage = 0;
   memoryUsage += 64;
   for (const key of map.keys()) {

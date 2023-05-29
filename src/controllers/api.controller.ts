@@ -9,6 +9,7 @@ import {
 import { ApiRoutes, ControllerTags, Params, Portals } from "@/common";
 import { ArticleInfo, Portal, ScraperStats } from "@/dtos";
 import { ApiService } from "@/services";
+import { StatsEndpoint } from "@/common/decorators";
 
 @ApiTags(ControllerTags.API)
 @Controller()
@@ -54,33 +55,21 @@ export class ApiController {
     return this.apiService.getArticles(portal, withContent);
   }
 
-  @Get(ApiRoutes.STATS)
-  @ApiOperation({
-    summary: "Fetch combined scraping statistics",
-  })
-  @ApiResponse({
-    status: 200,
-    description: "Total combined statistics",
-    type: ScraperStats,
-  })
+  @StatsEndpoint(
+    ApiRoutes.STATS,
+    "Fetch combined scraping statistics",
+    "Total combined statistics"
+  )
   getTotalStats(): ScraperStats {
     return this.apiService.getTotalStats();
   }
 
-  @Get(ApiRoutes.PORTAL_STATS)
-  @ApiOperation({
-    summary: "Fetch portal's scraping statistics",
-  })
-  @ApiParam({
-    name: Params.PORTAL,
-    enum: Portals,
-    required: true,
-  })
-  @ApiResponse({
-    status: 200,
-    description: "Total scraper statistics",
-    type: ScraperStats,
-  })
+  @StatsEndpoint(
+    ApiRoutes.PORTAL_STATS,
+    "Fetch portal's scraping statistics",
+    "Total scraper statistics",
+    true
+  )
   getPortalStats(@Param(Params.PORTAL) portal: Portals): ScraperStats {
     return this.apiService.getStats(portal);
   }

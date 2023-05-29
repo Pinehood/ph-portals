@@ -7,14 +7,15 @@ import { LoggerModule } from "nestjs-pino";
 import { default as pinoPretty } from "pino-pretty";
 import { ApiController, PortalsController } from "@/controllers";
 import { ApiService, CronService, PortalsService } from "@/services";
+import { default as env } from "@/common/env";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true, load: [env] }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({
-      ttl: parseInt(process.env.THROTTLER_TTL, 10),
-      limit: parseInt(process.env.THROTTLER_REQ_PER_TTL, 10),
+      ttl: env().THROTTLER_TTL,
+      limit: env().THROTTLER_REQ_PER_TTL,
     }),
     LoggerModule.forRoot({
       pinoHttp: {

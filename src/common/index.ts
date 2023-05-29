@@ -1,6 +1,7 @@
 export * from "./axios";
 export * from "./constants";
 export * from "./enums";
+export * from "./env";
 export * from "./formatting";
 export * from "./functions";
 export * from "./routes";

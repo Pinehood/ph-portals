@@ -18,18 +18,16 @@ export class ApiService {
   ) {}
 
   getPortals(): Portal[] {
-    const portals: Portal[] = [];
-    Object.keys(Portals)
+    return Object.keys(Portals)
       .filter((value) => value != Portals.HOME)
-      .forEach((value) => {
+      .map((value) => {
         const portal = Portals[value];
         const psc = PORTAL_SCRAPERS[portal] as ScraperConfig;
-        portals.push({
+        return {
           name: psc.name,
           value: portal,
-        });
+        } as Portal;
       });
-    return portals;
   }
 
   getArticles(portal: Portals, withContent: string): ArticleInfo[] {
@@ -47,6 +45,7 @@ export class ApiService {
     try {
       let articles = 0;
       let duration = 0;
+      const now = Date.now();
       for (const portal in Portals) {
         const stats = this.getStats(Portals[portal]);
         if (stats) {
@@ -56,7 +55,7 @@ export class ApiService {
       }
       return {
         articles,
-        date: Date.now(),
+        date: now,
         duration,
       };
     } catch (error: any) {

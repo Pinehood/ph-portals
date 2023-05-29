@@ -5,11 +5,13 @@ import * as fs from "fs";
 import * as Handlebars from "handlebars";
 import { Article, ScraperStats } from "@/dtos";
 import {
-  calculateMapMemoryUsage,
+  calculateApproximateMapMemoryUsage,
   CommonConstants,
   formatDate,
   millisToSeconds,
+  Params,
   Portals,
+  PortalsRoutes,
   PORTAL_SCRAPERS,
   ScraperConfig,
   StatsKeys,
@@ -17,6 +19,7 @@ import {
   Tokens,
 } from "@/common";
 import dirname from "@/templates";
+import { default as env } from "@/common/env";
 
 const CACHE_MAP = new Map<string, any>();
 
@@ -41,7 +44,7 @@ export class PortalsService {
 
   getCacheMemorySize(calculate?: boolean): number {
     return calculate == true
-      ? calculateMapMemoryUsage(CACHE_MAP)
+      ? calculateApproximateMapMemoryUsage(CACHE_MAP)
       : parseInt(CACHE_MAP.get(StatsKeys.CACHE_MEMORY), 10);
   }
 
@@ -85,11 +88,11 @@ export class PortalsService {
   getPage(portal: Portals): string {
     try {
       const gtag =
-        process.env.NODE_ENV == CommonConstants.PROD_ENV
+        env().NODE_ENV == CommonConstants.PROD_ENV
           ? this.getTemplateContent(TemplateNames.GTAG, true)
               .replace(
                 new RegExp(Tokens.GOOGLE_TAG_ID, "g"),
-                process.env.GOOGLE_ANALYTICS_TAG
+                env().GOOGLE_ANALYTICS_TAG
               )
               .replace(Tokens.PORTAL, portal)
           : "<br/>";
@@ -193,10 +196,10 @@ export class PortalsService {
     try {
       return this.getTemplateContent(TemplateNames.REDIRECT, true).replace(
         Tokens.REDIRECT_URL,
-        `/portals/${portal}`
+        PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, portal)
       );
     } catch {
-      return `/portals/home`;
+      return PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, Portals.HOME);
     }
   }
 
@@ -217,7 +220,10 @@ export class PortalsService {
             po == Portals.HOME ? CommonConstants.HOME_NAME : psc.name
           );
         if (po == portal) {
-          linkHtml = linkHtml.replace(Tokens.ACTIVE, "active ");
+          linkHtml = linkHtml.replace(
+            Tokens.ACTIVE,
+            CommonConstants.ACTIVE_ITEM
+          );
         } else {
           linkHtml = linkHtml.replace(Tokens.ACTIVE, "");
         }

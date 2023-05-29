@@ -27,6 +27,7 @@ export enum CommonConstants {
   PROD_ENV = "production",
   STATS = `Članci: <strong>@num@</strong> | Obrada: <strong>@duration@</strong>  | Osvježeno: <strong>@date@</strong>`,
   NO_STATS = "Statistika nedostupna.",
+  ACTIVE_ITEM = "active ",
 }
 
 export enum SwaggerConstants {
