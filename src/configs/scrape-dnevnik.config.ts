@@ -52,27 +52,25 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
     "span.related-news",
   ],
   title: {
-    find: "h1.title",
+    find: "h1.article__title",
     take: "normal",
   },
   lead: {
-    find: "p.lead",
+    find: "div.article__summary",
     take: "normal",
   },
   time: {
-    find: "span.author-time",
+    find: "span.article__meta",
     replace: ["Piše"],
     take: "normal",
     transform: (value: string) => value.substring(value.lastIndexOf(",") + 1),
   },
   author: {
-    find: "span.author-time",
+    find: "span.author-sign",
     replace: ["Piše"],
     take: "normal",
-    transform: (value: string) =>
-      value.substring(0, value.lastIndexOf(",") - 1),
   },
   content: {
-    find: "div.article-body",
+    find: "div.article__content",
   },
 };
