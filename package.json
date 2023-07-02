@@ -23,6 +23,7 @@
     "handlebars": "^4.7.7",
     "joi": "^17.9.2",
     "nestjs-pino": "^3.3.0",
+    "pino-http": "^8.3.3",
     "pino-pretty": "^10.0.0",
     "rimraf": "^5.0.1",
     "swagger-ui-express": "^4.6.3"
