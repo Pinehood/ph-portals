@@ -15,9 +15,9 @@
 
 # Development
 
-## New scraping addition
+## New portal scraping addition
 
-To support scraping of a currently unsupported news portal, you need to:
+To support scraping of a completely new news portal, you need to:
 
 1. Add new enum entry to `src/common/enums/Portals`
 2. Add new scraper configuration to `src/configs/<portal-name>.config.ts`
@@ -106,7 +106,7 @@ type Cheerio = {
 // It just has the "find" and "replace" properties
 // For "take", the scraper service uses "el.html()"
 // For "transform", there is no need as we won't really transform HTML stuff
-type CheerioLimited = Omit<Omit<Cheerio, "take">, "transform">;
+type CheerioLimited = Omit<Cheerio, "take" | "transform">;
 ```
 
 ## Other relevant helper files and implementations

@@ -5,13 +5,14 @@ import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { LoggerModule } from "nestjs-pino";
 import { default as pinoPretty } from "pino-pretty";
+import { default as env } from "@/common/env";
+import { validationSchema } from "@/common/env.validation";
 import { ApiController, PortalsController } from "@/controllers";
 import { ApiService, CronService, PortalsService } from "@/services";
-import { default as env } from "@/common/env";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, load: [env] }),
+    ConfigModule.forRoot({ isGlobal: true, load: [env], validationSchema }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({
       ttl: env().THROTTLER_TTL,

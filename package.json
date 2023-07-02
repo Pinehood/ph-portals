@@ -21,6 +21,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "handlebars": "^4.7.7",
+    "joi": "^17.9.2",
     "nestjs-pino": "^3.3.0",
     "pino-pretty": "^10.0.0",
     "rimraf": "^5.0.1",

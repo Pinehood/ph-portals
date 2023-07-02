@@ -26,4 +26,4 @@ type Cheerio = {
   transform?: (value: string) => string;
 };
 
-type CheerioLimited = Omit<Omit<Cheerio, "take">, "transform">;
+type CheerioLimited = Omit<Cheerio, "take" | "transform">;
