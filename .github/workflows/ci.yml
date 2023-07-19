@@ -19,9 +19,9 @@ jobs:
       - name: Install
         run: npm ci
       - name: Build
-        run: npm run $BUILD_CMD
+        run: npm run $CMD
         env:
-          BUILD_CMD: ${{ vars.BUILD_CMD }}
+          CMD: ${{ vars.BUILD_CMD }}
       - name: Lint
         if: ${{ vars.RUN_LINT == 'true' }}
         run: npm run lint
@@ -48,9 +48,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
       - name: Build & Upload Image to AWS ECR
         run: |
-          docker build -f ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH .
+          docker build --build-arg BUILD_CMD=$CMD -f ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH
         env:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
           ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           BRANCH: ${{ github.ref_name }}
+          CMD: ${{ vars.BUILD_CMD }}
