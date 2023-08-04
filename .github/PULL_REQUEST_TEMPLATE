@@ -10,8 +10,6 @@ Pull Request requirements:
 - [ ] I have commented my code in particularly hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
 - [ ] I ensured that my changes generate no new warnings or errors
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] I have ensured that new and existing unit tests pass locally with my changes
 
 ## Type
 
