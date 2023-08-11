@@ -16,7 +16,7 @@ import { PortalsService } from "@/services/portals.service";
 export class CronService {
   constructor(
     @InjectPinoLogger(CronService.name) private readonly logger: PinoLogger,
-    private readonly portalsService: PortalsService
+    private readonly portalsService: PortalsService,
   ) {}
 
   @Timeout(2000)
@@ -25,8 +25,8 @@ export class CronService {
       Object.keys(TemplateNames).forEach((value) =>
         this.portalsService.save(
           TemplateNames[value],
-          this.portalsService.getTemplateContent(TemplateNames[value])
-        )
+          this.portalsService.getTemplateContent(TemplateNames[value]),
+        ),
       );
       this.logger.info("Preloaded all templates' HTML content");
       this.scrapeData();
@@ -42,12 +42,12 @@ export class CronService {
       const homeKey = Portals.HOME + StatsKeys.PAGE_SUFFIX;
       this.portalsService.save(homeKey, homePage);
       const scrapers = Object.entries(PORTAL_SCRAPERS).map(([, value]) =>
-        this.cachePortalAndArticles(value)
+        this.cachePortalAndArticles(value),
       );
       await Promise.all(scrapers);
       this.portalsService.save(
         StatsKeys.CACHE_MEMORY,
-        this.portalsService.getCacheMemorySize(true)
+        this.portalsService.getCacheMemorySize(true),
       );
     } catch (error: any) {
       this.logger.error(error);
@@ -64,7 +64,7 @@ export class CronService {
         articles[i].html = this.portalsService.getFilledPageContent(
           portal,
           TemplateNames.ARTICLE,
-          articles[i]
+          articles[i],
         );
       }
       const end = Date.now();
@@ -72,7 +72,7 @@ export class CronService {
       this.logger.info(
         "Scraped '%d' articles from '%s'",
         articles.length,
-        name
+        name,
       );
       const durationKey = `${StatsKeys.TOTAL_SCRAPING_TIME_PREFIX}${portal}`;
       this.portalsService.save(durationKey, duration);
@@ -89,11 +89,11 @@ export class CronService {
               TemplateNames.PORTAL,
               {
                 articles: this.portalsService.getTemplateContent(
-                  TemplateNames.NO_ARTICLES
+                  TemplateNames.NO_ARTICLES,
                 ),
                 stats: CommonConstants.NO_STATS,
                 title: `Portali - ${name}`,
-              }
+              },
             );
       this.portalsService.save(portal + StatsKeys.PAGE_SUFFIX, portalPage);
     } catch (error: any) {

@@ -12,7 +12,7 @@ export function HtmlEndpoint(
   route: string,
   summary: string,
   description: string,
-  portal?: boolean
+  portal?: boolean,
 ) {
   if (portal == true) {
     return applyDecorators(
@@ -27,7 +27,7 @@ export function HtmlEndpoint(
       ApiResponse({
         status: 200,
         description,
-      })
+      }),
     );
   } else {
     return applyDecorators(
@@ -37,7 +37,7 @@ export function HtmlEndpoint(
       ApiResponse({
         status: 200,
         description,
-      })
+      }),
     );
   }
 }
@@ -46,7 +46,7 @@ export function StatsEndpoint(
   route: string,
   summary: string,
   description: string,
-  portal?: boolean
+  portal?: boolean,
 ) {
   if (portal == true) {
     return applyDecorators(
@@ -61,7 +61,7 @@ export function StatsEndpoint(
         status: 200,
         description,
         type: ScraperStats,
-      })
+      }),
     );
   } else {
     return applyDecorators(
@@ -71,7 +71,7 @@ export function StatsEndpoint(
         status: 200,
         description,
         type: ScraperStats,
-      })
+      }),
     );
   }
 }

@@ -12,7 +12,7 @@ export class PortalsController {
   @HtmlEndpoint(
     PortalsRoutes.ROOT,
     "Fetch portal's home page content",
-    "Home page content"
+    "Home page content",
   )
   getHome(): string {
     return this.portalsService.getCachedPage(Portals.HOME);
@@ -22,7 +22,7 @@ export class PortalsController {
     PortalsRoutes.PORTAL,
     "Fetch portal's page content with article list",
     "Portal page content",
-    true
+    true,
   )
   getPage(@Param(Params.PORTAL) portal: Portals): string {
     return this.portalsService.getCachedPage(portal);
@@ -32,11 +32,11 @@ export class PortalsController {
     PortalsRoutes.ARTICLE,
     "Fetch article's page content",
     "Article page content",
-    true
+    true,
   )
   getArticle(
     @Param(Params.PORTAL) portal: Portals,
-    @Param(Params.ARTICLE_ID) articleId: string
+    @Param(Params.ARTICLE_ID) articleId: string,
   ): string {
     return this.portalsService.getCachedArticle(portal, articleId);
   }

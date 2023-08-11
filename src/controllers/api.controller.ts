@@ -50,7 +50,7 @@ export class ApiController {
   })
   getArticles(
     @Param(Params.PORTAL) portal: Portals,
-    @Query(Params.WITH_CONTENT) withContent: string
+    @Query(Params.WITH_CONTENT) withContent: string,
   ): ArticleInfo[] {
     return this.apiService.getArticles(portal, withContent);
   }
@@ -58,7 +58,7 @@ export class ApiController {
   @StatsEndpoint(
     ApiRoutes.STATS,
     "Fetch combined scraping statistics",
-    "Total combined statistics"
+    "Total combined statistics",
   )
   getTotalStats(): ScraperStats {
     return this.apiService.getTotalStats();
@@ -68,7 +68,7 @@ export class ApiController {
     ApiRoutes.PORTAL_STATS,
     "Fetch portal's scraping statistics",
     "Total scraper statistics",
-    true
+    true,
   )
   getPortalStats(@Param(Params.PORTAL) portal: Portals): ScraperStats {
     return this.apiService.getStats(portal);

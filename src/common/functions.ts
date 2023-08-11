@@ -5,7 +5,7 @@ import { PortalsRoutes } from "@/common/routes";
 export function getDefaultArticle(
   type: Portals,
   link: string,
-  name: string
+  name: string,
 ): Article {
   return {
     articleId: "",
@@ -36,7 +36,7 @@ export async function TryCatch(action: () => Promise<void>): Promise<void> {
 }
 
 export function calculateApproximateMapMemoryUsage(
-  map: Map<string, any>
+  map: Map<string, any>,
 ): number {
   let memoryUsage = 0;
   memoryUsage += 64;
