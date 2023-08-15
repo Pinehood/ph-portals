@@ -32,7 +32,6 @@ export const ScrapeVecernjiConfig: ScraperConfig = {
   ],
   title: {
     find: "h1.single-article__title",
-    take: "normal",
   },
   lead: {
     find: "div.single-article__headline",
@@ -40,11 +39,9 @@ export const ScrapeVecernjiConfig: ScraperConfig = {
   },
   time: {
     find: "div.single-article__inner > div > div > div:nth-child(2) > div > div:nth-child(2)",
-    take: "normal",
   },
   author: {
     find: "div.author__name",
-    take: "normal",
     transform: (value: string) => value.replace("Autor", ""),
   },
   remove2: ["div.single-article__row", "div.single-article__row--full"],

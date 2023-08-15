@@ -66,35 +66,33 @@ type ScraperConfig = {
   remove1: string[];
 
   // Define how to extract the title of the article
-  title: Cheerio;
+  title: CheerioExtractor;
 
   // Define how to extract the article lead or subtitle
-  lead: Cheerio;
+  lead: CheerioExtractor;
 
   // Define how to extract the author of the article
-  author: Cheerio;
+  author: CheerioExtractor;
 
   // Define how to extract publish time of the article
-  time: Cheerio;
+  time: CheerioExtractor;
 
   // CSS Selector array of HTML elements to be removed, prior to content scraping
   // Here you'd want to remove any additional unneeded content before continuing
   remove2?: string[] | null;
 
   // Define how to extract the article content
-  content: CheerioLimited;
+  content: CheerioExtractorSimple;
 };
 
-type Cheerio = {
+type CheerioExtractor = {
   // CSS Selector of the element to find
   find: string;
 
-  // Array of strings to be replaced with empty character in extracted value
-  replace?: string[] | null;
-
   // Which element to take, and which Cheerio extraction method to use
   // el.first().text() | el.last().text() | el.text()
-  take: "first" | "last" | "normal";
+  // If null, "normal" el.text() will be used
+  take?: "first" | "last" | "normal";
 
   // Post-scraping method that can additionally transform extracted value
   // Example extracted value: "Autor: Proper Name"
@@ -106,7 +104,7 @@ type Cheerio = {
 // It just has the "find" and "replace" properties
 // For "take", the scraper service uses "el.html()"
 // For "transform", there is no need as we won't really transform HTML stuff
-type CheerioLimited = Omit<Cheerio, "take" | "transform">;
+type CheerioExtractorSimple = Omit<CheerioExtractor, "take" | "transform">;
 ```
 
 ## Other relevant helper files and implementations

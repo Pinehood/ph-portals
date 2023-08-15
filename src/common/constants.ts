@@ -16,6 +16,7 @@ import {
   ScrapeZagrebConfig,
 } from "@/configs";
 import { Portals } from "@/common/enums";
+import { ScrapeNoviListConfig } from "@/configs/scrape-novi-list.config";
 
 export const PORTAL_SCRAPERS = {
   [Portals.DANAS]: ScrapeDanasConfig,
@@ -33,4 +34,5 @@ export const PORTAL_SCRAPERS = {
   [Portals.TPORTAL]: ScrapeTportalConfig,
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
   [Portals.ZAGREB]: ScrapeZagrebConfig,
+  [Portals.NOVI_LIST]: ScrapeNoviListConfig,
 } as const;

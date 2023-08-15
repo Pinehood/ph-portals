@@ -27,20 +27,21 @@ export const ScrapeDnevnoConfig: ScraperConfig = {
   ],
   title: {
     find: "h1",
-    take: "normal",
   },
   lead: {
     find: "a.title",
-    take: "normal",
   },
   time: {
     find: "time.date",
     take: "first",
     transform: (value: string) => {
       const split = value.split(",");
-      const day = split[0].trim();
-      const date = split[1].replace(day, "").trim();
-      return (day + ", " + date).trim();
+      if (split && split.length > 1) {
+        const day = split[0].trim();
+        const date = split[1].replace(day, "").trim();
+        return (day + ", " + date).trim();
+      }
+      return "";
     },
   },
   author: {

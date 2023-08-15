@@ -20,7 +20,6 @@ export const ScrapeIndexConfig: ScraperConfig = {
   remove1: ["img", "iframe", "div.js-slot-container", "div.brid"],
   title: {
     find: "h1.title",
-    take: "normal",
   },
   lead: {
     find: "div.text p",
@@ -39,9 +38,5 @@ export const ScrapeIndexConfig: ScraperConfig = {
   },
   content: {
     find: "div.text",
-    replace: [
-      "USKORO OPŠIRNIJE",
-      "Znate li nešto više o temi ili želite prijaviti grešku u tekstu",
-    ],
   },
 };

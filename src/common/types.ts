@@ -11,19 +11,18 @@ export type ScraperConfig = {
   links?: (link: string) => Promise<string[]>;
   id?: (link: string) => string;
   remove1: string[];
-  title: Cheerio;
-  lead: Cheerio;
-  author: Cheerio;
-  time: Cheerio;
+  title: CheerioExtractor;
+  lead: CheerioExtractor;
+  author: CheerioExtractor;
+  time: CheerioExtractor;
   remove2?: string[] | null;
-  content: CheerioLimited;
+  content: CheerioExtractorSimple;
 };
 
-type Cheerio = {
+type CheerioExtractor = {
   find: string;
-  replace?: string[] | null;
-  take: "first" | "last" | "normal";
+  take?: "first" | "last" | "normal";
   transform?: (value: string) => string;
 };
 
-type CheerioLimited = Omit<Cheerio, "take" | "transform">;
+type CheerioExtractorSimple = Omit<CheerioExtractor, "take" | "transform">;

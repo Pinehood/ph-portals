@@ -29,7 +29,6 @@ export const ScrapeZagrebConfig: ScraperConfig = {
   remove1: ["img", "iframe", "figure", "div.wpipa-container"],
   title: {
     find: "h1.entry-title",
-    take: "normal",
   },
   lead: {
     find: 'div.td-post-content p[style^="text-align: justify;"]',
@@ -38,11 +37,9 @@ export const ScrapeZagrebConfig: ScraperConfig = {
   },
   time: {
     find: "time.entry-date",
-    take: "normal",
   },
   author: {
     find: "div.td-post-author-name strong",
-    take: "normal",
   },
   remove2: [
     "div.td-post-featured-image",

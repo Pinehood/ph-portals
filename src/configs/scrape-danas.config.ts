@@ -31,7 +31,6 @@ export const ScrapeDanasConfig: ScraperConfig = {
   },
   lead: {
     find: "span.subtitle",
-    take: "normal",
   },
   time: {
     find: "div.meta_info_items",
@@ -40,7 +39,6 @@ export const ScrapeDanasConfig: ScraperConfig = {
   },
   author: {
     find: "div.meta_info_items a",
-    take: "normal",
   },
   remove2: [
     "section",

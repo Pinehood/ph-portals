@@ -21,7 +21,6 @@ export const ScrapeSlobodnaDalmacijaConfig: ScraperConfig = {
   remove1: ["img", "iframe", "div.item__ad-center"],
   title: {
     find: "h1.item__title",
-    take: "normal",
   },
   lead: {
     find: "span.card__egida",
@@ -30,11 +29,9 @@ export const ScrapeSlobodnaDalmacijaConfig: ScraperConfig = {
   },
   time: {
     find: "div.item__dates",
-    take: "normal",
   },
   author: {
     find: "span.item__author-name",
-    take: "normal",
   },
   content: {
     find: "div.itemFullText",

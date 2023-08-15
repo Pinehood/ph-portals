@@ -21,19 +21,15 @@ export const ScrapeDirektnoConfig: ScraperConfig = {
   remove1: ["img", "iframe", "div.banner"],
   title: {
     find: "h1.pd-title",
-    take: "normal",
   },
   lead: {
     find: "div.pd-short-desc",
-    take: "normal",
   },
   time: {
     find: "div.pd-date",
-    take: "normal",
   },
   author: {
     find: "p.pd-author-name",
-    take: "normal",
   },
   content: {
     find: "div.pd-desc",

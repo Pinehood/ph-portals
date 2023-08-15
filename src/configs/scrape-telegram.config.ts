@@ -53,11 +53,9 @@ export const ScrapeTelegramConfig: ScraperConfig = {
   remove1: ["img", "figure", "iframe", 'div[id="intext_premium"]', "div.lwdgt"],
   title: {
     find: "h1.full",
-    take: "normal",
   },
   lead: {
     find: "h2.full",
-    take: "normal",
   },
   time: {
     find: "div.full.column.article-head.column-top-pad.flex > h5:nth-child(6) > span",

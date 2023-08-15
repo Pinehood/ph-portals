@@ -17,7 +17,7 @@ export class ScraperService {
       const defaultArticle = getDefaultArticle(
         config.type,
         config.link,
-        config.name
+        config.name,
       );
       for (let i = 0; i < config.roots.length; i++) {
         const rootLink = config.roots[i];
@@ -29,7 +29,7 @@ export class ScraperService {
           ? await ScraperService.nonRssLinks(
               rootLink,
               config.link,
-              config.linker
+              config.linker,
             )
           : [];
         if (articleLinks && articleLinks.length > 0) {
@@ -51,30 +51,30 @@ export class ScraperService {
                   : ScraperService.id(articleLink);
 
                 const title =
-                  config.title.find == "first"
+                  config.title.take == "first"
                     ? $(config.title.find).first().text()
-                    : config.title.find == "last"
+                    : config.title.take == "last"
                     ? $(config.title.find).last().text()
                     : $(config.title.find).text();
 
                 const lead =
-                  config.lead.find == "first"
+                  config.lead.take == "first"
                     ? $(config.lead.find).first().text()
-                    : config.lead.find == "last"
+                    : config.lead.take == "last"
                     ? $(config.lead.find).last().text()
                     : $(config.lead.find).text();
 
                 const time =
-                  config.time.find == "first"
+                  config.time.take == "first"
                     ? $(config.time.find).first().text()
-                    : config.time.find == "last"
+                    : config.time.take == "last"
                     ? $(config.time.find).last().text()
                     : $(config.time.find).text();
 
                 const author =
-                  config.author.find == "first"
+                  config.author.take == "first"
                     ? $(config.author.find).first().text()
-                    : config.author.find == "last"
+                    : config.author.take == "last"
                     ? $(config.author.find).last().text()
                     : $(config.author.find).text();
 
@@ -103,7 +103,7 @@ export class ScraperService {
       }
     });
     return articles.filter(
-      (a) => isValidArticle(a) && shouldArticleBeDisplayed(a)
+      (a) => isValidArticle(a) && shouldArticleBeDisplayed(a),
     );
   }
 
@@ -145,7 +145,7 @@ export class ScraperService {
   private static async nonRssLinks(
     link: string,
     base: string,
-    find: string
+    find: string,
   ): Promise<string[]> {
     try {
       const articleLinks: string[] = [];
@@ -174,20 +174,13 @@ export class ScraperService {
 
   private static replaceAndTransform(
     article: Article,
-    config: ScraperConfig
+    config: ScraperConfig,
   ): void {
     if (article.title) {
       article.title = article.title
         .replace(/\n/g, "")
         .replace(/  /g, "")
         .trim();
-      if (config.title.replace) {
-        config.title.replace.forEach((replace) => {
-          article.title = article.title
-            .replace(new RegExp(replace, "g"), "")
-            .trim();
-        });
-      }
       if (config.title.transform) {
         article.title = config.title.transform(article.title);
       }
@@ -195,13 +188,6 @@ export class ScraperService {
 
     if (article.lead) {
       article.lead = article.lead.replace(/\n/g, "").replace(/  /g, "").trim();
-      if (config.lead.replace) {
-        config.lead.replace.forEach((replace) => {
-          article.lead = article.lead
-            .replace(new RegExp(replace, "g"), "")
-            .trim();
-        });
-      }
       if (config.lead.transform) {
         article.lead = config.lead.transform(article.lead);
       }
@@ -209,13 +195,6 @@ export class ScraperService {
 
     if (article.time) {
       article.time = article.time.replace(/\n/g, "").replace(/  /g, "").trim();
-      if (config.time.replace) {
-        config.time.replace.forEach((replace) => {
-          article.time = article.time
-            .replace(new RegExp(replace, "g"), "")
-            .trim();
-        });
-      }
       if (config.time.transform) {
         article.time = config.time.transform(article.time);
       }
@@ -226,13 +205,6 @@ export class ScraperService {
         .replace(/\n/g, "")
         .replace(/  /g, "")
         .trim();
-      if (config.author.replace) {
-        config.author.replace.forEach((replace) => {
-          article.author = article.author
-            .replace(new RegExp(replace, "g"), "")
-            .trim();
-        });
-      }
       if (config.author.transform) {
         article.author = config.author.transform(article.author);
       }
@@ -240,13 +212,6 @@ export class ScraperService {
 
     if (article.content) {
       article.content = article.content.replace(/\n/g, "");
-      if (config.content.replace) {
-        config.content.replace.forEach((replace) => {
-          article.content = article.content
-            .replace(new RegExp(replace, "g"), "")
-            .trim();
-        });
-      }
     }
   }
 }

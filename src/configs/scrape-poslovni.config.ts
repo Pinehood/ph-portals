@@ -21,11 +21,9 @@ export const ScrapePoslovniConfig: ScraperConfig = {
   remove1: ["img", "iframe", "figure", "picture", "div.lwdgt"],
   title: {
     find: "h1.title",
-    take: "normal",
   },
   lead: {
     find: "div.single__lead",
-    take: "normal",
   },
   time: {
     find: "span.text",
@@ -34,7 +32,6 @@ export const ScrapePoslovniConfig: ScraperConfig = {
   },
   author: {
     find: "a.single__meta-author",
-    take: "normal",
   },
   content: {
     find: "div.article__content",

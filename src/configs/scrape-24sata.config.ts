@@ -20,24 +20,19 @@ export const Scrape24SataConfig: ScraperConfig = {
   remove1: ["img", "iframe"],
   title: {
     find: "h1.article__title",
-    take: "normal",
   },
   lead: {
     find: "p.article__lead_text",
-    take: "normal",
   },
   time: {
     find: "time.article__time",
-    take: "normal",
   },
   author: {
     find: "span.article__authors_item",
-    replace: ["Piše"],
-    take: "normal",
-    transform: (value: string) => value.substring(0, value.length - 1),
+    transform: (value: string) =>
+      value.replace("Piše", "").substring(0, value.length - 1),
   },
   content: {
     find: "div.article__content",
-    replace: ["<h3>Najčitaniji članci</h3>"],
   },
 };

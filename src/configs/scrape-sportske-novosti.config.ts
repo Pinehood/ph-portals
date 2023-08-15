@@ -28,19 +28,15 @@ export const ScrapeSportskeNovostiConfig: ScraperConfig = {
   remove1: ["img", "iframe", "figure", "picture", "script"],
   title: {
     find: "h1.item__title",
-    take: "normal",
   },
   lead: {
     find: "div.item__subtitle",
-    take: "normal",
   },
   time: {
     find: "span.item__author__date",
-    take: "normal",
   },
   author: {
     find: "span.item__author-name",
-    take: "normal",
   },
   content: {
     find: "div.itemFullText",

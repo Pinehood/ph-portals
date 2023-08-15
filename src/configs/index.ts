@@ -6,6 +6,7 @@ export * from "./scrape-dnevno.config";
 export * from "./scrape-index.config";
 export * from "./scrape-jutarnji.config";
 export * from "./scrape-net.config";
+export * from "./scrape-novi-list.config";
 export * from "./scrape-poslovni.config";
 export * from "./scrape-slobodna-dalmacija.config";
 export * from "./scrape-sportske-novosti.config";

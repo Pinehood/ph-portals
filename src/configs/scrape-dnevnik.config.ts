@@ -61,14 +61,14 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
   },
   time: {
     find: "span.article__meta",
-    replace: ["Piše"],
     take: "normal",
-    transform: (value: string) => value.substring(value.lastIndexOf(",") + 1),
+    transform: (value: string) =>
+      value.replace("Piše", "").substring(value.lastIndexOf(",") + 1),
   },
   author: {
     find: "span.author-sign",
-    replace: ["Piše"],
     take: "normal",
+    transform: (value: string) => value.replace("Piše", ""),
   },
   content: {
     find: "div.article__content",
