@@ -1,0 +1,53 @@
+name: Continuous Integration
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [develop]
+jobs:
+  integrate:
+    name: Install, Build & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: "npm"
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run $CMD
+        env:
+          CMD: ${{ vars.BUILD_CMD }}
+          NODE_OPTIONS: "--max_old_space_size=4096"
+      - name: Lint
+        if: ${{ vars.RUN_LINT == 'true' }}
+        run: npm run lint
+  build:
+    needs: integrate
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Login to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build & Upload Image to AWS ECR
+        run: |
+          docker build --build-arg BUILD_CMD=$CMD -f ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          BRANCH: ${{ github.ref_name }}
+          CMD: ${{ vars.BUILD_CMD }}

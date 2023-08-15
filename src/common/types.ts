@@ -1,29 +1,29 @@
-import { Portals } from "@common/constants";
+import { Portals } from "@/common/enums";
 
 export type ScraperConfig = {
-  info: {
-    roots: string[];
-    name: string;
-    link: string;
-    type: Portals;
-    icon: string;
-    rss: boolean;
-  };
-  articles: {
-    links: (link: string) => Promise<string[]>;
-    id: (link: string) => string;
-    remove1: string[];
-    title: Cheerio;
-    lead: Cheerio;
-    author: Cheerio;
-    time: Cheerio;
-    remove2?: string[] | null;
-    content: Cheerio;
-  };
+  type: Portals;
+  name: string;
+  link: string;
+  icon: string;
+  rss: boolean;
+  roots: string[];
+  linker?: string;
+  links?: (link: string) => Promise<string[]>;
+  id?: (link: string) => string;
+  remove1: string[];
+  title: Cheerio;
+  lead: Cheerio;
+  author: Cheerio;
+  time: Cheerio;
+  remove2?: string[] | null;
+  content: CheerioLimited;
 };
 
-export type Cheerio = {
+type Cheerio = {
   find: string;
-  replace: string[];
+  replace?: string[] | null;
   take: "first" | "last" | "normal";
+  transform?: (value: string) => string;
 };
+
+type CheerioLimited = Omit<Cheerio, "take" | "transform">;

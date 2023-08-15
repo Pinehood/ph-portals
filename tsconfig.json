@@ -1,25 +1,19 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "target": "es2017",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
     "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
+    "baseUrl": "./",
+    "outDir": "./dist",
     "paths": {
-      "@root/*": ["src/*"],
-      "@modules/*": ["src/modules/*"],
-      "@portals/*": ["src/modules/portals/*"],
-      "@resources/*": ["src/resources/*"],
-      "@scrapers/*": ["src/modules/scrapers/*"],
-      "@utils/*": ["src/modules/utils/*"],
-      "@common/*": ["src/common/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*"]

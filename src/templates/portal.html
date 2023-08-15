@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="hr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=0.4,maximum-scale=5.0"
+    />
+    <meta name="description" content="Članci portala {{title}}" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.min.css"
+    />
+    <title>{{title}}</title>
+  </head>
+  {{ga}}
+  <body>
+    <div class="ui page equal height grid">
+      <div class="row">
+        <div class="ui segment">
+          <div class="row">
+            <div class="ui pointing menu">{{links}}</div>
+          </div>
+          <h2 style="text-align: center">{{title}}</h2>
+          <p style="text-align: center">{{stats}}</p>
+          <br />
+          {{articles}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

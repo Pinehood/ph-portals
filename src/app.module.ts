@@ -5,17 +5,18 @@ import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { LoggerModule } from "nestjs-pino";
 import { default as pinoPretty } from "pino-pretty";
-import { PortalsModule } from "@portals/portals.module";
-import { ScrapersModule } from "@scrapers/scrapers.module";
-import { UtilsModule } from "@utils/utils.module";
+import { default as env } from "@/common/env";
+import { validationSchema } from "@/common/env.validation";
+import { ApiController, PortalsController } from "@/controllers";
+import { ApiService, CronService, PortalsService } from "@/services";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true, load: [env], validationSchema }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({
-      ttl: parseInt(process.env.THROTTLER_TTL),
-      limit: parseInt(process.env.THROTTLER_REQ_PER_TTL),
+      ttl: env().THROTTLER_TTL,
+      limit: env().THROTTLER_REQ_PER_TTL,
     }),
     LoggerModule.forRoot({
       pinoHttp: {
@@ -24,11 +25,12 @@ import { UtilsModule } from "@utils/utils.module";
         autoLogging: false,
       },
     }),
-    PortalsModule,
-    ScrapersModule,
-    UtilsModule,
   ],
+  controllers: [ApiController, PortalsController],
   providers: [
+    PortalsService,
+    ApiService,
+    CronService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

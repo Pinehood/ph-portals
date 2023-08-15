@@ -1,12 +1,11 @@
 FROM node:lts-bullseye-slim
 
+ARG BUILD_CMD
 WORKDIR /app
 COPY . /app
 
 RUN npm ci
-RUN npm run build
-
-COPY ./src/resources/templates/* /app/dist/resources/templates/
+RUN npm run $BUILD_CMD
 
 EXPOSE 3000
-CMD ["node", "dist/main"]
+ENTRYPOINT ["node", "dist/main"]
