@@ -45,10 +45,6 @@ export class CronService {
         this.cachePortalAndArticles(value),
       );
       await Promise.all(scrapers);
-      this.portalsService.save(
-        StatsKeys.CACHE_MEMORY,
-        this.portalsService.getCacheMemorySize(true),
-      );
     } catch (error: any) {
       this.logger.error(error);
     }

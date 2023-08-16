@@ -14,12 +14,12 @@ export class ApiService {
   constructor(
     @InjectPinoLogger(ApiService.name)
     private readonly logger: PinoLogger,
-    private readonly portalsService: PortalsService
+    private readonly portalsService: PortalsService,
   ) {}
 
   getPortals(): Portal[] {
     return Object.keys(Portals)
-      .filter((value) => value != Portals.HOME)
+      .filter((value) => Portals[value] != Portals.HOME)
       .map((value) => {
         const portal = Portals[value];
         const psc = PORTAL_SCRAPERS[portal] as ScraperConfig;
@@ -76,7 +76,7 @@ export class ApiService {
 
   private articleToArticleInfo(
     article: Article,
-    withContent: string
+    withContent: string,
   ): ArticleInfo {
     return {
       articleId: article.articleId,

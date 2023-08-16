@@ -76,6 +76,5 @@ export enum StatsKeys {
   LAST_REFRESHED_ON_PREFIX = "last_refreshed_on_",
   TOTAL_SCRAPING_TIME_PREFIX = "total_scraping_time_",
   TOTAL_SCRAPED_ARTICLES_PREFIX = "total_scraped_articles_",
-  CACHE_MEMORY = "cache_memory",
   PAGE_SUFFIX = "page",
 }

@@ -5,7 +5,6 @@ import * as fs from "fs";
 import * as Handlebars from "handlebars";
 import { Article, ScraperStats } from "@/dtos";
 import {
-  calculateApproximateMapMemoryUsage,
   CommonConstants,
   formatDate,
   millisToSeconds,
@@ -27,7 +26,7 @@ const CACHE_MAP = new Map<string, any>();
 export class PortalsService {
   constructor(
     @InjectPinoLogger(PortalsService.name)
-    private readonly logger: PinoLogger
+    private readonly logger: PinoLogger,
   ) {}
 
   save(key: string, value: any): void {
@@ -40,12 +39,6 @@ export class PortalsService {
 
   getArticles(portal: Portals): Article[] {
     return CACHE_MAP.get(portal) as Article[];
-  }
-
-  getCacheMemorySize(calculate?: boolean): number {
-    return calculate == true
-      ? calculateApproximateMapMemoryUsage(CACHE_MAP)
-      : parseInt(CACHE_MAP.get(StatsKeys.CACHE_MEMORY), 10);
   }
 
   getStats(portal: Portals): ScraperStats {
@@ -92,7 +85,7 @@ export class PortalsService {
           ? this.getTemplateContent(TemplateNames.GTAG, true)
               .replace(
                 new RegExp(Tokens.GOOGLE_TAG_ID, "g"),
-                env().GOOGLE_ANALYTICS_TAG
+                env().GOOGLE_ANALYTICS_TAG,
               )
               .replace(Tokens.PORTAL, portal)
           : "<br/>";
@@ -105,7 +98,7 @@ export class PortalsService {
         const articles = CACHE_MAP.get(portal) as Article[];
         const templateContent = this.getTemplateContent(
           TemplateNames.ITEM,
-          true
+          true,
         );
         if (!articles || !templateContent) {
           return this.getFilledPageContent(portal, TemplateNames.PORTAL, {
@@ -129,7 +122,7 @@ export class PortalsService {
         const numArticles = parseInt(CACHE_MAP.get(numArticlesKey), 10);
         const stats = CommonConstants.STATS.replace(
           Tokens.NUMBER,
-          "" + numArticles
+          "" + numArticles,
         )
           .replace(Tokens.DURATION, millisToSeconds(duration))
           .replace(Tokens.DATE, formatDate(new Date(lastDate), true));
@@ -166,7 +159,7 @@ export class PortalsService {
   getFilledPageContent(
     portal: Portals,
     templateName: TemplateNames,
-    data: any
+    data: any,
   ): string {
     try {
       const links = this.getPortalsLinks(portal);
@@ -196,7 +189,7 @@ export class PortalsService {
     try {
       return this.getTemplateContent(TemplateNames.REDIRECT, true).replace(
         Tokens.REDIRECT_URL,
-        PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, portal)
+        PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, portal),
       );
     } catch {
       return PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, Portals.HOME);
@@ -213,16 +206,16 @@ export class PortalsService {
           .replace(Tokens.PORTAL, po)
           .replace(
             Tokens.LINK,
-            po == Portals.HOME ? CommonConstants.HOME_ICON : psc.icon
+            po == Portals.HOME ? CommonConstants.HOME_ICON : psc.icon,
           )
           .replace(
             Tokens.NAME,
-            po == Portals.HOME ? CommonConstants.HOME_NAME : psc.name
+            po == Portals.HOME ? CommonConstants.HOME_NAME : psc.name,
           );
         if (po == portal) {
           linkHtml = linkHtml.replace(
             Tokens.ACTIVE,
-            CommonConstants.ACTIVE_ITEM
+            CommonConstants.ACTIVE_ITEM,
           );
         } else {
           linkHtml = linkHtml.replace(Tokens.ACTIVE, "");

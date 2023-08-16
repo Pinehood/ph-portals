@@ -5,7 +5,7 @@ import { Logger } from "nestjs-pino";
 import { AppModule } from "@/app.module";
 import { CommonConstants, SwaggerConstants } from "@/common";
 
-(async function entrypoint() {
+(async function () {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.enableCors({ origin: "*" });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
