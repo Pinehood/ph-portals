@@ -48,11 +48,14 @@ type ScraperConfig = {
   roots: string[];
 
   // CSS Selector for extracting article links from each of the "roots"
-  // If null, "links()" method must be provided
+  // If null, "links()" method should be provided
   linker?: string;
 
   // Method to retrieve article links from each of the "roots"
-  // If null, "linker" property must be provided
+  // If null, "linker" property should be provided
+  // If null but rss=true, a "rssLinks" method for extraction is used
+  // If null but rss=false, a "nonRssLinks" method for extraction is used
+  // If both "linker" and "links" is null ("rss" disregarded), a "jsonLinks" method for extraction is used
   links?: (link: string) => Promise<string[]>;
 
   // Method to retrieve the article identifier from it's URL

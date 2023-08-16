@@ -19,10 +19,13 @@ export type ScraperConfig = {
   content: CheerioExtractorSimple;
 };
 
-type CheerioExtractor = {
+export type CheerioExtractor = {
   find: string;
   take?: "first" | "last" | "normal";
   transform?: (value: string) => string;
 };
 
-type CheerioExtractorSimple = Omit<CheerioExtractor, "take" | "transform">;
+export type CheerioExtractorSimple = Omit<
+  CheerioExtractor,
+  "take" | "transform"
+>;

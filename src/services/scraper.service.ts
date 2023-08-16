@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import * as cheerio from "cheerio";
 import axios from "@/common/axios";
 import {
+  CheerioExtractor,
   getDefaultArticle,
   isValidArticle,
   ScraperConfig,
@@ -31,7 +32,7 @@ export class ScraperService {
               config.link,
               config.linker,
             )
-          : [];
+          : await ScraperService.jsonLinks(rootLink, config.link);
         if (articleLinks && articleLinks.length > 0) {
           for (let i = 0; i < articleLinks.length; i++) {
             const articleLink = articleLinks[i];
@@ -50,33 +51,10 @@ export class ScraperService {
                   ? config.id(articleLink)
                   : ScraperService.id(articleLink);
 
-                const title =
-                  config.title.take == "first"
-                    ? $(config.title.find).first().text()
-                    : config.title.take == "last"
-                    ? $(config.title.find).last().text()
-                    : $(config.title.find).text();
-
-                const lead =
-                  config.lead.take == "first"
-                    ? $(config.lead.find).first().text()
-                    : config.lead.take == "last"
-                    ? $(config.lead.find).last().text()
-                    : $(config.lead.find).text();
-
-                const time =
-                  config.time.take == "first"
-                    ? $(config.time.find).first().text()
-                    : config.time.take == "last"
-                    ? $(config.time.find).last().text()
-                    : $(config.time.find).text();
-
-                const author =
-                  config.author.take == "first"
-                    ? $(config.author.find).first().text()
-                    : config.author.take == "last"
-                    ? $(config.author.find).last().text()
-                    : $(config.author.find).text();
+                const title = ScraperService.cheerioExtract($, config.title);
+                const lead = ScraperService.cheerioExtract($, config.lead);
+                const time = ScraperService.cheerioExtract($, config.time);
+                const author = ScraperService.cheerioExtract($, config.author);
 
                 if (config.remove2) {
                   config.remove2.forEach((removal) => $(removal).remove());
@@ -172,46 +150,95 @@ export class ScraperService {
     }
   }
 
+  private static async jsonLinks(
+    link: string,
+    base: string,
+  ): Promise<string[]> {
+    try {
+      const articleLinks: string[] = [];
+      const list = await axios.get(link);
+      if (list && list.data) {
+        const obj = JSON.parse(list.data) as {
+          posts: any[];
+        };
+        if (obj && obj.posts && obj.posts.length > 0) {
+          for (let i = 0; i < obj.posts.length; i++) {
+            const post = obj.posts[i];
+            let articleLink = post.permalink;
+            if (!articleLink.startsWith("http")) {
+              if (!articleLink.startsWith("/")) {
+                articleLink = `${base}/${articleLink}`;
+              } else {
+                articleLink = `${base}${articleLink}`;
+              }
+            }
+            if (articleLinks.findIndex((el) => el == articleLink) == -1) {
+              articleLinks.push(articleLink);
+            }
+          }
+        }
+      }
+      return articleLinks;
+    } catch {
+      return [];
+    }
+  }
+
   private static replaceAndTransform(
     article: Article,
     config: ScraperConfig,
   ): void {
-    if (article.title) {
-      article.title = article.title
-        .replace(/\n/g, "")
-        .replace(/  /g, "")
-        .trim();
-      if (config.title.transform) {
-        article.title = config.title.transform(article.title);
-      }
-    }
-
-    if (article.lead) {
-      article.lead = article.lead.replace(/\n/g, "").replace(/  /g, "").trim();
-      if (config.lead.transform) {
-        article.lead = config.lead.transform(article.lead);
-      }
-    }
-
-    if (article.time) {
-      article.time = article.time.replace(/\n/g, "").replace(/  /g, "").trim();
-      if (config.time.transform) {
-        article.time = config.time.transform(article.time);
-      }
-    }
-
-    if (article.author) {
-      article.author = article.author
-        .replace(/\n/g, "")
-        .replace(/  /g, "")
-        .trim();
-      if (config.author.transform) {
-        article.author = config.author.transform(article.author);
-      }
-    }
-
+    article.title = ScraperService.replaceAndTransformSingle(
+      article.title,
+      config.title,
+    );
+    article.lead = ScraperService.replaceAndTransformSingle(
+      article.lead,
+      config.lead,
+    );
+    article.time = ScraperService.replaceAndTransformSingle(
+      article.time,
+      config.time,
+    );
+    article.author = ScraperService.replaceAndTransformSingle(
+      article.author,
+      config.author,
+    );
     if (article.content) {
       article.content = article.content.replace(/\n/g, "");
+    }
+  }
+
+  private static cheerioExtract(
+    $: cheerio.CheerioAPI,
+    extractor: CheerioExtractor,
+  ): string {
+    try {
+      return extractor.take == "first"
+        ? $(extractor.find).first().text()
+        : extractor.take == "last"
+        ? $(extractor.find).last().text()
+        : $(extractor.find).text();
+    } catch {
+      return "";
+    }
+  }
+
+  private static replaceAndTransformSingle(
+    value: string,
+    extractor: CheerioExtractor,
+  ): string {
+    try {
+      let finalValue = value;
+      if (finalValue) {
+        finalValue = finalValue.replace(/\n/g, "").replace(/  /g, "").trim();
+        if (extractor.transform) {
+          finalValue = extractor.transform(finalValue);
+        }
+      }
+      return finalValue;
+    } catch {
+      return "";
     }
   }
 }
