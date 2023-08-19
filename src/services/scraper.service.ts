@@ -157,6 +157,18 @@ export class ScraperService {
     try {
       const articleLinks: string[] = [];
       const list = await axios.get(link);
+      const processLink = (articleLink: string) => {
+        if (!articleLink.startsWith("http")) {
+          if (!articleLink.startsWith("/")) {
+            articleLink = `${base}/${articleLink}`;
+          } else {
+            articleLink = `${base}${articleLink}`;
+          }
+        }
+        if (articleLinks.findIndex((el) => el == articleLink) == -1) {
+          articleLinks.push(articleLink);
+        }
+      };
       if (list && list.data) {
         const obj = JSON.parse(list.data) as {
           posts: any[];
@@ -165,15 +177,17 @@ export class ScraperService {
           for (let i = 0; i < obj.posts.length; i++) {
             const post = obj.posts[i];
             let articleLink = post.permalink;
-            if (!articleLink.startsWith("http")) {
-              if (!articleLink.startsWith("/")) {
-                articleLink = `${base}/${articleLink}`;
-              } else {
-                articleLink = `${base}${articleLink}`;
-              }
-            }
-            if (articleLinks.findIndex((el) => el == articleLink) == -1) {
-              articleLinks.push(articleLink);
+            if (!articleLink) post.link;
+            processLink(articleLink);
+          }
+        } else {
+          const arr = JSON.parse(list.data) as any[];
+          if (arr && arr.length > 0) {
+            for (let i = 0; i < arr.length; i++) {
+              const post = arr[i];
+              let articleLink = post.permalink;
+              if (!articleLink) articleLink = post.link;
+              processLink(articleLink);
             }
           }
         }
