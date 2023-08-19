@@ -41,7 +41,7 @@ type ScraperConfig = {
   // Favicon link, preferably from the news portal's CDN
   icon: string;
 
-  // Flag that signifies if the news portal has RSS feeds exposed
+  // Flag that signifies if the news portal has RSS feeds exposed and used
   rss: boolean;
 
   // "Root" links that the scraper will go to and dig out article links
@@ -93,8 +93,8 @@ type CheerioExtractor = {
   find: string;
 
   // Which element to take, and which Cheerio extraction method to use
-  // el.first().text() | el.last().text() | el.text()
   // If null, "normal" el.text() will be used
+  // el.first().text() | el.last().text() | el.text()
   take?: "first" | "last" | "normal";
 
   // Post-scraping method that can additionally transform extracted value
@@ -104,9 +104,9 @@ type CheerioExtractor = {
 };
 
 // Used for specifically content extraction
-// It just has the "find" and "replace" properties
+// It just has the "find" property
 // For "take", the scraper service uses "el.html()"
-// For "transform", there is no need as we won't really transform HTML stuff
+// For "transform", there is no need as we won't really transform pure HTML stuff
 type CheerioExtractorSimple = Omit<CheerioExtractor, "take" | "transform">;
 ```
 

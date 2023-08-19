@@ -177,7 +177,7 @@ export class ScraperService {
           for (let i = 0; i < obj.posts.length; i++) {
             const post = obj.posts[i];
             let articleLink = post.permalink;
-            if (!articleLink) post.link;
+            if (!articleLink) articleLink = post.link;
             processLink(articleLink);
           }
         } else {
