@@ -6,7 +6,12 @@ import {
   ScrapeDnevnoConfig,
   ScrapeIndexConfig,
   ScrapeJutarnjiConfig,
+  ScrapeN1InfoConfig,
+  ScrapeNacionalConfig,
+  ScrapeNacionalnoConfig,
   ScrapeNetConfig,
+  ScrapeNoviListConfig,
+  ScrapeOtvorenoConfig,
   ScrapePoslovniConfig,
   ScrapeSlobodnaDalmacijaConfig,
   ScrapeSportskeNovostiConfig,
@@ -16,7 +21,6 @@ import {
   ScrapeZagrebConfig,
 } from "@/configs";
 import { Portals } from "@/common/enums";
-import { ScrapeNoviListConfig } from "@/configs/scrape-novi-list.config";
 
 export const PORTAL_SCRAPERS = {
   [Portals.DANAS]: ScrapeDanasConfig,
@@ -35,4 +39,8 @@ export const PORTAL_SCRAPERS = {
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
   [Portals.ZAGREB]: ScrapeZagrebConfig,
   [Portals.NOVI_LIST]: ScrapeNoviListConfig,
+  [Portals.N1_INFO]: ScrapeN1InfoConfig,
+  [Portals.NACIONAL]: ScrapeNacionalConfig,
+  [Portals.NACIONALNO]: ScrapeNacionalnoConfig,
+  [Portals.OTVORENO]: ScrapeOtvorenoConfig,
 } as const;

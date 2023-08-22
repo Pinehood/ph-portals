@@ -3,7 +3,7 @@ import { ScraperConfig } from "@/common/types";
 
 export const ScrapeZagrebConfig: ScraperConfig = {
   type: Portals.ZAGREB,
-  name: "ZagrebInfo",
+  name: "Zagreb Info",
   link: "https://www.zagreb.info",
   icon: "https://www.zagreb.info/wp-content/uploads/2018/02/zagreb-favicon-2.png",
   rss: false,

@@ -16,6 +16,10 @@ export enum Portals {
   ZAGREB = "zagreb",
   TELEGRAM = "telegram",
   NOVI_LIST = "novilist",
+  N1_INFO = "n1info",
+  NACIONAL = "nacional",
+  NACIONALNO = "nacionalno",
+  OTVORENO = "otvoreno",
 }
 
 export enum CommonConstants {
