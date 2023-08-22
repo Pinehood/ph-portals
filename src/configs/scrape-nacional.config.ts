@@ -29,7 +29,7 @@ export const ScrapeNacionalConfig: ScraperConfig = {
     find: "h1.entry-title",
   },
   lead: {
-    find: "div.entry-content > p:nth-child(2) > strong",
+    find: "div.entry-content > p:nth-child(2)",
   },
   time: {
     find: "time.single-post-date",

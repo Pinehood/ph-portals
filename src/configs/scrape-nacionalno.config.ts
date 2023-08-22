@@ -21,12 +21,12 @@ export const ScrapeNacionalnoConfig: ScraperConfig = {
   ],
   id: () => randomUUID(),
   linker: "div.td-module-meta-info > h3 > a",
-  remove1: ["img", "iframe"],
+  remove1: ["img", "iframe", "div.lwdgt", "div.wpipa-container"],
   title: {
     find: "h1.entry-title",
   },
   lead: {
-    find: "div.td-post-content > p > strong",
+    find: "div.td-post-content > p:nth-child(1)",
   },
   time: {
     find: "time.entry-date",
@@ -37,6 +37,6 @@ export const ScrapeNacionalnoConfig: ScraperConfig = {
       value.replace("Izvor; ", "").replace("Izvor: ", ""),
   },
   content: {
-    find: "div.td-post-content > p",
+    find: "div.td-post-content",
   },
 };

@@ -23,6 +23,7 @@ export const ScrapeOtvorenoConfig: ScraperConfig = {
     "iframe",
     "div.wpipa-198640-container",
     "div.wpipa-198641-container",
+    "div.wpipa-container",
     "video",
     "div.under-article-ads",
     "div.td-post-sharing-bottom",
@@ -40,7 +41,8 @@ export const ScrapeOtvorenoConfig: ScraperConfig = {
   },
   author: {
     find: "div.td-post-author-name",
-    transform: (value: string) => value.replace("Objavio", ""),
+    transform: (value: string) =>
+      value.replace("Objavio", "").replace("Objavila", ""),
   },
   content: {
     find: "div.td-post-content",
