@@ -21,15 +21,7 @@ export const ScrapeNacionalnoConfig: ScraperConfig = {
   ],
   id: () => randomUUID(),
   linker: "div.td-module-meta-info > h3 > a",
-  remove1: [
-    "img",
-    "iframe",
-    "div.lwdgt",
-    "div.wpipa-container",
-    "div.td-post-featured-image",
-    "figure",
-    "figcaption",
-  ],
+  remove1: ["img", "iframe", "div.lwdgt", "div.wpipa-container"],
   title: {
     find: "h1.entry-title",
   },
@@ -44,6 +36,7 @@ export const ScrapeNacionalnoConfig: ScraperConfig = {
     transform: (value: string) =>
       value.replace("Izvor; ", "").replace("Izvor: ", ""),
   },
+  remove2: ["div.td-post-featured-image", "figure", "figcaption"],
   content: {
     find: "div.td-post-content",
   },

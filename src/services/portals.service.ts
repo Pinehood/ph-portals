@@ -200,27 +200,29 @@ export class PortalsService {
     try {
       let linksHtml = "";
       Object.keys(Portals).forEach((value) => {
-        const po = Portals[value];
-        const psc = PORTAL_SCRAPERS[po] as ScraperConfig;
-        let linkHtml = this.getTemplateContent(TemplateNames.LINK)
-          .replace(Tokens.PORTAL, po)
-          .replace(
-            Tokens.LINK,
-            po == Portals.HOME ? CommonConstants.HOME_ICON : psc.icon,
-          )
-          .replace(
-            Tokens.NAME,
-            po == Portals.HOME ? CommonConstants.HOME_NAME : psc.name,
-          );
-        if (po == portal) {
-          linkHtml = linkHtml.replace(
-            Tokens.ACTIVE,
-            CommonConstants.ACTIVE_ITEM,
-          );
-        } else {
-          linkHtml = linkHtml.replace(Tokens.ACTIVE, "");
+        const por = Portals[value];
+        const psc = PORTAL_SCRAPERS[por] as ScraperConfig;
+        if (psc) {
+          let linkHtml = this.getTemplateContent(TemplateNames.LINK)
+            .replace(Tokens.PORTAL, por)
+            .replace(
+              Tokens.LINK,
+              por == Portals.HOME ? CommonConstants.HOME_ICON : psc.icon,
+            )
+            .replace(
+              Tokens.NAME,
+              por == Portals.HOME ? CommonConstants.HOME_NAME : psc.name,
+            );
+          if (por == portal) {
+            linkHtml = linkHtml.replace(
+              Tokens.ACTIVE,
+              CommonConstants.ACTIVE_ITEM,
+            );
+          } else {
+            linkHtml = linkHtml.replace(Tokens.ACTIVE, "");
+          }
+          linksHtml += linkHtml;
         }
-        linksHtml += linkHtml;
       });
       return linksHtml;
     } catch (error: any) {

@@ -35,12 +35,8 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
               articleLink = `https://www.dnevnik.hr${articleLink}`;
             }
           }
-          if (articleLink.startsWith("/")) {
-            articleLink = articleLink.substring(1, articleLink.length);
-          }
           return articleLink;
-        })
-        .map((articleLink) => articleLink.replace("//", "/"));
+        });
     }
   },
   remove1: [
@@ -65,7 +61,7 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
   time: {
     find: "span.article__meta",
     transform: (value: string) =>
-      value.replace("Piše", "").substring(value.lastIndexOf(",") + 1),
+      value.substring(value.lastIndexOf(",") + 1).replace("Piše", ""),
   },
   author: {
     find: "span.author-sign",
