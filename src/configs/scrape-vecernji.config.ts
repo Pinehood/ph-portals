@@ -39,6 +39,7 @@ export const ScrapeVecernjiConfig: ScraperConfig = {
   },
   time: {
     find: "div.single-article__inner > div > div > div:nth-child(2) > div > div:nth-child(2)",
+    transform: (value: string) => value.replace("u ", " u "),
   },
   author: {
     find: "div.author__name",

@@ -18,7 +18,13 @@ export const ScrapeSlobodnaDalmacijaConfig: ScraperConfig = {
     "https://slobodnadalmacija.hr/feed/category/255",
     "https://slobodnadalmacija.hr/feed/category/256",
   ],
-  remove1: ["img", "iframe", "div.item__ad-center"],
+  remove1: [
+    "img",
+    "iframe",
+    "div.item__ad-center",
+    "div.se-embed--photo",
+    "figure",
+  ],
   title: {
     find: "h1.item__title",
   },

@@ -35,6 +35,9 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
               articleLink = `https://www.dnevnik.hr${articleLink}`;
             }
           }
+          if (articleLink.startsWith("/")) {
+            articleLink = articleLink.substring(1, articleLink.length);
+          }
           return articleLink;
         })
         .map((articleLink) => articleLink.replace("//", "/"));
@@ -55,21 +58,17 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
   ],
   title: {
     find: "h1.article__title",
-    take: "normal",
   },
   lead: {
     find: "div.article__summary",
-    take: "normal",
   },
   time: {
     find: "span.article__meta",
-    take: "normal",
     transform: (value: string) =>
       value.replace("Piše", "").substring(value.lastIndexOf(",") + 1),
   },
   author: {
     find: "span.author-sign",
-    take: "normal",
     transform: (value: string) => value.replace("Piše", ""),
   },
   content: {

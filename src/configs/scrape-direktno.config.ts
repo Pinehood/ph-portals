@@ -18,7 +18,7 @@ export const ScrapeDirektnoConfig: ScraperConfig = {
     "https://direktno.hr/rss/publish/latest/kolumne-80",
     "https://direktno.hr/rss/publish/latest/medijski-partneri-90",
   ],
-  remove1: ["img", "iframe", "div.banner"],
+  remove1: ["img", "iframe", "div.banner", "em"],
   title: {
     find: "h1.pd-title",
   },

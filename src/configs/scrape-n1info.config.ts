@@ -10,7 +10,7 @@ export const ScrapeN1InfoConfig: ScraperConfig = {
   rss: true,
   roots: ["https://n1info.hr/feed"],
   id: () => randomUUID(),
-  remove1: ["img", "iframe"],
+  remove1: ["img", "iframe", "div.dynamic-banner", "div.banner-mobile"],
   title: {
     find: "h1.entry-title",
   },

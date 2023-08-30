@@ -18,7 +18,6 @@ export const ScrapeJutarnjiConfig: ScraperConfig = {
   remove1: [
     "img",
     "iframe",
-    "div.se-embed",
     "div.se-embed--photo",
     "div.item__related",
     "script",

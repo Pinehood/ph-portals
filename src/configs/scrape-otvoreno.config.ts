@@ -28,6 +28,9 @@ export const ScrapeOtvorenoConfig: ScraperConfig = {
     "div.under-article-ads",
     "div.td-post-sharing-bottom",
     "div.fb-comments",
+    "div.td-post-featured-image",
+    "figure",
+    "figcaption",
   ],
   title: {
     find: "h1.entry-title",
@@ -42,8 +45,12 @@ export const ScrapeOtvorenoConfig: ScraperConfig = {
   author: {
     find: "div.td-post-author-name",
     transform: (value: string) =>
-      value.replace("Objavio", "").replace("Objavila", ""),
+      value
+        .substring(0, value.length - 1)
+        .replace("Objavio", "")
+        .replace("Objavila", ""),
   },
+  remove2: ["h3"],
   content: {
     find: "div.td-post-content",
   },

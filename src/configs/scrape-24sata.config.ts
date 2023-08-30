@@ -17,7 +17,7 @@ export const Scrape24SataConfig: ScraperConfig = {
     "https://www.24sata.hr/feeds/tech.xml",
     "https://www.24sata.hr/feeds/fun.xml",
   ],
-  remove1: ["img", "iframe"],
+  remove1: ["img", "iframe", "div.article_image__metadata"],
   title: {
     find: "h1.article__title",
   },
@@ -30,7 +30,7 @@ export const Scrape24SataConfig: ScraperConfig = {
   author: {
     find: "span.article__authors_item",
     transform: (value: string) =>
-      value.replace("Piše", "").substring(0, value.length - 1),
+      value.substring(0, value.length - 1).replace("Piše", ""),
   },
   content: {
     find: "div.article__content",

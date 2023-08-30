@@ -24,7 +24,6 @@ export const ScrapeNetConfig: ScraperConfig = {
     'div[id="desktopScaleDown"]',
     "div.cls_frame",
     "div.css-vymk8z",
-    "p.css-13ddpk0",
   ],
   title: {
     find: "span.title_title",

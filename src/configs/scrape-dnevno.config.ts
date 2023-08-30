@@ -26,6 +26,8 @@ export const ScrapeDnevnoConfig: ScraperConfig = {
     "p.lwdgt-logo",
     "center",
     "blockquote",
+    "figure",
+    "figcaption",
   ],
   title: {
     find: "h1",

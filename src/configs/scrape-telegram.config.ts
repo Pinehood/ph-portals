@@ -21,7 +21,14 @@ export const ScrapeTelegramConfig: ScraperConfig = {
     "https://www.telegram.hr/api/category/najnovije/page/10",
   ],
   id: () => randomUUID(),
-  remove1: ["img", "figure", "iframe", 'div[id="intext_premium"]', "div.lwdgt"],
+  remove1: [
+    "img",
+    "figure",
+    "iframe",
+    'div[id="intext_premium"]',
+    "div.lwdgt",
+    "div.banner-separator",
+  ],
   title: {
     find: "h1.full",
   },

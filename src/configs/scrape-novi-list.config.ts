@@ -14,7 +14,7 @@ export const ScrapeNoviListConfig: ScraperConfig = {
     "https://www.novilist.hr/wp-json/wp/v2/posts?per_page=100&page=3",
   ],
   id: () => randomUUID(),
-  remove1: ["img", "figure", "iframe", "div.lwdgt", "div.linked-news"],
+  remove1: ["img", "figure", "iframe", "div.lwdgt", "div.linked-news", "br"],
   title: {
     find: "h1.article-title",
   },
