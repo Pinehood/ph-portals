@@ -1,4 +1,5 @@
 import {
+  HomeConfig,
   Scrape24SataConfig,
   ScrapeDanasConfig,
   ScrapeDirektnoConfig,
@@ -23,6 +24,7 @@ import {
 import { Portals } from "@/common/enums";
 
 export const PORTAL_SCRAPERS = {
+  [Portals.HOME]: HomeConfig,
   [Portals.DANAS]: ScrapeDanasConfig,
   [Portals.DIREKTNO]: ScrapeDirektnoConfig,
   [Portals.DNEVNIK]: ScrapeDnevnikConfig,

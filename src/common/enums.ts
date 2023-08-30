@@ -27,8 +27,6 @@ export enum CommonConstants {
   TRUE_STRING = "true",
   UTF_8 = "utf-8",
   TEXT_HTML = "text/html",
-  HOME_NAME = "Početna",
-  HOME_ICON = "https://cdn-icons-png.flaticon.com/128/553/553376.png",
   PROD_ENV = "production",
   STATS = `Članci: <strong>@num@</strong> | Obrada: <strong>@duration@</strong>  | Osvježeno: <strong>@date@</strong>`,
   NO_STATS = "Statistika nedostupna.",

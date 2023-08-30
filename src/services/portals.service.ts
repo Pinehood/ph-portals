@@ -205,14 +205,8 @@ export class PortalsService {
         if (psc) {
           let linkHtml = this.getTemplateContent(TemplateNames.LINK)
             .replace(Tokens.PORTAL, por)
-            .replace(
-              Tokens.LINK,
-              por == Portals.HOME ? CommonConstants.HOME_ICON : psc.icon,
-            )
-            .replace(
-              Tokens.NAME,
-              por == Portals.HOME ? CommonConstants.HOME_NAME : psc.name,
-            );
+            .replace(Tokens.LINK, psc.icon)
+            .replace(Tokens.NAME, psc.name);
           if (por == portal) {
             linkHtml = linkHtml.replace(
               Tokens.ACTIVE,
