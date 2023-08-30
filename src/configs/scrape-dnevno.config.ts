@@ -24,6 +24,8 @@ export const ScrapeDnevnoConfig: ScraperConfig = {
     "div.wpipa-container",
     "div.lwdgt-container",
     "p.lwdgt-logo",
+    "center",
+    "blockquote",
   ],
   title: {
     find: "h1",

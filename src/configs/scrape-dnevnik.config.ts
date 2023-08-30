@@ -50,6 +50,8 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
     "div.video-gallery",
     "div.play-buttons",
     "span.related-news",
+    "div.article__social",
+    "div.most-read-upscore",
   ],
   title: {
     find: "h1.article__title",

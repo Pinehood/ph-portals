@@ -23,6 +23,8 @@ export const ScrapeTportalConfig: ScraperConfig = {
     "div.related-news",
     "figure",
     "figcaption",
+    "div.article-content-gallery",
+    "section",
   ],
   title: {
     find: "h1.js_articleTitle",
