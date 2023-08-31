@@ -8,17 +8,15 @@ import {
   CommonConstants,
   formatDate,
   millisToSeconds,
-  Params,
   Portals,
-  PortalsRoutes,
   PORTAL_SCRAPERS,
-  ScraperConfig,
   StatsKeys,
   TemplateNames,
   Tokens,
 } from "@/common";
 import dirname from "@/templates";
 import { default as env } from "@/common/env";
+import { LinkService } from "@/services/link.service";
 
 const CACHE_MAP = new Map<string, any>();
 
@@ -62,7 +60,10 @@ export class PortalsService {
     } catch (error: any) {
       this.logger.error(error);
     }
-    return this.redirect(Portals.HOME);
+    return LinkService.redirect(
+      Portals.HOME,
+      this.getTemplateContent(TemplateNames.REDIRECT, true),
+    );
   }
 
   getCachedArticle(portal: Portals, articleId: string): string {
@@ -74,7 +75,10 @@ export class PortalsService {
       return article.html;
     } catch (error: any) {
       this.logger.error(error);
-      return this.redirect(portal);
+      return LinkService.redirect(
+        portal,
+        this.getTemplateContent(TemplateNames.REDIRECT, true),
+      );
     }
   }
 
@@ -135,7 +139,10 @@ export class PortalsService {
       }
     } catch (error: any) {
       this.logger.error(error);
-      return this.redirect(Portals.HOME);
+      return LinkService.redirect(
+        Portals.HOME,
+        this.getTemplateContent(TemplateNames.REDIRECT, true),
+      );
     }
   }
 
@@ -162,10 +169,12 @@ export class PortalsService {
     data: any,
   ): string {
     try {
-      const links = this.getPortalsLinks(portal);
+      let links = this.getTemplateContent(TemplateNames.LINK, true);
+      if (!links) links = this.getTemplateContent(TemplateNames.LINK);
       let content = this.getTemplateContent(templateName, true);
       if (!content) content = this.getTemplateContent(templateName);
-      return this.fillPageContent(content, { links, ...data });
+      const portals = LinkService.portals(portal, links);
+      return this.fillPageContent(content, { links: portals, ...data });
     } catch (error: any) {
       this.logger.error(error);
       return error;
@@ -182,46 +191,6 @@ export class PortalsService {
     } catch (error: any) {
       this.logger.error(error);
       return error;
-    }
-  }
-
-  private redirect(portal: Portals): string {
-    try {
-      return this.getTemplateContent(TemplateNames.REDIRECT, true).replace(
-        Tokens.REDIRECT_URL,
-        PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, portal),
-      );
-    } catch {
-      return PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, Portals.HOME);
-    }
-  }
-
-  private getPortalsLinks(portal: Portals): string {
-    try {
-      let linksHtml = "";
-      Object.keys(Portals).forEach((value) => {
-        const por = Portals[value];
-        const psc = PORTAL_SCRAPERS[por] as ScraperConfig;
-        if (psc) {
-          let linkHtml = this.getTemplateContent(TemplateNames.LINK)
-            .replace(Tokens.PORTAL, por)
-            .replace(Tokens.LINK, psc.icon)
-            .replace(Tokens.NAME, psc.name);
-          if (por == portal) {
-            linkHtml = linkHtml.replace(
-              Tokens.ACTIVE,
-              CommonConstants.ACTIVE_ITEM,
-            );
-          } else {
-            linkHtml = linkHtml.replace(Tokens.ACTIVE, "");
-          }
-          linksHtml += linkHtml;
-        }
-      });
-      return linksHtml;
-    } catch (error: any) {
-      this.logger.error(error);
-      return "";
     }
   }
 }
