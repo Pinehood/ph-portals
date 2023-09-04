@@ -44,6 +44,7 @@ export class LinkService {
       return "";
     }
   }
+
   static async rss(link: string, base: string): Promise<string[]> {
     try {
       const rss = await axios.get(link);
