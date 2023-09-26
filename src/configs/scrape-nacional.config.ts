@@ -24,6 +24,7 @@ export const ScrapeNacionalConfig: ScraperConfig = {
     "iframe",
     "blockquote.wp-embedded-content",
     "div.heateor_sssp_sharing_ul",
+    "figure",
   ],
   title: {
     find: "h1.entry-title",

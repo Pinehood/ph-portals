@@ -37,6 +37,7 @@ export const Scrape24SataConfig: ScraperConfig = {
     transform: (value: string) =>
       value.substring(0, value.length - 1).replace("Piše", ""),
   },
+  remove2: ["script"],
   content: {
     find: "div.article__content",
   },

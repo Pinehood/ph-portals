@@ -29,6 +29,7 @@ export const ScrapeVecernjiConfig: ScraperConfig = {
     "div.dfp_banner--divInArticle",
     "div.js_bannerInArticle2",
     "div.js_bannerInArticle",
+    "div.desktop",
   ],
   title: {
     find: "h1.single-article__title",

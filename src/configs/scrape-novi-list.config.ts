@@ -27,6 +27,7 @@ export const ScrapeNoviListConfig: ScraperConfig = {
   author: {
     find: "p.editor-name",
   },
+  remove2: ["script"],
   content: {
     find: "div.user-content",
   },

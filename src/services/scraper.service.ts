@@ -59,7 +59,8 @@ export class ScraperService {
 
                 const content = $(config.content.find)
                   .html()
-                  .replace(/href=\"\//g, `href="${config.link}/`);
+                  .replace(/href=\"\//g, `href="${config.link}/`)
+                  .replace(/src=\"\//g, `src="${config.link}/`);
 
                 const articleObj: Article = {
                   ...defaultArticle,
