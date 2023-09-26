@@ -42,6 +42,8 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
       - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: "true"
       - name: Build & Upload Image to AWS ECR
         run: |
           docker build --build-arg BUILD_CMD=$CMD -f ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH .
