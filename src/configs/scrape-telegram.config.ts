@@ -36,14 +36,14 @@ export const ScrapeTelegramConfig: ScraperConfig = {
     find: "h2.full",
   },
   time: {
-    find: "div.full.column.article-head.column-top-pad.flex > h5:nth-child(6) > span",
+    find: "span.meta-date",
     take: "first",
   },
   author: {
-    find: "div.full.column.article-head.column-top-pad.flex > h5:nth-child(6) > a:nth-child(2) > span.vcard.author",
+    find: "span.vcard.author",
     take: "first",
   },
   content: {
-    find: 'div[id="article-content"]',
+    find: "div.mrf-article-body",
   },
 };
