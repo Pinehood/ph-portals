@@ -57,7 +57,9 @@ export class ScraperService {
                   config.remove2.forEach((removal) => $(removal).remove());
                 }
 
-                const content = $(config.content.find).html();
+                const content = $(config.content.find)
+                  .html()
+                  .replace(/href=\"\//g, `href="${config.link}/`);
 
                 const articleObj: Article = {
                   ...defaultArticle,

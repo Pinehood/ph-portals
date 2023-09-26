@@ -17,7 +17,12 @@ export const Scrape24SataConfig: ScraperConfig = {
     "https://www.24sata.hr/feeds/tech.xml",
     "https://www.24sata.hr/feeds/fun.xml",
   ],
-  remove1: ["img", "iframe", "div.article_image__metadata"],
+  remove1: [
+    "img",
+    "iframe",
+    "div.article_image__metadata",
+    "div.article__video",
+  ],
   title: {
     find: "h1.article__title",
   },
