@@ -38,6 +38,7 @@ export enum SwaggerConstants {
   DESCRIPTION = "The appropriate API documentation",
   VERSION = "1.0.0",
   URL = "docs",
+  METADATA = "./metadata",
 }
 
 export enum Tokens {
