@@ -4,7 +4,7 @@ ARG BUILD_CMD
 WORKDIR /app
 COPY . /app
 
-RUN npm ci
+RUN npm install
 RUN npm run $BUILD_CMD
 
 EXPOSE 3000

@@ -17,7 +17,7 @@ jobs:
           node-version: ${{ vars.NODE_VERSION }}
           cache: "npm"
       - name: Install
-        run: npm ci
+        run: npm install
       - name: Build
         run: npm run $CMD
         env:
