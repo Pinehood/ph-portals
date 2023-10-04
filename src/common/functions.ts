@@ -34,23 +34,3 @@ export async function TryCatch(action: () => Promise<void>): Promise<void> {
     }
   }
 }
-
-export function calculateApproximateMapMemoryUsage(
-  map: Map<string, any>,
-): number {
-  let memoryUsage = 0;
-  memoryUsage += 64;
-  for (const key of map.keys()) {
-    memoryUsage += 2 * key.length;
-  }
-  for (const value of map.values()) {
-    if (typeof value == "number") {
-      memoryUsage += 8;
-    } else if (typeof value == "string") {
-      memoryUsage += 2 * value.length;
-    } else if (typeof value == "object") {
-      memoryUsage += 8 * Object.keys(value).length;
-    }
-  }
-  return memoryUsage;
-}

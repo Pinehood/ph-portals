@@ -1,5 +1,4 @@
 import { randomUUID } from "crypto";
-import axios from "@/common/axios";
 import { Portals } from "@/common/enums";
 import { ScraperConfig } from "@/common/types";
 
@@ -22,52 +21,29 @@ export const ScrapeTelegramConfig: ScraperConfig = {
     "https://www.telegram.hr/api/category/najnovije/page/10",
   ],
   id: () => randomUUID(),
-  links: async (link: string) => {
-    const articleLinks: string[] = [];
-    const list = await axios.get(link);
-    if (list && list.data) {
-      const obj = JSON.parse(list.data) as {
-        category: string;
-        description: string;
-        posts: any[];
-      };
-      if (obj && obj.posts && obj.posts.length > 0) {
-        for (let i = 0; i < obj.posts.length; i++) {
-          const post = obj.posts[i];
-          let articleLink = post.permalink;
-          if (!articleLink.startsWith("http")) {
-            if (!articleLink.startsWith("/")) {
-              articleLink = `https://www.telegram.hr/${articleLink}`;
-            } else {
-              articleLink = `https://www.telegram.hr${articleLink}`;
-            }
-          }
-          if (articleLinks.findIndex((el) => el == articleLink) == -1) {
-            articleLinks.push(articleLink);
-          }
-        }
-      }
-    }
-    return articleLinks;
-  },
-  remove1: ["img", "figure", "iframe", 'div[id="intext_premium"]', "div.lwdgt"],
+  remove1: [
+    "img",
+    "figure",
+    "iframe",
+    'div[id="intext_premium"]',
+    "div.lwdgt",
+    "div.banner-separator",
+  ],
   title: {
     find: "h1.full",
-    take: "normal",
   },
   lead: {
     find: "h2.full",
-    take: "normal",
   },
   time: {
-    find: "div.full.column.article-head.column-top-pad.flex > h5:nth-child(6) > span",
+    find: "span.meta-date",
     take: "first",
   },
   author: {
-    find: "div.full.column.article-head.column-top-pad.flex > h5:nth-child(6) > a:nth-child(2) > span.vcard.author",
+    find: "span.vcard.author",
     take: "first",
   },
   content: {
-    find: 'div[id="article-content"]',
+    find: "div.mrf-article-body",
   },
 };

@@ -3,7 +3,7 @@ import { ScraperConfig } from "@/common/types";
 
 export const ScrapeZagrebConfig: ScraperConfig = {
   type: Portals.ZAGREB,
-  name: "ZagrebInfo",
+  name: "Zagreb Info",
   link: "https://www.zagreb.info",
   icon: "https://www.zagreb.info/wp-content/uploads/2018/02/zagreb-favicon-2.png",
   rss: false,
@@ -29,7 +29,6 @@ export const ScrapeZagrebConfig: ScraperConfig = {
   remove1: ["img", "iframe", "figure", "div.wpipa-container"],
   title: {
     find: "h1.entry-title",
-    take: "normal",
   },
   lead: {
     find: 'div.td-post-content p[style^="text-align: justify;"]',
@@ -38,11 +37,9 @@ export const ScrapeZagrebConfig: ScraperConfig = {
   },
   time: {
     find: "time.entry-date",
-    take: "normal",
   },
   author: {
     find: "div.td-post-author-name strong",
-    take: "normal",
   },
   remove2: [
     "div.td-post-featured-image",

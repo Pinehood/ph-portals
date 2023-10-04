@@ -17,27 +17,28 @@ export const Scrape24SataConfig: ScraperConfig = {
     "https://www.24sata.hr/feeds/tech.xml",
     "https://www.24sata.hr/feeds/fun.xml",
   ],
-  remove1: ["img", "iframe"],
+  remove1: [
+    "img",
+    "iframe",
+    "div.article_image__metadata",
+    "div.article__video",
+  ],
   title: {
     find: "h1.article__title",
-    take: "normal",
   },
   lead: {
     find: "p.article__lead_text",
-    take: "normal",
   },
   time: {
     find: "time.article__time",
-    take: "normal",
   },
   author: {
     find: "span.article__authors_item",
-    replace: ["Piše"],
-    take: "normal",
-    transform: (value: string) => value.substring(0, value.length - 1),
+    transform: (value: string) =>
+      value.substring(0, value.length - 1).replace("Piše", ""),
   },
+  remove2: ["script"],
   content: {
     find: "div.article__content",
-    replace: ["<h3>Najčitaniji članci</h3>"],
   },
 };

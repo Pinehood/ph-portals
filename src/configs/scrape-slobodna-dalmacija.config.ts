@@ -18,10 +18,15 @@ export const ScrapeSlobodnaDalmacijaConfig: ScraperConfig = {
     "https://slobodnadalmacija.hr/feed/category/255",
     "https://slobodnadalmacija.hr/feed/category/256",
   ],
-  remove1: ["img", "iframe", "div.item__ad-center"],
+  remove1: [
+    "img",
+    "iframe",
+    "div.item__ad-center",
+    "div.se-embed--photo",
+    "figure",
+  ],
   title: {
     find: "h1.item__title",
-    take: "normal",
   },
   lead: {
     find: "span.card__egida",
@@ -30,11 +35,9 @@ export const ScrapeSlobodnaDalmacijaConfig: ScraperConfig = {
   },
   time: {
     find: "div.item__dates",
-    take: "normal",
   },
   author: {
     find: "span.item__author-name",
-    take: "normal",
   },
   content: {
     find: "div.itemFullText",

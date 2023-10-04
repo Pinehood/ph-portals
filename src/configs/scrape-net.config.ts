@@ -23,25 +23,22 @@ export const ScrapeNetConfig: ScraperConfig = {
     'div[id="mobileScaleDown"]',
     'div[id="desktopScaleDown"]',
     "div.cls_frame",
+    "div.css-vymk8z",
   ],
   title: {
     find: "span.title_title",
-    take: "normal",
   },
   lead: {
     find: "span.title_subtitle",
-    take: "normal",
     transform: (value: string) => value.replace("/", "").trim(),
   },
   time: {
     find: "div.metaItem_title",
-    take: "normal",
     transform: (value: string) =>
       value.split(/[a-z]/gi)[0] ? value.split(/[a-z]/gi)[0] : "nedostupno",
   },
   author: {
     find: 'div[id="meta_author"]',
-    take: "normal",
     transform: (value: string) => value.replace(/\//g, ",").trim(),
   },
   content: {

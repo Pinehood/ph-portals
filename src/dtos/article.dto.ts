@@ -1,14 +1,7 @@
-export class Article {
+import { ArticleInfo } from "@/dtos/article-info.dto";
+
+export class Article extends ArticleInfo {
   portalType: string;
-  portalName: string;
-  portalLink: string;
   backLink: string;
-  articleId: string;
-  articleLink: string;
-  title: string;
-  lead: string;
-  content: string;
   html: string;
-  author: string;
-  time: string;
 }

@@ -1,4 +1,5 @@
 import {
+  HomeConfig,
   Scrape24SataConfig,
   ScrapeDanasConfig,
   ScrapeDirektnoConfig,
@@ -6,7 +7,12 @@ import {
   ScrapeDnevnoConfig,
   ScrapeIndexConfig,
   ScrapeJutarnjiConfig,
+  ScrapeN1InfoConfig,
+  ScrapeNacionalConfig,
+  ScrapeNacionalnoConfig,
   ScrapeNetConfig,
+  ScrapeNoviListConfig,
+  ScrapeOtvorenoConfig,
   ScrapePoslovniConfig,
   ScrapeSlobodnaDalmacijaConfig,
   ScrapeSportskeNovostiConfig,
@@ -18,6 +24,7 @@ import {
 import { Portals } from "@/common/enums";
 
 export const PORTAL_SCRAPERS = {
+  [Portals.HOME]: HomeConfig,
   [Portals.DANAS]: ScrapeDanasConfig,
   [Portals.DIREKTNO]: ScrapeDirektnoConfig,
   [Portals.DNEVNIK]: ScrapeDnevnikConfig,
@@ -33,4 +40,9 @@ export const PORTAL_SCRAPERS = {
   [Portals.TPORTAL]: ScrapeTportalConfig,
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
   [Portals.ZAGREB]: ScrapeZagrebConfig,
+  [Portals.NOVI_LIST]: ScrapeNoviListConfig,
+  [Portals.N1_INFO]: ScrapeN1InfoConfig,
+  [Portals.NACIONAL]: ScrapeNacionalConfig,
+  [Portals.NACIONALNO]: ScrapeNacionalnoConfig,
+  [Portals.OTVORENO]: ScrapeOtvorenoConfig,
 } as const;

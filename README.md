@@ -41,18 +41,21 @@ type ScraperConfig = {
   // Favicon link, preferably from the news portal's CDN
   icon: string;
 
-  // Flag that signifies if the news portal has RSS feeds exposed
+  // Flag that signifies if the news portal has RSS feeds exposed and used
   rss: boolean;
 
   // "Root" links that the scraper will go to and dig out article links
   roots: string[];
 
   // CSS Selector for extracting article links from each of the "roots"
-  // If null, "links()" method must be provided
+  // If null, "links()" method should be provided
   linker?: string;
 
   // Method to retrieve article links from each of the "roots"
-  // If null, "linker" property must be provided
+  // If null, "linker" property should be provided
+  // If null but rss=true, a "rssLinks" method for extraction is used
+  // If null but rss=false, a "nonRssLinks" method for extraction is used
+  // If both "linker" and "links" is null ("rss" disregarded), a "jsonLinks" method for extraction is used
   links?: (link: string) => Promise<string[]>;
 
   // Method to retrieve the article identifier from it's URL
@@ -66,35 +69,33 @@ type ScraperConfig = {
   remove1: string[];
 
   // Define how to extract the title of the article
-  title: Cheerio;
+  title: CheerioExtractor;
 
   // Define how to extract the article lead or subtitle
-  lead: Cheerio;
+  lead: CheerioExtractor;
 
   // Define how to extract the author of the article
-  author: Cheerio;
+  author: CheerioExtractor;
 
   // Define how to extract publish time of the article
-  time: Cheerio;
+  time: CheerioExtractor;
 
   // CSS Selector array of HTML elements to be removed, prior to content scraping
   // Here you'd want to remove any additional unneeded content before continuing
   remove2?: string[] | null;
 
   // Define how to extract the article content
-  content: CheerioLimited;
+  content: CheerioExtractorSimple;
 };
 
-type Cheerio = {
+type CheerioExtractor = {
   // CSS Selector of the element to find
   find: string;
 
-  // Array of strings to be replaced with empty character in extracted value
-  replace?: string[] | null;
-
   // Which element to take, and which Cheerio extraction method to use
+  // If null, "normal" el.text() will be used
   // el.first().text() | el.last().text() | el.text()
-  take: "first" | "last" | "normal";
+  take?: "first" | "last" | "normal";
 
   // Post-scraping method that can additionally transform extracted value
   // Example extracted value: "Autor: Proper Name"
@@ -103,10 +104,10 @@ type Cheerio = {
 };
 
 // Used for specifically content extraction
-// It just has the "find" and "replace" properties
+// It just has the "find" property
 // For "take", the scraper service uses "el.html()"
-// For "transform", there is no need as we won't really transform HTML stuff
-type CheerioLimited = Omit<Cheerio, "take" | "transform">;
+// For "transform", there is no need as we won't really transform pure HTML stuff
+type CheerioExtractorSimple = Omit<CheerioExtractor, "take" | "transform">;
 ```
 
 ## Other relevant helper files and implementations

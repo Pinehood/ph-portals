@@ -18,26 +18,21 @@ export const ScrapeJutarnjiConfig: ScraperConfig = {
   remove1: [
     "img",
     "iframe",
-    "div.se-embed",
     "div.se-embed--photo",
     "div.item__related",
     "script",
   ],
   title: {
     find: "h1.item__title",
-    take: "normal",
   },
   lead: {
     find: "div.item__subtitle",
-    take: "normal",
   },
   time: {
     find: "span.item__author__date",
-    take: "normal",
   },
   author: {
     find: "span.item__author-name",
-    take: "normal",
   },
   content: {
     find: "div.itemFullText",

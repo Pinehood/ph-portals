@@ -41,14 +41,10 @@ export class CronService {
       const homePage = this.portalsService.getPage(Portals.HOME);
       const homeKey = Portals.HOME + StatsKeys.PAGE_SUFFIX;
       this.portalsService.save(homeKey, homePage);
-      const scrapers = Object.entries(PORTAL_SCRAPERS).map(([, value]) =>
-        this.cachePortalAndArticles(value),
-      );
+      const scrapers = Object.entries(PORTAL_SCRAPERS)
+        .filter(([, value]) => value.type != Portals.HOME)
+        .map(([, value]) => this.cachePortalAndArticles(value));
       await Promise.all(scrapers);
-      this.portalsService.save(
-        StatsKeys.CACHE_MEMORY,
-        this.portalsService.getCacheMemorySize(true),
-      );
     } catch (error: any) {
       this.logger.error(error);
     }

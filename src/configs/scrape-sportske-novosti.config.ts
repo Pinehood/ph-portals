@@ -25,22 +25,25 @@ export const ScrapeSportskeNovostiConfig: ScraperConfig = {
     "https://sportske.jutarnji.hr/sn/sport-mix/",
   ],
   linker: "main a[class=card__article-link]",
-  remove1: ["img", "iframe", "figure", "picture", "script"],
+  remove1: [
+    "img",
+    "iframe",
+    "figure",
+    "picture",
+    "script",
+    "div.se-embed--sofascore",
+  ],
   title: {
     find: "h1.item__title",
-    take: "normal",
   },
   lead: {
     find: "div.item__subtitle",
-    take: "normal",
   },
   time: {
     find: "span.item__author__date",
-    take: "normal",
   },
   author: {
     find: "span.item__author-name",
-    take: "normal",
   },
   content: {
     find: "div.itemFullText",

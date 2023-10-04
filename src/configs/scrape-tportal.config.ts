@@ -23,10 +23,11 @@ export const ScrapeTportalConfig: ScraperConfig = {
     "div.related-news",
     "figure",
     "figcaption",
+    "div.article-content-gallery",
+    "section",
   ],
   title: {
     find: "h1.js_articleTitle",
-    take: "normal",
   },
   lead: {
     find: "div.js_articleText p",
@@ -40,7 +41,6 @@ export const ScrapeTportalConfig: ScraperConfig = {
   },
   author: {
     find: 'a[href^="/autor"] p',
-    take: "normal",
     transform: (value: string) =>
       value
         .replace("Autor: ", "")

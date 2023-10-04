@@ -15,6 +15,11 @@ export enum Portals {
   DANAS = "danas",
   ZAGREB = "zagreb",
   TELEGRAM = "telegram",
+  NOVI_LIST = "novilist",
+  N1_INFO = "n1info",
+  NACIONAL = "nacional",
+  NACIONALNO = "nacionalno",
+  OTVORENO = "otvoreno",
 }
 
 export enum CommonConstants {
@@ -22,8 +27,6 @@ export enum CommonConstants {
   TRUE_STRING = "true",
   UTF_8 = "utf-8",
   TEXT_HTML = "text/html",
-  HOME_NAME = "Početna",
-  HOME_ICON = "https://cdn-icons-png.flaticon.com/128/553/553376.png",
   PROD_ENV = "production",
   STATS = `Članci: <strong>@num@</strong> | Obrada: <strong>@duration@</strong>  | Osvježeno: <strong>@date@</strong>`,
   NO_STATS = "Statistika nedostupna.",
@@ -35,6 +38,7 @@ export enum SwaggerConstants {
   DESCRIPTION = "The appropriate API documentation",
   VERSION = "1.0.0",
   URL = "docs",
+  METADATA = "./metadata",
 }
 
 export enum Tokens {
@@ -75,6 +79,5 @@ export enum StatsKeys {
   LAST_REFRESHED_ON_PREFIX = "last_refreshed_on_",
   TOTAL_SCRAPING_TIME_PREFIX = "total_scraping_time_",
   TOTAL_SCRAPED_ARTICLES_PREFIX = "total_scraped_articles_",
-  CACHE_MEMORY = "cache_memory",
   PAGE_SUFFIX = "page",
 }

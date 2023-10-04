@@ -36,8 +36,7 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
             }
           }
           return articleLink;
-        })
-        .map((articleLink) => articleLink.replace("//", "/"));
+        });
     }
   },
   remove1: [
@@ -50,25 +49,23 @@ export const ScrapeDnevnikConfig: ScraperConfig = {
     "div.video-gallery",
     "div.play-buttons",
     "span.related-news",
+    "div.article__social",
+    "div.most-read-upscore",
   ],
   title: {
     find: "h1.article__title",
-    take: "normal",
   },
   lead: {
     find: "div.article__summary",
-    take: "normal",
   },
   time: {
     find: "span.article__meta",
-    replace: ["Piše"],
-    take: "normal",
-    transform: (value: string) => value.substring(value.lastIndexOf(",") + 1),
+    transform: (value: string) =>
+      value.substring(value.lastIndexOf(",") + 1).replace("Piše", ""),
   },
   author: {
     find: "span.author-sign",
-    replace: ["Piše"],
-    take: "normal",
+    transform: (value: string) => value.replace("Piše", ""),
   },
   content: {
     find: "div.article__content",

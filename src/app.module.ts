@@ -15,8 +15,12 @@ import { ApiService, CronService, PortalsService } from "@/services";
     ConfigModule.forRoot({ isGlobal: true, load: [env], validationSchema }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({
-      ttl: env().THROTTLER_TTL,
-      limit: env().THROTTLER_REQ_PER_TTL,
+      throttlers: [
+        {
+          ttl: env().THROTTLER_TTL,
+          limit: env().THROTTLER_REQ_PER_TTL,
+        },
+      ],
     }),
     LoggerModule.forRoot({
       pinoHttp: {

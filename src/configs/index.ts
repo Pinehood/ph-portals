@@ -1,3 +1,4 @@
+export * from "./home.config";
 export * from "./scrape-24sata.config";
 export * from "./scrape-danas.config";
 export * from "./scrape-direktno.config";
@@ -5,7 +6,12 @@ export * from "./scrape-dnevnik.config";
 export * from "./scrape-dnevno.config";
 export * from "./scrape-index.config";
 export * from "./scrape-jutarnji.config";
+export * from "./scrape-n1info.config";
+export * from "./scrape-nacional.config";
+export * from "./scrape-nacionalno.config";
 export * from "./scrape-net.config";
+export * from "./scrape-novi-list.config";
+export * from "./scrape-otvoreno.config";
 export * from "./scrape-poslovni.config";
 export * from "./scrape-slobodna-dalmacija.config";
 export * from "./scrape-sportske-novosti.config";
