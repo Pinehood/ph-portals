@@ -18,7 +18,7 @@ export const ScrapeNacionalConfig: ScraperConfig = {
     "https://www.nacional.hr/category/sport/tenis",
   ],
   id: () => randomUUID(),
-  linker: "div.news-list-content-wrapper > header > h2 > a",
+  linker: "div.kategorija-vijesti-istaknuto > a",
   remove1: [
     "img",
     "iframe",
@@ -27,16 +27,16 @@ export const ScrapeNacionalConfig: ScraperConfig = {
     "figure",
   ],
   title: {
-    find: "h1.entry-title",
+    find: "h1.border",
   },
   lead: {
-    find: "div.entry-content > p:nth-child(2)",
+    find: "div.container-content.mb-3 > p:nth-child(4) > strong",
   },
   time: {
-    find: "time.single-post-date",
+    find: "div.d-flex.justify-content-between.post-time > p:nth-child(1)",
   },
   author: {
-    find: "div.single-post-author",
+    find: "div.d-flex.justify-content-between.post-time > p:nth-child(2)",
     transform: (value: string) => value.replace("Autor: ", ""),
   },
   content: {
