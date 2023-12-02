@@ -20,21 +20,20 @@ export const ScrapeNacionalnoConfig: ScraperConfig = {
     "https://www.nacionalno.hr/tema/sport/page/3",
   ],
   id: () => randomUUID(),
-  linker: "div.td-module-meta-info > h3 > a",
+  linker: "div > h3 > a",
   remove1: ["img", "iframe", "div.lwdgt", "div.wpipa-container"],
   title: {
     find: "h1.entry-title",
   },
   lead: {
-    find: "div.td-post-content > p:nth-child(1)",
+    find: "div.td-post-content > p:nth-child(2) > strong",
   },
   time: {
     find: "time.entry-date",
   },
   author: {
-    find: "figcaption.wp-caption-text",
-    transform: (value: string) =>
-      value.replace("Izvor; ", "").replace("Izvor: ", ""),
+    find: "p",
+    transform: (_: string) => "Nacionalno",
   },
   remove2: ["div.td-post-featured-image", "figure", "figcaption"],
   content: {

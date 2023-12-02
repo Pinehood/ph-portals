@@ -40,6 +40,6 @@ export const ScrapeNacionalConfig: ScraperConfig = {
     transform: (value: string) => value.replace("Autor: ", ""),
   },
   content: {
-    find: "div.entry-content",
+    find: "div.container-content",
   },
 };
