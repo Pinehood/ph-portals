@@ -2,6 +2,18 @@ name: Continuous Integration
 on:
   push:
     branches: [main, develop]
+    paths_ignore:
+      [
+        "**.md",
+        ".env",
+        ".gitignore",
+        ".prettierrc",
+        ".prettierignore",
+        ".github/dependabot.yml",
+        ".github/lock.yml",
+        ".github/ISSUE_TEMPLATE/**",
+        ".github/PULL_REQUEST_TEMPLATE",
+      ]
   pull_request:
     branches: [develop]
 jobs:

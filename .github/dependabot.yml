@@ -4,7 +4,7 @@ updates:
     directory: "/"
     target-branch: "develop"
     versioning-strategy: "increase"
-    open-pull-requests-limit: 50
+    open-pull-requests-limit: 0
     schedule:
       interval: "daily"
     commit-message:
