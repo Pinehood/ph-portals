@@ -64,7 +64,8 @@ export class LinkService {
           })
           .filter((articleLink) => articleLink.includes("-"));
       }
-    } catch {
+    } catch (error: any) {
+      console.error(error);
       return [];
     }
   }
@@ -94,7 +95,8 @@ export class LinkService {
         });
       }
       return articleLinks;
-    } catch {
+    } catch (error: any) {
+      console.error(error);
       return [];
     }
   }
@@ -139,7 +141,8 @@ export class LinkService {
         }
       }
       return articleLinks;
-    } catch {
+    } catch (error: any) {
+      console.error(error);
       return [];
     }
   }

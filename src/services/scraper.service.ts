@@ -26,10 +26,10 @@ export class ScraperService {
         const articleLinks = config.links
           ? await config.links(rootLink)
           : config.rss
-          ? await LinkService.rss(rootLink, config.link)
-          : config.linker
-          ? await LinkService.normal(rootLink, config.link, config.linker)
-          : await LinkService.json(rootLink, config.link);
+            ? await LinkService.rss(rootLink, config.link)
+            : config.linker
+              ? await LinkService.normal(rootLink, config.link, config.linker)
+              : await LinkService.json(rootLink, config.link);
         if (articleLinks && articleLinks.length > 0) {
           for (let i = 0; i < articleLinks.length; i++) {
             const articleLink = articleLinks[i];
