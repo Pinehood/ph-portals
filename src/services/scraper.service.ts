@@ -5,7 +5,6 @@ import {
   isValidArticle,
   ScraperConfig,
   shouldArticleBeDisplayed,
-  TryCatch,
 } from "@/common";
 import { Article } from "@/dtos";
 import { LinkService } from "@/services/link.service";
@@ -15,7 +14,7 @@ import { TransformService } from "@/services/transform.service";
 export class ScraperService {
   static async scrape(config: ScraperConfig): Promise<Article[]> {
     const articles: Article[] = [];
-    await TryCatch(async () => {
+    try {
       const defaultArticle = getDefaultArticle(
         config.type,
         config.link,
@@ -36,9 +35,9 @@ export class ScraperService {
             if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
               continue;
 
-            const article = await axios.get(articleLink);
-            if (article && article.data) {
-              await TryCatch(async () => {
+            try {
+              const article = await axios.get(articleLink);
+              if (article && article.data) {
                 const articleHtml = article.data as string;
                 const $ = cheerio.load(articleHtml);
 
@@ -76,12 +75,26 @@ export class ScraperService {
                 };
                 TransformService.article(articleObj, config);
                 articles.push(articleObj);
-              });
+              }
+            } catch (error: any) {
+              const link =
+                error && error.config && error.config.url
+                  ? error.config.url
+                  : null;
+              if (!link) {
+                console.error(error);
+              }
             }
           }
         }
       }
-    });
+    } catch (error: any) {
+      const link =
+        error && error.config && error.config.url ? error.config.url : null;
+      if (!link) {
+        console.error(error);
+      }
+    }
     return articles.filter(
       (a) => isValidArticle(a) && shouldArticleBeDisplayed(a),
     );

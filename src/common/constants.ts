@@ -22,6 +22,7 @@ import {
   ScrapeZagrebConfig,
 } from "@/configs";
 import { Portals } from "@/common/enums";
+import { disabled } from "./formatting";
 
 export const PORTAL_SCRAPERS = {
   [Portals.HOME]: HomeConfig,
@@ -36,13 +37,13 @@ export const PORTAL_SCRAPERS = {
   [Portals.SATA24]: Scrape24SataConfig,
   [Portals.SLOBODNA_DALMACIJA]: ScrapeSlobodnaDalmacijaConfig,
   [Portals.SPORTSKE_NOVOSTI]: ScrapeSportskeNovostiConfig,
-  // [Portals.TELEGRAM]: ScrapeTelegramConfig,
+  [Portals.TELEGRAM]: disabled(ScrapeTelegramConfig), // JSON wrapped in HTML, weird
   [Portals.TPORTAL]: ScrapeTportalConfig,
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
-  // [Portals.ZAGREB]: ScrapeZagrebConfig,
+  [Portals.ZAGREB]: disabled(ScrapeZagrebConfig), // CloudFlare protection triggered
   [Portals.NOVI_LIST]: ScrapeNoviListConfig,
   [Portals.N1_INFO]: ScrapeN1InfoConfig,
   [Portals.NACIONAL]: ScrapeNacionalConfig,
-  // [Portals.NACIONALNO]: ScrapeNacionalnoConfig,
-  // [Portals.OTVORENO]: ScrapeOtvorenoConfig,
+  [Portals.NACIONALNO]: disabled(ScrapeNacionalnoConfig), // site under construction
+  [Portals.OTVORENO]: disabled(ScrapeOtvorenoConfig), // CloudFlare protection triggered
 } as const;

@@ -1,5 +1,9 @@
+import { Article } from "@/dtos";
+import { Params, Portals } from "@/common/enums";
+import { PortalsRoutes } from "@/common/routes";
 import { CommonConstants } from "@/common/enums";
 import { default as env } from "@/common/env";
+import { ScraperConfig, TLimitedScraperConfig } from "./types";
 
 export function formatDate(date: Date, onlyHoursMinutes?: boolean): string {
   if (onlyHoursMinutes == true) {
@@ -38,3 +42,34 @@ export function millisToMinutesAndSeconds(millis: number): string {
 export function millisToSeconds(millis: number): string {
   return `${parseInt((millis / 1000).toFixed(0), 10).toFixed(0)}s`;
 }
+
+export function getDefaultArticle(
+  type: Portals,
+  link: string,
+  name: string,
+): Article {
+  return {
+    articleId: "",
+    articleLink: "",
+    author: "",
+    backLink: PortalsRoutes.PORTAL.replace(`:${Params.PORTAL}`, type),
+    content: "",
+    lead: "",
+    portalLink: link,
+    portalName: name,
+    portalType: type,
+    time: "",
+    title: "",
+    html: "",
+  };
+}
+
+export const disabled = (scraper: ScraperConfig): ScraperConfig => {
+  const limited: TLimitedScraperConfig = {
+    type: Portals.HOME,
+    name: scraper.name,
+    link: "https://portali.pinehood.tech",
+    icon: scraper.icon,
+  };
+  return limited as ScraperConfig;
+};

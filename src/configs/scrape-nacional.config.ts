@@ -6,7 +6,7 @@ export const ScrapeNacionalConfig: ScraperConfig = {
   type: Portals.NACIONAL,
   name: "Nacional",
   link: "https://nacional.hr",
-  icon: "https://www.nacional.hr/wp-content/uploads/2023/03/nacional-logo.png",
+  icon: "https://www.safety-label.co.uk/cdn/shop/products/white_red_N_grande.png?v=1585927608",
   rss: false,
   roots: [
     "https://www.nacional.hr/category/vijesti/hrvatska",

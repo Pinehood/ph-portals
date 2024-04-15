@@ -5,7 +5,7 @@ export const ScrapeDanasConfig: ScraperConfig = {
   type: Portals.DANAS,
   name: "Danas",
   link: "https://www.danas.hr",
-  icon: "https://cdn.danas.hr/favicon/danas/favicon-16x16.png",
+  icon: "https://net.hr/favicon/favicon.ico",
   rss: false,
   roots: [
     "https://www.danas.hr/hrvatska",

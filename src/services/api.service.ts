@@ -30,7 +30,7 @@ export class ApiService {
       });
   }
 
-  getArticles(portal: Portals, withContent: string): ArticleInfo[] {
+  getArticles(portal: Portals, withContent: boolean): ArticleInfo[] {
     try {
       const articles = this.portalsService.getArticles(portal);
       if (!articles) return null;
@@ -48,7 +48,7 @@ export class ApiService {
       const now = Date.now();
       for (const portal in Portals) {
         const stats = this.getStats(Portals[portal]);
-        if (stats) {
+        if (!!stats?.articles && !!stats?.duration) {
           articles += stats.articles;
           duration += stats.duration;
         }
@@ -76,14 +76,13 @@ export class ApiService {
 
   private articleToArticleInfo(
     article: Article,
-    withContent: string,
+    withContent: boolean,
   ): ArticleInfo {
     return {
       articleId: article.articleId,
       articleLink: article.articleLink,
       author: article.author,
-      content:
-        withContent == CommonConstants.TRUE_STRING ? article.content : "(...)",
+      content: withContent == true ? article.content : "(...)",
       lead: article.lead,
       portalLink: article.portalLink,
       portalName: article.portalName,

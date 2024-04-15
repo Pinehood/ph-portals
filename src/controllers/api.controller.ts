@@ -50,7 +50,7 @@ export class ApiController {
   })
   getArticles(
     @Param(Params.PORTAL) portal: Portals,
-    @Query(Params.WITH_CONTENT) withContent: string,
+    @Query(Params.WITH_CONTENT) withContent: boolean,
   ): ArticleInfo[] {
     return this.apiService.getArticles(portal, withContent);
   }
