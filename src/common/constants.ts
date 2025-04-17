@@ -26,24 +26,24 @@ import { disabled } from "./formatting";
 
 export const PORTAL_SCRAPERS = {
   [Portals.HOME]: HomeConfig,
-  [Portals.DANAS]: ScrapeDanasConfig,
+  [Portals.DANAS]: disabled(ScrapeDanasConfig),
   [Portals.DIREKTNO]: ScrapeDirektnoConfig,
   [Portals.DNEVNIK]: ScrapeDnevnikConfig,
   [Portals.DNEVNO]: ScrapeDnevnoConfig,
   [Portals.INDEX]: ScrapeIndexConfig,
   [Portals.JUTARNJI]: ScrapeJutarnjiConfig,
-  [Portals.NET]: ScrapeNetConfig,
+  [Portals.NET]: disabled(ScrapeNetConfig),
   [Portals.POSLOVNI]: ScrapePoslovniConfig,
   [Portals.SATA24]: Scrape24SataConfig,
   [Portals.SLOBODNA_DALMACIJA]: ScrapeSlobodnaDalmacijaConfig,
   [Portals.SPORTSKE_NOVOSTI]: ScrapeSportskeNovostiConfig,
-  [Portals.TELEGRAM]: disabled(ScrapeTelegramConfig), // JSON wrapped in HTML, weird
+  [Portals.TELEGRAM]: disabled(ScrapeTelegramConfig),
   [Portals.TPORTAL]: ScrapeTportalConfig,
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
-  [Portals.ZAGREB]: disabled(ScrapeZagrebConfig), // CloudFlare protection triggered
+  [Portals.ZAGREB]: ScrapeZagrebConfig,
   [Portals.NOVI_LIST]: ScrapeNoviListConfig,
   [Portals.N1_INFO]: ScrapeN1InfoConfig,
-  [Portals.NACIONAL]: ScrapeNacionalConfig,
-  [Portals.NACIONALNO]: disabled(ScrapeNacionalnoConfig), // site under construction
-  [Portals.OTVORENO]: disabled(ScrapeOtvorenoConfig), // CloudFlare protection triggered
+  [Portals.NACIONAL]: disabled(ScrapeNacionalConfig),
+  [Portals.NACIONALNO]: disabled(ScrapeNacionalnoConfig),
+  [Portals.OTVORENO]: ScrapeOtvorenoConfig,
 } as const;
