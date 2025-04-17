@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import * as cheerio from "cheerio";
-import { CheerioExtractor } from "@/common";
+import { CheerioExtractor } from "@/common/types";
 
 export class ExtractionService {
   static id(link: string): string {
@@ -19,8 +19,8 @@ export class ExtractionService {
       return extractor.take == "first"
         ? $(extractor.find).first().text()
         : extractor.take == "last"
-        ? $(extractor.find).last().text()
-        : $(extractor.find).text();
+          ? $(extractor.find).last().text()
+          : $(extractor.find).text();
     } catch {
       return "";
     }

@@ -1,4 +1,4 @@
-import { CheerioExtractor, ScraperConfig } from "@/common";
+import { CheerioExtractor, ScraperConfig } from "@/common/types";
 import { Article } from "@/dtos";
 
 export class TransformService {

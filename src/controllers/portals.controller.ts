@@ -1,8 +1,9 @@
 import { Controller, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { ControllerTags, Params, Portals, PortalsRoutes } from "@/common";
-import { PortalsService } from "@/services";
+import { PortalsRoutes } from "@/common/routes";
+import { ControllerTags, Params, Portals } from "@/common/enums";
 import { HtmlEndpoint } from "@/common/decorators";
+import { PortalsService } from "@/services";
 
 @ApiTags(ControllerTags.PORTALS)
 @Controller()

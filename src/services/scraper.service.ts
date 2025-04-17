@@ -1,11 +1,8 @@
 import * as cheerio from "cheerio";
 import axios from "@/common/axios";
-import {
-  getDefaultArticle,
-  isValidArticle,
-  ScraperConfig,
-  shouldArticleBeDisplayed,
-} from "@/common";
+import { ScraperConfig } from "@/common/types";
+import { shouldArticleBeDisplayed, isValidArticle } from "@/common/validation";
+import { getDefaultArticle } from "@/common/formatting";
 import { Article } from "@/dtos";
 import { LinkService } from "@/services/link.service";
 import { ExtractionService } from "@/services/extraction.service";

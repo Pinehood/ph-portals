@@ -6,14 +6,13 @@ import * as Handlebars from "handlebars";
 import { Article, ScraperStats } from "@/dtos";
 import {
   CommonConstants,
-  formatDate,
-  millisToSeconds,
   Portals,
-  PORTAL_SCRAPERS,
   StatsKeys,
   TemplateNames,
   Tokens,
-} from "@/common";
+} from "@/common/enums";
+import { formatDate, millisToSeconds } from "@/common/formatting";
+import { PORTAL_SCRAPERS } from "@/common/constants";
 import dirname from "@/templates";
 import { default as env } from "@/common/env";
 import { LinkService } from "@/services/link.service";

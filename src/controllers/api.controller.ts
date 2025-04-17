@@ -6,10 +6,11 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { ApiRoutes, ControllerTags, Params, Portals } from "@/common";
+import { ApiRoutes } from "@/common/routes";
+import { ControllerTags, Params, Portals } from "@/common/enums";
+import { StatsEndpoint } from "@/common/decorators";
 import { ArticleInfo, Portal, ScraperStats } from "@/dtos";
 import { ApiService } from "@/services";
-import { StatsEndpoint } from "@/common/decorators";
 
 @ApiTags(ControllerTags.API)
 @Controller()

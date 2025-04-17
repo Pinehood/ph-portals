@@ -1,12 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { Article, ArticleInfo, Portal, ScraperStats } from "@/dtos";
-import {
-  CommonConstants,
-  Portals,
-  PORTAL_SCRAPERS,
-  ScraperConfig,
-} from "@/common";
+import { Portals } from "@/common/enums";
+import { ScraperConfig } from "@/common/types";
+import { PORTAL_SCRAPERS } from "@/common/constants";
 import { PortalsService } from "@/services/portals.service";
 
 @Injectable()

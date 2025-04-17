@@ -4,7 +4,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { Logger } from "nestjs-pino";
 import { default as env } from "@/common/env";
 import { AppModule } from "@/app.module";
-import { CommonConstants, SwaggerConstants } from "@/common";
+import { CommonConstants, SwaggerConstants } from "@/common/enums";
 
 export const setupApp = async () => {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });

@@ -1,4 +1,4 @@
-FROM node:20.11.1-bullseye-slim
+FROM node:lts-bullseye-slim
 
 ARG BUILD_CMD
 WORKDIR /app
