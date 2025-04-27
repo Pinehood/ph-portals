@@ -10,9 +10,9 @@ import {
 @Injectable()
 export class AIService {
   async getResponse(data: string, prompt: string): Promise<string> {
-    if (process.env.NODE_ENV !== "production") {
-      return "Ova funkcionalnost nije dostupna u razvoju!";
-    }
+    // if (process.env.NODE_ENV !== "production") {
+    //   return "Ova funkcionalnost nije dostupna u razvoju!";
+    // }
     if (!prompt) {
       return "Nepostojeći upit!";
     }
