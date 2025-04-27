@@ -8,6 +8,7 @@ import { default as pinoPretty } from "pino-pretty";
 import { default as env, validationSchema } from "@/common/env";
 import { ApiController, PortalsController } from "@/controllers";
 import { ApiService, CronService, PortalsService } from "@/services";
+import { AIService } from "./services/ai.service";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ApiService, CronService, PortalsService } from "@/services";
   providers: [
     PortalsService,
     ApiService,
+    AIService,
     CronService,
     {
       provide: APP_GUARD,

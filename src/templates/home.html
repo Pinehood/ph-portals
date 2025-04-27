@@ -13,6 +13,58 @@
       href="https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.min.css"
     />
     <title>Portali - Početna</title>
+    <style>
+      .chat-window {
+        width: 100%;
+        max-width: 100%;
+        min-height: 300px;
+        max-height: 600px;
+        height: fit-content;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      .messages {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 4rem;
+      }
+      .message {
+        padding: 0.5rem;
+        border-radius: 5px;
+        margin-bottom: 0.5rem;
+      }
+      .message.user {
+        background-color: #daf5ff;
+        text-align: right;
+      }
+      .message.system {
+        background-color: #f1f1f1;
+        text-align: left;
+      }
+      .message.error {
+        background-color: #d8000c;
+        text-align: left;
+      }
+      .input-area {
+        display: flex;
+        max-width: 100%;
+        width: 100%;
+        position: absolute;
+        bottom: 8px;
+        left: 4px;
+        padding-right: 4px;
+      }
+      .input-area input {
+        flex: 1;
+        border-radius: 8px;
+      }
+      .input-area button {
+        margin-left: 0.5rem;
+      }
+    </style>
   </head>
   {{ga}}
   <body>
@@ -35,7 +87,9 @@
               </p>
               <p>
                 Ova stranica ne koristi nikakav oblik trajnog prikupljanja niti
-                pohranjivanja povjerljivih podataka ili autorskih djela.
+                pohranjivanja povjerljivih podataka ili autorskih djela. Sve se
+                sprema u memoriju programa, i nestaje nakon bilo kakvog prekida
+                ili dnevnog ponovnog pokretanja.
               </p>
               <p>
                 Komentari korisnika te slike i videozapisi (sa autorskim
@@ -57,11 +111,101 @@
                   ><strong>na ovom linku.</strong></a
                 >
               </p>
+              <p>
+                Nadolazeći prozor ispod ovog odlomka služi za interakciju sa AI
+                asistentom, kojeg možete priupitati o bilo čemu vezano za
+                hrvatske portale i vijesti. Upiti bi trebali biti na hrvatskom,
+                stoga će biti i odgovori. Postoji vremensko ograničenje na
+                količinu poslanih upita u kratko vrijeme. Također, podaci su
+                dani iz memorije, i nema trajnog pohranjivanja.
+              </p>
+              <div class="chat-window">
+                <div class="messages" id="messages"></div>
+                <div class="input-area">
+                  <input
+                    type="text"
+                    id="chatInput"
+                    class="ui input"
+                    placeholder="Type your message..."
+                    maxlength="1280"
+                  />
+                  <button class="ui primary button" id="sendButton">
+                    Pošalji
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <br />
         </div>
       </div>
     </div>
+    <script>
+      const messagesContainer = document.getElementById("messages");
+      const chatInput = document.getElementById("chatInput");
+      const sendButton = document.getElementById("sendButton");
+
+      sendButton.addEventListener("click", async () => {
+        try {
+          if (localStorage.getItem("loading") === "true") {
+            return;
+          }
+
+          localStorage.setItem("loading", "true");
+          const text = chatInput.value.trim();
+          if (!text) return;
+
+          chatInput.value = "";
+
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `message user ui segment`;
+          messageDiv.textContent = text;
+
+          messagesContainer.appendChild(messageDiv);
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+          const response = await fetch("/api/prompt", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt: text }),
+          });
+          const data = await response.text();
+
+          const responseDiv = document.createElement("div");
+          if (data.includes("Too Many Requests")) {
+            responseDiv.className = `message error ui segment`;
+            responseDiv.textContent =
+              "Dosegnut je limit za upite. Pokušajte ponovno kroz koju minutu.";
+            messagesContainer.appendChild(responseDiv);
+            return;
+          }
+          responseDiv.className = `message system ui segment`;
+          responseDiv.textContent = data;
+          messagesContainer.appendChild(responseDiv);
+          if (!!window.gtag && typeof window.gtag === "function") {
+            window.gtag("event", "screen_view", {
+              app_name: "portali",
+              screen_name: "assistant",
+            });
+          }
+        } catch {
+          const errorDiv = document.createElement("div");
+          errorDiv.className = `message error ui segment`;
+          errorDiv.textContent = "Došlo je do pogreške. Pokušajte ponovo.";
+          messagesContainer.appendChild(errorDiv);
+        } finally {
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          localStorage.setItem("loading", "false");
+        }
+      });
+
+      chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          sendButton.click();
+        }
+      });
+    </script>
   </body>
 </html>
