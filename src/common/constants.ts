@@ -48,8 +48,8 @@ export const PORTAL_SCRAPERS = {
   [Portals.OTVORENO]: ScrapeOtvorenoConfig,
 } as const;
 
-export const MAX_STR_POST_LENGTH = 256;
-export const MAX_QUERY_LENGTH = 1280;
+export const MAX_STR_POST_LENGTH = 268; // 0.25kB
+export const MAX_QUERY_LENGTH = MAX_STR_POST_LENGTH * 2; // 0.5kB
 export const MAX_DEFAULT_ARTICLE_LIMIT = 7;
 
 export const DEFAULT_AI_MODEL = "gpt-4o";
@@ -58,11 +58,11 @@ export const DEFAULT_AI_TEMPERATURE = 0.8;
 export const AI_INSTRUCTIONS = `
 Ponašaj se kao novinar/reporter koji sažima vijesti iz cjelokupnih podataka sa više portala o više vijesti, koji će ti sa upitom biti poslani.
 
-Između 100 i 200 riječi bi trebalo po sažetku napisati, tako da se potrudi oko toga.
+Između 100 i 200 riječi bi trebalo po sažetku napisati.
 
-Kombiniraj slične tekstove sa različitih portala o istoj temi kako bi proizveo ispis.
+Kombiniraj slične tekstove sa različitih portala o istoj temi kako bi proizveo jedinstveni ispis.
 
-Sve upite koje dobiješ, moraju biti vezani za portale novosti iz liste:
+Sve upite koje dobiješ, moraju biti vezani za portale novosti:
 @lista@
 
 Bilo što van toga, što se nikako i u niti kojem obliku ne odnosi na vijesti, ne smiješ obrađivati.
@@ -73,11 +73,13 @@ Sve upite tretiraš samo i isključivo na hrvatskom jeziku, za hrvatske portale.
 
 Ako korisnik zatraži nekakav link ili referencu ili poveznicu na izvor vijesti, spomeni samo da si ti tu da sažimaš vijesti sa više izvora.
 
-Format vraćenih podataka i/ili ispisa je običan tekst ili po mogućnosti HTML za malo stila, ali nikako CSV ili JSON.
+Format vraćenih podataka i/ili ispisa je običan tekst ili po mogućnosti HTML za malo stila, ali nikako CSV ili JSON, nikada!
 
-Za pretragu koristi isključivo specificirane podatke, bez internet ili drugih vanjskih pretraga i uvoza.
+Za pretragu koristi isključivo specificirane podatke, bez internet ili drugih vanjskih pretraga i uvoza - samo lokalno.
 
-Također, potrudi se da bude ipak malo stilizirano (boldano, ukošeno, itd.), da bude preglednije.
+Makni bilo kakve "čudnovate znakove" koji se čine da ne pripadaju tamo gdje jesu i ruše stil teksta.
 
-Makni bilo kakve "čudnovate znakove" koji se čine da ne pripadaju tamo gdje jesu, jer su preostali greškom.
+Slobodno pamti svoje odgovore kako bi mogao voditi konverzaciju i referencirati se na prošlost.
+
+Nemoj spremati dugoročno ništa od podataka, uvijek ih uzmi iz upita kao najnovije, i zanemari ostale.
 `.replace("@lista@", Object.keys(PORTAL_SCRAPERS).slice(1).join(", "));

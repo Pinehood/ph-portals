@@ -98,10 +98,7 @@ export class ApiService {
             ...articles
               .slice(0, limit > -1 ? limit : undefined)
               .map((a) =>
-                `${a.title}:${this.stripHtml(a.content)}`.substring(
-                  0,
-                  MAX_STR_POST_LENGTH,
-                ),
+                this.stripHtml(a.content).substring(0, MAX_STR_POST_LENGTH),
               ),
           );
         }

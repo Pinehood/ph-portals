@@ -129,6 +129,9 @@
                     placeholder="Type your message..."
                     maxlength="1280"
                   />
+                  <button class="ui primary button" id="clearButton">
+                    Očisti
+                  </button>
                   <button class="ui primary button" id="sendButton">
                     Pošalji
                   </button>
@@ -144,6 +147,12 @@
       const messagesContainer = document.getElementById("messages");
       const chatInput = document.getElementById("chatInput");
       const sendButton = document.getElementById("sendButton");
+
+      const clearButton = document.getElementById("clearButton");
+      clearButton.addEventListener("click", () => {
+        messagesContainer.innerHTML = "";
+        chatInput.value = "";
+      });
 
       sendButton.addEventListener("click", async () => {
         try {
@@ -196,8 +205,8 @@
           errorDiv.textContent = "Došlo je do pogreške. Pokušajte ponovo.";
           messagesContainer.appendChild(errorDiv);
         } finally {
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
           localStorage.setItem("loading", "false");
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
       });
 
