@@ -46,6 +46,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -57,9 +61,7 @@ jobs:
         with:
           mask-password: "true"
       - name: Build & Upload Image to AWS ECR
-        run: |
-          docker build --build-arg BUILD_CMD=$CMD -f ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH
+        run: docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_CMD=$CMD -f ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:latest-$BRANCH --push .
         env:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
           ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
