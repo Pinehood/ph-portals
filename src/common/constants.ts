@@ -33,7 +33,7 @@ export const PORTAL_SCRAPERS = {
   [Portals.INDEX]: ScrapeIndexConfig,
   [Portals.JUTARNJI]: ScrapeJutarnjiConfig,
   // [Portals.NET]: disabled(ScrapeNetConfig),
-  [Portals.POSLOVNI]: ScrapePoslovniConfig,
+  // [Portals.POSLOVNI]: ScrapePoslovniConfig,
   [Portals.SATA24]: Scrape24SataConfig,
   [Portals.SLOBODNA_DALMACIJA]: ScrapeSlobodnaDalmacijaConfig,
   [Portals.SPORTSKE_NOVOSTI]: ScrapeSportskeNovostiConfig,
@@ -42,10 +42,10 @@ export const PORTAL_SCRAPERS = {
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
   [Portals.ZAGREB]: ScrapeZagrebConfig,
   [Portals.NOVI_LIST]: ScrapeNoviListConfig,
-  [Portals.N1_INFO]: ScrapeN1InfoConfig,
+  // [Portals.N1_INFO]: ScrapeN1InfoConfig,
   // [Portals.NACIONAL]: disabled(ScrapeNacionalConfig),
   // [Portals.NACIONALNO]: disabled(ScrapeNacionalnoConfig),
-  [Portals.OTVORENO]: ScrapeOtvorenoConfig,
+  // [Portals.OTVORENO]: ScrapeOtvorenoConfig,
 } as const;
 
 export const MAX_STR_POST_LENGTH = 268; // 0.25kB
