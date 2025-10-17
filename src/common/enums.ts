@@ -19,7 +19,7 @@ export enum Portals {
 }
 
 export enum CommonConstants {
-  LISTEN_PORT = 3030,
+  LISTEN_PORT = 3000,
   TRUE_STRING = "true",
   UTF_8 = "utf-8",
   TEXT_HTML = "text/html",
