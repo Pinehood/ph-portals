@@ -118,6 +118,7 @@ export class LinkService {
         }
       };
       if (list && list.data) {
+        console.log(list.data);
         const obj = JSON.parse(list.data) as {
           posts: any[];
         };

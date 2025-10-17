@@ -12,16 +12,16 @@ export const ScrapeN1InfoConfig: ScraperConfig = {
   id: () => randomUUID(),
   remove1: ["img", "iframe", "div.dynamic-banner", "div.banner-mobile"],
   title: {
-    find: "h1.entry-title",
+    find: "h1.title",
   },
   lead: {
-    find: "div.entry-content > p:nth-child(3) > strong",
+    find: "p.leading-8",
   },
   time: {
-    find: "span.post-time",
+    find: "div.timestamp",
   },
   author: {
-    find: "span.post-author",
+    find: "span.author-name",
     transform: (value: string) => value.replace("Autor: ", ""),
   },
   remove2: [
@@ -30,6 +30,6 @@ export const ScrapeN1InfoConfig: ScraperConfig = {
     "section.in-post-related-news",
   ],
   content: {
-    find: "div.entry-content",
+    find: "div.article-content-wrapper",
   },
 };

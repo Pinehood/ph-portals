@@ -26,12 +26,10 @@ export const ScrapePoslovniConfig: ScraperConfig = {
     find: "div.single__lead",
   },
   time: {
-    find: "span.text",
-    take: "first",
-    transform: (value: string) => value.replace(",", ""),
+    find: "div.ulight",
   },
   author: {
-    find: "a.single__meta-author",
+    find: "div.user-author__nickname a",
   },
   content: {
     find: "div.article__content",

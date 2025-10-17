@@ -1,58 +1,49 @@
 import {
   HomeConfig,
   Scrape24SataConfig,
-  // ScrapeDanasConfig,
   ScrapeDirektnoConfig,
   ScrapeDnevnikConfig,
   ScrapeDnevnoConfig,
   ScrapeIndexConfig,
   ScrapeJutarnjiConfig,
   ScrapeN1InfoConfig,
-  // ScrapeNacionalConfig,
-  // ScrapeNacionalnoConfig,
-  // ScrapeNetConfig,
+  ScrapeNacionalConfig,
+  ScrapeNetConfig,
   ScrapeNoviListConfig,
-  ScrapeOtvorenoConfig,
   ScrapePoslovniConfig,
   ScrapeSlobodnaDalmacijaConfig,
   ScrapeSportskeNovostiConfig,
-  // ScrapeTelegramConfig,
   ScrapeTportalConfig,
   ScrapeVecernjiConfig,
   ScrapeZagrebConfig,
 } from "@/configs";
 import { Portals } from "@/common/enums";
-// import { disabled } from "./formatting";
 
 export const PORTAL_SCRAPERS = {
   [Portals.HOME]: HomeConfig,
-  // [Portals.DANAS]: disabled(ScrapeDanasConfig),
   [Portals.DIREKTNO]: ScrapeDirektnoConfig,
   [Portals.DNEVNIK]: ScrapeDnevnikConfig,
   [Portals.DNEVNO]: ScrapeDnevnoConfig,
   [Portals.INDEX]: ScrapeIndexConfig,
   [Portals.JUTARNJI]: ScrapeJutarnjiConfig,
-  // [Portals.NET]: disabled(ScrapeNetConfig),
-  // [Portals.POSLOVNI]: ScrapePoslovniConfig,
+  [Portals.NET]: ScrapeNetConfig,
+  [Portals.POSLOVNI]: ScrapePoslovniConfig,
   [Portals.SATA24]: Scrape24SataConfig,
   [Portals.SLOBODNA_DALMACIJA]: ScrapeSlobodnaDalmacijaConfig,
   [Portals.SPORTSKE_NOVOSTI]: ScrapeSportskeNovostiConfig,
-  // [Portals.TELEGRAM]: disabled(ScrapeTelegramConfig),
   [Portals.TPORTAL]: ScrapeTportalConfig,
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
   [Portals.ZAGREB]: ScrapeZagrebConfig,
   [Portals.NOVI_LIST]: ScrapeNoviListConfig,
-  // [Portals.N1_INFO]: ScrapeN1InfoConfig,
-  // [Portals.NACIONAL]: disabled(ScrapeNacionalConfig),
-  // [Portals.NACIONALNO]: disabled(ScrapeNacionalnoConfig),
-  // [Portals.OTVORENO]: ScrapeOtvorenoConfig,
+  [Portals.N1_INFO]: ScrapeN1InfoConfig,
+  [Portals.NACIONAL]: ScrapeNacionalConfig,
 } as const;
 
 export const MAX_STR_POST_LENGTH = 268; // 0.25kB
 export const MAX_QUERY_LENGTH = MAX_STR_POST_LENGTH * 2; // 0.5kB
 export const MAX_DEFAULT_ARTICLE_LIMIT = 7;
 
-export const DEFAULT_AI_MODEL = "gpt-4o";
+export const DEFAULT_AI_MODEL = "gpt-4.1-mini";
 export const DEFAULT_AI_TEMPERATURE = 0.8;
 
 export const AI_INSTRUCTIONS = `

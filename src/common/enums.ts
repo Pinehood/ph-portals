@@ -12,18 +12,14 @@ export enum Portals {
   SPORTSKE_NOVOSTI = "sn",
   DIREKTNO = "direktno",
   POSLOVNI = "poslovni",
-  DANAS = "danas",
   ZAGREB = "zagreb",
-  TELEGRAM = "telegram",
   NOVI_LIST = "novilist",
   N1_INFO = "n1info",
   NACIONAL = "nacional",
-  NACIONALNO = "nacionalno",
-  OTVORENO = "otvoreno",
 }
 
 export enum CommonConstants {
-  LISTEN_PORT = 3000,
+  LISTEN_PORT = 3030,
   TRUE_STRING = "true",
   UTF_8 = "utf-8",
   TEXT_HTML = "text/html",

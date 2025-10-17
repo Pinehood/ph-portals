@@ -10,15 +10,13 @@ export const ScrapeNacionalConfig: ScraperConfig = {
   rss: false,
   roots: [
     "https://www.nacional.hr/category/vijesti/hrvatska",
-    "https://www.nacional.hr/category/vijesti/hrvatska/page/2",
     "https://www.nacional.hr/category/vijesti/svijet",
-    "https://www.nacional.hr/category/vijesti/svijet/page/2",
     "https://www.nacional.hr/category/sport/nogomet",
     "https://www.nacional.hr/category/sport/kosarka",
     "https://www.nacional.hr/category/sport/tenis",
   ],
   id: () => randomUUID(),
-  linker: "div.kategorija-vijesti-istaknuto > a",
+  linker: "div > a.row.mb-3",
   remove1: [
     "img",
     "iframe",
