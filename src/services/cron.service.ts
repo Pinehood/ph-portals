@@ -42,7 +42,10 @@ export class CronService {
       const homeKey = Portals.HOME + StatsKeys.PAGE_SUFFIX;
       this.portalsService.save(homeKey, homePage);
       const scrapers = Object.entries(PORTAL_SCRAPERS)
-        .filter(([, value]) => value.type != Portals.HOME)
+        .filter(
+          ([, value]) =>
+            value.type != Portals.HOME && value.type === Portals.DNEVNO,
+        )
         .map(([, value]) => this.cachePortalAndArticles(value));
       await Promise.all(scrapers);
     } catch (error: any) {

@@ -7,7 +7,6 @@ import {
   ScrapeIndexConfig,
   ScrapeJutarnjiConfig,
   ScrapeN1InfoConfig,
-  ScrapeNacionalConfig,
   ScrapeNetConfig,
   ScrapeNoviListConfig,
   ScrapePoslovniConfig,
@@ -36,7 +35,6 @@ export const PORTAL_SCRAPERS = {
   [Portals.ZAGREB]: ScrapeZagrebConfig,
   [Portals.NOVI_LIST]: ScrapeNoviListConfig,
   [Portals.N1_INFO]: ScrapeN1InfoConfig,
-  [Portals.NACIONAL]: ScrapeNacionalConfig,
 } as const;
 
 export const MAX_STR_POST_LENGTH = 268; // 0.25kB

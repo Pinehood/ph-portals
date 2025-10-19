@@ -15,7 +15,6 @@ export enum Portals {
   ZAGREB = "zagreb",
   NOVI_LIST = "novilist",
   N1_INFO = "n1info",
-  NACIONAL = "nacional",
 }
 
 export enum CommonConstants {

@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { Portals } from "@/common/enums";
 import { ScraperConfig } from "@/common/types";
 
@@ -25,7 +26,13 @@ export const ScrapeNetConfig: ScraperConfig = {
     "div.css-vymk8z",
     "div.is_newInarticleWidgets",
     "div.video-js",
+    "figure",
+    "div.se-card--content",
+    "video",
+    "picture",
+    "script",
   ],
+  id: () => randomUUID(),
   title: {
     find: "h1.se-article--head",
     transform: (value: string) => value.replace("/", "").trim(),

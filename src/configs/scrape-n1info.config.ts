@@ -10,7 +10,18 @@ export const ScrapeN1InfoConfig: ScraperConfig = {
   rss: true,
   roots: ["https://n1info.hr/feed"],
   id: () => randomUUID(),
-  remove1: ["img", "iframe", "div.dynamic-banner", "div.banner-mobile"],
+  remove1: [
+    "img",
+    "iframe",
+    "div.dynamic-banner",
+    "div.banner-mobile",
+    "figure",
+    "div.hidden",
+    "div.ad-loading-placeholder",
+    "div.related-news-block",
+    "div.tags-article-block-wrapper",
+    "div.cta-comment-wrapper",
+  ],
   title: {
     find: "h1.title",
   },
@@ -19,6 +30,10 @@ export const ScrapeN1InfoConfig: ScraperConfig = {
   },
   time: {
     find: "div.timestamp",
+    transform: (value: string) => {
+      const year = new Date().getFullYear();
+      return `${value.split(`${year}`)[0]}${year}`;
+    },
   },
   author: {
     find: "span.author-name",
@@ -30,6 +45,6 @@ export const ScrapeN1InfoConfig: ScraperConfig = {
     "section.in-post-related-news",
   ],
   content: {
-    find: "div.article-content-wrapper",
+    find: "article.article-wrapper",
   },
 };
