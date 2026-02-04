@@ -15,6 +15,9 @@ import { ArticleInfo, Portal, ScraperStats } from "@/dtos";
 import { ApiService } from "@/services";
 import { Throttle } from "@nestjs/throttler";
 
+// Extract enum values to avoid circular dependency in Swagger
+const PORTALS_VALUES = Object.values(Portals);
+
 class Prompt {
   @ApiProperty()
   @IsString()
@@ -44,7 +47,7 @@ export class ApiController {
   })
   @ApiParam({
     name: Params.PORTAL,
-    enum: () => Portals,
+    enum: PORTALS_VALUES,
     required: true,
   })
   @ApiQuery({
