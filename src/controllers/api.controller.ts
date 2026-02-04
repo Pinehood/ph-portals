@@ -44,7 +44,7 @@ export class ApiController {
   })
   @ApiParam({
     name: Params.PORTAL,
-    enum: Portals,
+    enum: () => Portals,
     required: true,
   })
   @ApiQuery({

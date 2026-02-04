@@ -21,7 +21,7 @@ export function HtmlEndpoint(
       ApiOperation({ summary }),
       ApiParam({
         name: Params.PORTAL,
-        enum: Portals,
+        enum: () => Portals,
         required: true,
       }),
       ApiResponse({
@@ -54,7 +54,7 @@ export function StatsEndpoint(
       ApiOperation({ summary }),
       ApiParam({
         name: Params.PORTAL,
-        enum: Portals,
+        enum: () => Portals,
         required: true,
       }),
       ApiResponse({
