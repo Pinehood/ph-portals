@@ -2,7 +2,6 @@ import {
   HomeConfig,
   Scrape24SataConfig,
   ScrapeDirektnoConfig,
-  ScrapeDnevnikConfig,
   ScrapeDnevnoConfig,
   ScrapeIndexConfig,
   ScrapeJutarnjiConfig,
@@ -10,7 +9,6 @@ import {
   ScrapeNetConfig,
   ScrapeNoviListConfig,
   ScrapePoslovniConfig,
-  ScrapeSlobodnaDalmacijaConfig,
   ScrapeSportskeNovostiConfig,
   ScrapeTportalConfig,
   ScrapeVecernjiConfig,
@@ -21,14 +19,12 @@ import { Portals } from "@/common/enums";
 export const PORTAL_SCRAPERS = {
   [Portals.HOME]: HomeConfig,
   [Portals.DIREKTNO]: ScrapeDirektnoConfig,
-  [Portals.DNEVNIK]: ScrapeDnevnikConfig,
   [Portals.DNEVNO]: ScrapeDnevnoConfig,
   [Portals.INDEX]: ScrapeIndexConfig,
   [Portals.JUTARNJI]: ScrapeJutarnjiConfig,
   [Portals.NET]: ScrapeNetConfig,
   [Portals.POSLOVNI]: ScrapePoslovniConfig,
   [Portals.SATA24]: Scrape24SataConfig,
-  [Portals.SLOBODNA_DALMACIJA]: ScrapeSlobodnaDalmacijaConfig,
   [Portals.SPORTSKE_NOVOSTI]: ScrapeSportskeNovostiConfig,
   [Portals.TPORTAL]: ScrapeTportalConfig,
   [Portals.VECERNJI]: ScrapeVecernjiConfig,
@@ -39,10 +35,10 @@ export const PORTAL_SCRAPERS = {
 
 export const MAX_STR_POST_LENGTH = 268; // 0.25kB
 export const MAX_QUERY_LENGTH = MAX_STR_POST_LENGTH * 2; // 0.5kB
-export const MAX_DEFAULT_ARTICLE_LIMIT = 7;
+export const MAX_DEFAULT_ARTICLE_LIMIT = 10;
 
-export const DEFAULT_AI_MODEL = "gpt-4.1-mini";
-export const DEFAULT_AI_TEMPERATURE = 0.8;
+export const DEFAULT_AI_MODEL = "gpt-5-mini";
+export const DEFAULT_AI_TEMPERATURE = 0.75;
 
 export const AI_INSTRUCTIONS = `
 Ponašaj se kao novinar/reporter koji sažima vijesti iz cjelokupnih podataka sa više portala o više vijesti, koji će ti sa upitom biti poslani.
