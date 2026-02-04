@@ -24,6 +24,7 @@ export function HtmlEndpoint(
       ApiParam({
         name: Params.PORTAL,
         enum: PORTALS_VALUES,
+        type: String,
         required: true,
       }),
       ApiResponse({
@@ -57,6 +58,7 @@ export function StatsEndpoint(
       ApiParam({
         name: Params.PORTAL,
         enum: PORTALS_VALUES,
+        type: String,
         required: true,
       }),
       ApiResponse({

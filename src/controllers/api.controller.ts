@@ -48,6 +48,7 @@ export class ApiController {
   @ApiParam({
     name: Params.PORTAL,
     enum: PORTALS_VALUES,
+    type: String,
     required: true,
   })
   @ApiQuery({
