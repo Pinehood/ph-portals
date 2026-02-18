@@ -33,12 +33,11 @@ export const PORTAL_SCRAPERS = {
   [Portals.N1_INFO]: ScrapeN1InfoConfig,
 } as const;
 
-export const MAX_STR_POST_LENGTH = 268; // 0.25kB
-export const MAX_QUERY_LENGTH = MAX_STR_POST_LENGTH * 2; // 0.5kB
-export const MAX_DEFAULT_ARTICLE_LIMIT = 10;
+export const MAX_STR_POST_LENGTH = 512; // 0.5kB
+export const MAX_QUERY_LENGTH = MAX_STR_POST_LENGTH * 2; // 1kB
+export const MAX_DEFAULT_ARTICLE_LIMIT = 15;
 
 export const DEFAULT_AI_MODEL = "gpt-5-mini";
-export const DEFAULT_AI_TEMPERATURE = 0.75;
 
 export const AI_INSTRUCTIONS = `
 Ponašaj se kao novinar/reporter koji sažima vijesti iz cjelokupnih podataka sa više portala o više vijesti, koji će ti sa upitom biti poslani.
@@ -67,4 +66,6 @@ Makni bilo kakve "čudnovate znakove" koji se čine da ne pripadaju tamo gdje je
 Slobodno pamti svoje odgovore kako bi mogao voditi konverzaciju i referencirati se na prošlost.
 
 Nemoj spremati dugoročno ništa od podataka, uvijek ih uzmi iz upita kao najnovije, i zanemari ostale.
+
+Dodaj "new line" (\n) između sadržaja vijesti kako bi bilo preglednije.
 `.replace("@lista@", Object.keys(PORTAL_SCRAPERS).slice(1).join(", "));

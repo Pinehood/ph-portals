@@ -3,7 +3,6 @@ import OpenAI from "openai";
 import {
   AI_INSTRUCTIONS,
   DEFAULT_AI_MODEL,
-  DEFAULT_AI_TEMPERATURE,
   MAX_QUERY_LENGTH,
 } from "@/common";
 
@@ -27,7 +26,6 @@ export class AIService {
       model: DEFAULT_AI_MODEL,
       instructions: `${AI_INSTRUCTIONS}\n\nPODACI:\n${data}`,
       input: prompt,
-      temperature: DEFAULT_AI_TEMPERATURE,
     });
     return response.output_text;
   }
