@@ -23,21 +23,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Setup
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.9.0
+      - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: ${{ vars.NODE_VERSION }}
-          cache: "npm"
+          cache: "pnpm"
       - name: Install
-        run: npm install
+        run: pnpm install --frozen-lockfile
       - name: Build
-        run: npm run $CMD
+        run: pnpm run $CMD
         env:
           CMD: ${{ vars.BUILD_CMD }}
           NODE_OPTIONS: "--max_old_space_size=4096"
       - name: Lint
         if: ${{ vars.RUN_LINT == 'true' }}
-        run: npm run lint
+        run: pnpm run lint
   build:
     needs: integrate
     name: Build Docker Image
