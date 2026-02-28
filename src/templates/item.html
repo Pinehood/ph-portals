@@ -1,16 +1,60 @@
-<div class="row">
-  <div class="ui segment">
-    <h1>{{title}}</h1>
-    <p>{{lead}}</p>
-    <a target="_blank" href="{{articleLink}}"
-      ><button class="ui right floated primary button">
-        Otvori originalni članak
-      </button></a
-    ><a href="/portals/article/{{portalType}}/{{articleId}}"
-      ><button class="ui right floated secondary button">
-        Pretpregledaj članak
-      </button></a
-    ><br /><br /><br /><br />
+<div
+  class="ui segment"
+  style="
+    margin: 0.8em 0;
+    padding: 1.5em;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  "
+>
+  <h3 style="color: #2e3440; margin-bottom: 0.5em; word-wrap: break-word">
+    {{title}}
+  </h3>
+  <p style="color: #5a6270; line-height: 1.7; word-wrap: break-word">
+    {{lead}}
+  </p>
+  <div
+    style="
+      margin-top: 1em;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.5em;
+    "
+  >
+    <a
+      target="_blank"
+      href="{{articleLink}}"
+      style="text-decoration: none"
+    >
+      <button
+        class="ui primary button"
+        style="
+          background: #5b8abf;
+          border-radius: 8px;
+          margin: 0;
+          transition: background 0.2s ease;
+        "
+      >
+        Otvori original
+      </button>
+    </a>
+    <a
+      href="/portals/article/{{portalType}}/{{articleId}}"
+      style="text-decoration: none"
+    >
+      <button
+        class="ui secondary button"
+        style="
+          background: #8e9aaf;
+          color: #fff;
+          border-radius: 8px;
+          margin: 0;
+          transition: background 0.2s ease;
+        "
+      >
+        Pretpregled
+      </button>
+    </a>
   </div>
 </div>
-<br />
