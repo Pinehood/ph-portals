@@ -99,9 +99,6 @@ importers:
       eslint-config-prettier:
         specifier: ^10.1.8
         version: 10.1.8(eslint@9.39.3)
-      eslint-config-ts-ph:
-        specifier: 1.0.8
-        version: 1.0.8(eslint@9.39.3)(pino@9.14.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typescript@5.9.3)
       eslint-plugin-import:
         specifier: ^2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.56.1(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)
@@ -1591,12 +1588,6 @@ packages:
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
-
-  eslint-config-ts-ph@1.0.8:
-    resolution: {integrity: sha512-vvjiSkJIJNObrqOV1NIeb5duNYL7OvuDk0RTx5LzbljrdFaZT/ow0jdLYfonJZt3GKAih6zLBcgUPrELVu/IYg==}
-    peerDependencies:
-      eslint: '>= 8'
-      typescript: '>= 5'
 
   eslint-import-resolver-node@0.3.9:
     resolution: {integrity: sha512-WFj2isz22JahUv+B788TlO3N6zL3nNJGU8CcZbPZvVEkBPaJdCV4vy5wyghty5ROFbCRnm132v8BScu5/1BQ8g==}
@@ -4808,23 +4799,6 @@ snapshots:
   eslint-config-prettier@10.1.8(eslint@9.39.3):
     dependencies:
       eslint: 9.39.3
-
-  eslint-config-ts-ph@1.0.8(eslint@9.39.3)(pino@9.14.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typescript@5.9.3):
-    dependencies:
-      eslint: 9.39.3
-      eslint-config-ts-ph: ph-portals@file:(pino@9.14.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - '@fastify/static'
-      - '@nestjs/microservices'
-      - '@nestjs/websockets'
-      - debug
-      - pino
-      - reflect-metadata
-      - rxjs
-      - supports-color
-      - ws
-      - zod
 
   eslint-import-resolver-node@0.3.9:
     dependencies:
