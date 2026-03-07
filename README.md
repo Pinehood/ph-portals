@@ -6,8 +6,8 @@
 
 ## Setup
 
-- Run `npm install`
-- Run `npm run build`
+- Run `pnpm install`
+- Run `pnpm build`
 
 ## Launch
 
