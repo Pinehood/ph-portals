@@ -5,7 +5,6 @@ export enum Portals {
   VECERNJI = "vecernji",
   JUTARNJI = "jutarnji",
   NET = "net",
-  DNEVNIK = "dnevnik",
   DNEVNO = "dnevno",
   TPORTAL = "tportal",
   SLOBODNA_DALMACIJA = "sd",
