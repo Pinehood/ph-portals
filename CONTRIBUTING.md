@@ -1,6 +1,6 @@
-# Contributing to the Project
+# Contributing to ph-portals
 
-We would love for you to contribute to our Project and help make it even better than it is
+We would love for you to contribute to ph-portals and help make it even better than it is
 today! As a contributor, here are the guidelines we would like you to follow:
 
 - [Submission Guidelines](#submit)
@@ -15,7 +15,7 @@ Before you submit an issue, please search the issue tracker, maybe an issue for 
 
 We want to fix all the issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. In order to reproduce bugs we will systematically ask you to provide a minimal reproduction scenario using a repository or [Gist](https://gist.github.com/). Having a live, reproducible scenario gives us wealth of important information without going back & forth to you with additional questions like:
 
-- version of the Project used
+- version of ph-portals used
 - 3rd-party libraries and their versions
 - and most importantly -> a use-case that fails
 

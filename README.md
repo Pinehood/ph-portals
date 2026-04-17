@@ -115,3 +115,11 @@ type CheerioExtractorSimple = Omit<CheerioExtractor, "take" | "transform">;
 - `src/common/functions.ts` - common helper functions used in services for various reasons and purposes
 - `src/common/validation.ts` - common validation functions used for filtering out premium/sponzored/paid/protected/specific articles
 - `src/common/formatting.ts` - common formatting functions used for value transformation and displaying in human-readable forms
+
+# Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). For security reports, see [SECURITY.md](SECURITY.md).
+
+# License
+
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE).
