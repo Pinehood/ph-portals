@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { Portals } from "@/common/enums";
 import { ScraperConfig } from "@/common/types";
 
@@ -5,15 +6,14 @@ export const ScrapeNetConfig: ScraperConfig = {
   type: Portals.NET,
   name: "Net",
   link: "https://www.net.hr",
-  icon: "https://cdn.net.hr/favicon/favicon-32x32.png",
+  icon: "https://net.hr/themes/nethr/graphics/android-icon-36x36.png",
   rss: true,
   roots: [
-    "https://net.hr/feed",
-    "https://net.hr/feed/danas",
-    "https://net.hr/feed/sport",
-    "https://net.hr/feed/hot",
-    "https://net.hr/feed/magazin",
-    "https://net.hr/feed/webcafe",
+    "https://net.hr/danas/rss.xml",
+    "https://net.hr/sport/rss.xml",
+    "https://net.hr/hot/rss.xml",
+    "https://net.hr/magazin/rss.xml",
+    "https://net.hr/webcafe/rss.xml",
   ],
   remove1: [
     "img",
@@ -24,24 +24,33 @@ export const ScrapeNetConfig: ScraperConfig = {
     'div[id="desktopScaleDown"]',
     "div.cls_frame",
     "div.css-vymk8z",
+    "div.is_newInarticleWidgets",
+    "div.video-js",
+    "figure",
+    "div.se-card--content",
+    "video",
+    "picture",
+    "script",
   ],
+  id: () => randomUUID(),
   title: {
-    find: "span.title_title",
+    find: "h1.se-article--head",
+    transform: (value: string) => value.replace("/", "").trim(),
   },
   lead: {
-    find: "span.title_subtitle",
+    find: "p.se-article--subhead",
     transform: (value: string) => value.replace("/", "").trim(),
   },
   time: {
-    find: "div.metaItem_title",
+    find: "div.publish--time",
     transform: (value: string) =>
       value.split(/[a-z]/gi)[0] ? value.split(/[a-z]/gi)[0] : "nedostupno",
   },
   author: {
-    find: 'div[id="meta_author"]',
+    find: "a.se_article_author",
     transform: (value: string) => value.replace(/\//g, ",").trim(),
   },
   content: {
-    find: "article.article-body",
+    find: "div.se-article--text",
   },
 };

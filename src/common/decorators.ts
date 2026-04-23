@@ -8,6 +8,8 @@ import {
 import { CommonConstants, Params, Portals } from "@/common/enums";
 import { ScraperStats } from "@/dtos";
 
+const PORTALS_VALUES = Object.values(Portals);
+
 export function HtmlEndpoint(
   route: string,
   summary: string,
@@ -21,7 +23,8 @@ export function HtmlEndpoint(
       ApiOperation({ summary }),
       ApiParam({
         name: Params.PORTAL,
-        enum: Portals,
+        enum: PORTALS_VALUES,
+        type: String,
         required: true,
       }),
       ApiResponse({
@@ -54,7 +57,8 @@ export function StatsEndpoint(
       ApiOperation({ summary }),
       ApiParam({
         name: Params.PORTAL,
-        enum: Portals,
+        enum: PORTALS_VALUES,
+        type: String,
         required: true,
       }),
       ApiResponse({

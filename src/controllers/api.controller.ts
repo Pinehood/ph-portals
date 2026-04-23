@@ -1,15 +1,27 @@
-import { Controller, Get, Param, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import {
   ApiOperation,
   ApiParam,
+  ApiProperty,
   ApiQuery,
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { ApiRoutes, ControllerTags, Params, Portals } from "@/common";
+import { IsString } from "class-validator";
+import { ApiRoutes } from "@/common/routes";
+import { ControllerTags, Params, Portals } from "@/common/enums";
+import { StatsEndpoint } from "@/common/decorators";
 import { ArticleInfo, Portal, ScraperStats } from "@/dtos";
 import { ApiService } from "@/services";
-import { StatsEndpoint } from "@/common/decorators";
+import { Throttle } from "@nestjs/throttler";
+
+const PORTALS_VALUES = Object.values(Portals);
+
+class Prompt {
+  @ApiProperty()
+  @IsString()
+  prompt: string;
+}
 
 @ApiTags(ControllerTags.API)
 @Controller()
@@ -34,7 +46,8 @@ export class ApiController {
   })
   @ApiParam({
     name: Params.PORTAL,
-    enum: Portals,
+    enum: PORTALS_VALUES,
+    type: String,
     required: true,
   })
   @ApiQuery({
@@ -50,7 +63,7 @@ export class ApiController {
   })
   getArticles(
     @Param(Params.PORTAL) portal: Portals,
-    @Query(Params.WITH_CONTENT) withContent: string,
+    @Query(Params.WITH_CONTENT) withContent: boolean,
   ): ArticleInfo[] {
     return this.apiService.getArticles(portal, withContent);
   }
@@ -72,5 +85,17 @@ export class ApiController {
   )
   getPortalStats(@Param(Params.PORTAL) portal: Portals): ScraperStats {
     return this.apiService.getStats(portal);
+  }
+
+  @Post(ApiRoutes.PROMPT_AI)
+  @ApiOperation({ summary: "Prompt OpenAI API" })
+  @ApiResponse({
+    status: 200,
+    description: "Response from OpenAI API",
+    type: String,
+  })
+  @Throttle({ default: { limit: 1, ttl: 30 * 1000 } })
+  async promptOpenAI(@Body() body: Prompt) {
+    return this.apiService.promptOpenAI(body.prompt);
   }
 }

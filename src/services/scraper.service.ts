@@ -1,12 +1,8 @@
 import * as cheerio from "cheerio";
 import axios from "@/common/axios";
-import {
-  getDefaultArticle,
-  isValidArticle,
-  ScraperConfig,
-  shouldArticleBeDisplayed,
-  TryCatch,
-} from "@/common";
+import { ScraperConfig } from "@/common/types";
+import { shouldArticleBeDisplayed, isValidArticle } from "@/common/validation";
+import { getDefaultArticle } from "@/common/formatting";
 import { Article } from "@/dtos";
 import { LinkService } from "@/services/link.service";
 import { ExtractionService } from "@/services/extraction.service";
@@ -15,7 +11,7 @@ import { TransformService } from "@/services/transform.service";
 export class ScraperService {
   static async scrape(config: ScraperConfig): Promise<Article[]> {
     const articles: Article[] = [];
-    await TryCatch(async () => {
+    try {
       const defaultArticle = getDefaultArticle(
         config.type,
         config.link,
@@ -26,19 +22,19 @@ export class ScraperService {
         const articleLinks = config.links
           ? await config.links(rootLink)
           : config.rss
-          ? await LinkService.rss(rootLink, config.link)
-          : config.linker
-          ? await LinkService.normal(rootLink, config.link, config.linker)
-          : await LinkService.json(rootLink, config.link);
+            ? await LinkService.rss(rootLink, config.link)
+            : config.linker
+              ? await LinkService.normal(rootLink, config.link, config.linker)
+              : await LinkService.json(rootLink, config.link);
         if (articleLinks && articleLinks.length > 0) {
           for (let i = 0; i < articleLinks.length; i++) {
             const articleLink = articleLinks[i];
             if (articles.findIndex((a) => a.articleLink == articleLink) > -1)
               continue;
 
-            const article = await axios.get(articleLink);
-            if (article && article.data) {
-              await TryCatch(async () => {
+            try {
+              const article = await axios.get(articleLink);
+              if (article && article.data) {
                 const articleHtml = article.data as string;
                 const $ = cheerio.load(articleHtml);
 
@@ -76,12 +72,26 @@ export class ScraperService {
                 };
                 TransformService.article(articleObj, config);
                 articles.push(articleObj);
-              });
+              }
+            } catch (error: any) {
+              const link =
+                error && error.config && error.config.url
+                  ? error.config.url
+                  : null;
+              if (!link) {
+                console.error(error);
+              }
             }
           }
         }
       }
-    });
+    } catch (error: any) {
+      const link =
+        error && error.config && error.config.url ? error.config.url : null;
+      if (!link) {
+        console.error(error);
+      }
+    }
     return articles.filter(
       (a) => isValidArticle(a) && shouldArticleBeDisplayed(a),
     );

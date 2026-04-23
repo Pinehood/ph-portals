@@ -3,12 +3,12 @@ import { Cron, CronExpression, Timeout } from "@nestjs/schedule";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import {
   Portals,
-  PORTAL_SCRAPERS,
   StatsKeys,
-  ScraperConfig,
   TemplateNames,
   CommonConstants,
-} from "@/common";
+} from "@/common/enums";
+import { ScraperConfig } from "@/common/types";
+import { PORTAL_SCRAPERS } from "@/common/constants";
 import { ScraperService } from "@/services/scraper.service";
 import { PortalsService } from "@/services/portals.service";
 

@@ -6,7 +6,7 @@ export const ScrapeNoviListConfig: ScraperConfig = {
   type: Portals.NOVI_LIST,
   name: "Novi List",
   link: "https://www.novilist.hr",
-  icon: "https://www.novilist.hr/wp-content/themes/novi-list-wp/favicon/android-chrome-192x192.png",
+  icon: "https://www.novilist.hr/wp-content/themes/novi-list-wp/favicon/favicon.ico",
   rss: false,
   roots: [
     "https://www.novilist.hr/wp-json/wp/v2/posts?per_page=100&page=1",

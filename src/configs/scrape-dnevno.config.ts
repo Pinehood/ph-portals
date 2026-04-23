@@ -28,6 +28,10 @@ export const ScrapeDnevnoConfig: ScraperConfig = {
     "blockquote",
     "figure",
     "figcaption",
+    "div.lwdgt",
+    "div.lwdgt-container",
+    "div.mj-pf-widget",
+    "script",
   ],
   title: {
     find: "h1",

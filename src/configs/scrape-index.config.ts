@@ -22,7 +22,7 @@ export const ScrapeIndexConfig: ScraperConfig = {
     find: "h1.title",
   },
   lead: {
-    find: "div.text p",
+    find: "section.text p",
     take: "first",
     transform: (value: string) => value.split(".")[0],
   },
@@ -37,6 +37,6 @@ export const ScrapeIndexConfig: ScraperConfig = {
     transform: (value: string) => value.split("|")[0],
   },
   content: {
-    find: "div.text",
+    find: "section.text",
   },
 };

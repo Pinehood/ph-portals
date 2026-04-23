@@ -29,3 +29,8 @@ export type CheerioExtractorSimple = Omit<
   CheerioExtractor,
   "take" | "transform"
 >;
+
+export type TLimitedScraperConfig = Pick<
+  ScraperConfig,
+  "type" | "name" | "icon" | "link"
+>;

@@ -9,4 +9,5 @@ export enum ApiRoutes {
   ARTICLES = "/api/articles/:portal",
   STATS = "/api/stats",
   PORTAL_STATS = "/api/stats/:portal",
+  PROMPT_AI = "/api/prompt",
 }

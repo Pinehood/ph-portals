@@ -5,21 +5,15 @@ export enum Portals {
   VECERNJI = "vecernji",
   JUTARNJI = "jutarnji",
   NET = "net",
-  DNEVNIK = "dnevnik",
   DNEVNO = "dnevno",
   TPORTAL = "tportal",
   SLOBODNA_DALMACIJA = "sd",
   SPORTSKE_NOVOSTI = "sn",
   DIREKTNO = "direktno",
   POSLOVNI = "poslovni",
-  DANAS = "danas",
   ZAGREB = "zagreb",
-  TELEGRAM = "telegram",
   NOVI_LIST = "novilist",
   N1_INFO = "n1info",
-  NACIONAL = "nacional",
-  NACIONALNO = "nacionalno",
-  OTVORENO = "otvoreno",
 }
 
 export enum CommonConstants {
