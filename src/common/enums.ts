@@ -7,7 +7,6 @@ export enum Portals {
   NET = "net",
   DNEVNO = "dnevno",
   TPORTAL = "tportal",
-  SLOBODNA_DALMACIJA = "sd",
   SPORTSKE_NOVOSTI = "sn",
   DIREKTNO = "direktno",
   POSLOVNI = "poslovni",

@@ -22,10 +22,9 @@ export class ApiService {
   ) {}
 
   getPortals(): Portal[] {
-    return Object.keys(Portals)
-      .filter((value) => Portals[value] != Portals.HOME)
-      .map((value) => {
-        const portal = Portals[value];
+    return (Object.keys(PORTAL_SCRAPERS) as Portals[])
+      .filter((portal) => portal !== Portals.HOME)
+      .map((portal) => {
         const psc = PORTAL_SCRAPERS[portal] as ScraperConfig;
         return {
           name: psc.name,
