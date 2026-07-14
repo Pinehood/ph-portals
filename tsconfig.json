@@ -10,11 +10,11 @@
     "sourceMap": true,
     "incremental": true,
     "skipLibCheck": true,
-    "baseUrl": "./",
+    "rootDir": "./src",
     "outDir": "./dist",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src"]
 }
