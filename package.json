@@ -23,7 +23,7 @@
     "handlebars": "^4.7.9",
     "joi": "^18.2.3",
     "nestjs-pino": "^4.6.1",
-    "openai": "^6.46.0",
+    "openai": "^6.47.0",
     "ph-portals": "file:",
     "pino-http": "^11.0.0",
     "pino-pretty": "^13.1.3"
