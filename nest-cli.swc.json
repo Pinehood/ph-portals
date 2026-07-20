@@ -16,6 +16,6 @@
       }
     ],
     "watchAssets": true,
-    "assets": [{ "include": "**/templates/*.html" }]
+    "assets": [{ "include": "**/templates/*.html", "outDir": "dist" }]
   }
 }

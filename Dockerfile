@@ -13,4 +13,4 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm run build:swc
 
 EXPOSE 3000
-ENTRYPOINT ["node", "dist/main"]
+ENTRYPOINT ["node", "dist/main.js"]
