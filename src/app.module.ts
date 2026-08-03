@@ -4,6 +4,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
+import { LoggerModule } from "nestjs-pino";
 import { default as env, validationSchema } from "@/common/env";
 import { ApiController, PortalsController } from "@/controllers";
 import { ApiService, CronService, PortalsService } from "@/services";
@@ -12,6 +13,7 @@ import { AIService } from "./services/ai.service";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [env], validationSchema }),
+    LoggerModule.forRoot(),
     SeqLoggerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
