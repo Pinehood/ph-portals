@@ -1,0 +1,16 @@
+services:
+  seq:
+    container_name: ph-portals-seq
+    image: datalust/seq:latest
+    restart: unless-stopped
+    ports:
+      - 3354:80
+      - 3355:5341
+    environment:
+      ACCEPT_EULA: Y
+      SEQ_PASSWORD: seq-password-dev
+    volumes:
+      - ph-portals-seq-data:/data
+
+volumes:
+  ph-portals-seq-data:

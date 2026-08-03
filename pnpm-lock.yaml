@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@jasonsoft/nestjs-seq':
+        specifier: ^2.2.0
+        version: 2.2.0(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))
       '@nestjs/common':
         specifier: ^11.1.28
         version: 11.1.28(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -395,6 +398,11 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
+
+  '@jasonsoft/nestjs-seq@2.2.0':
+    resolution: {integrity: sha512-e/DVNV5yPBQFWdMcwkvu+s/kL/Sjo84zFJbz/fsW0hM7Us/eF4NKVEAYIurmdzHIKmS11EaxoxhY7tRlhpr+Dw==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -3579,6 +3587,14 @@ snapshots:
   '@inquirer/type@3.0.10(@types/node@26.1.2)':
     optionalDependencies:
       '@types/node': 26.1.2
+
+  '@jasonsoft/nestjs-seq@2.2.0(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))':
+    dependencies:
+      '@nestjs/common': 11.1.28(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      axios: 1.19.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:

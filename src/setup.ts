@@ -1,7 +1,7 @@
 import { NestFactory } from "@nestjs/core";
+import { ConsoleSeqLogger } from "@jasonsoft/nestjs-seq";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { INestApplication, ValidationPipe } from "@nestjs/common";
-import { Logger } from "nestjs-pino";
 import { default as env } from "@/common/env";
 import { AppModule } from "@/app.module";
 import { CommonConstants, SwaggerConstants } from "@/common/enums";
@@ -10,7 +10,7 @@ export const setupApp = async () => {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.enableCors({ origin: "*" });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  app.useLogger(app.get(Logger));
+  app.useLogger(app.get(ConsoleSeqLogger));
   return app;
 };
 
